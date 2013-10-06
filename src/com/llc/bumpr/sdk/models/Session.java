@@ -1,11 +1,11 @@
 package com.llc.bumpr.sdk.models;
 
 import retrofit.Callback;
-import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import com.llc.bumpr.sdk.interfaces.Sessions;
 import com.llc.bumpr.sdk.lib.BumpRest;
-import com.llc.restrofit.Restrofit;
 
 public class Session {
 	private static Session activeSession = null;
@@ -33,9 +33,9 @@ public class Session {
 	 * @param passwordConfirmation The password confirmation of the user (This must match with password)
 	 * @return A new Session once a successful registration has been returned from the server
 	 */
-	public static void register(String firstname, String lastname, String email, String password, String passwordConfirmation, Callback<Session> cb) {
+	public static void register(User user, String password, String passwordConfirmation, Callback<Session> cb) {
 		Sessions sessions = BumpRest.sessions();
-		sessions.register(firstname, lastname, email, password, passwordConfirmation, cb);
+		sessions.register(user, password, passwordConfirmation, cb);
 	}
 	
 	/**
@@ -47,5 +47,23 @@ public class Session {
 	public static void login(String email, String password, Callback<Session> cb) {
 		Sessions sessions = BumpRest.sessions();
 		sessions.login(email, password, cb);
+	}
+	
+	public void update(final User user, final Callback<User> cb) {
+		Sessions sessions = BumpRest.sessions();
+		sessions.update(accessToken, user, new Callback<User>() {
+
+			@Override
+			public void failure(RetrofitError arg0) {
+				cb.failure(arg0);
+			}
+
+			@Override
+			public void success(User user, Response response) {
+				if (user != null)  Session.activeSession.user = user;
+				cb.success(user, response);
+			}
+			
+		});
 	}
 }

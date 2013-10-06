@@ -3,10 +3,27 @@ package com.llc.bumpr.sdk.models;
 import java.util.Date;
 
 public class Request {
-	private int id, userId, driverId, tripId;
-	private Date timeSent, timeAccepted;
+	private int id;
+	private int userId;
+	private int driverId;
+	private int tripId;
+	
+	private Date timeSent;
+	private Date timeAccepted;
+	
 	private String confirmationCode;
-	private boolean accepted, confirmed;
+	
+	private boolean accepted;
+	private boolean confirmed;
+	
+	private Trip trip;
+	
+	public Request(Builder builder) {
+		this.id = builder.id;
+		this.userId = builder.userId;
+		this.driverId = builder.driverId;
+		this.trip = builder.trip;
+	}
 	
 	/**
 	 * Answers the request sent to the user giving the option to accept or deny the request.
@@ -27,5 +44,28 @@ public class Request {
 	 */
 	public boolean confirmRequest(String confirmationCode) {
 		return true;
+	}
+	
+	/*************************** BUILDER ****************************/
+	
+	public class Builder {
+		
+		private int id;
+		private int userId;
+		private int driverId;
+		private Trip trip;
+		
+		public Builder setId(int id) { this.id = id; return this; }
+		public Builder setUserId(int userId) { this.userId = userId; return this; }
+		public Builder setDriverId(int driverId) { this.driverId = driverId; return this; }
+		public Builder setTrip(Trip trip) { this.trip = trip; return this; }
+		
+		public Request build() throws Exception {
+			if (id < 1 || userId < 1 || driverId < 1 || trip == null) {
+				throw new Exception("Invalid Request state: missing parameters");
+			}
+			
+			return new Request(this);
+		}
 	}
 }
