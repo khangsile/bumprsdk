@@ -1,12 +1,22 @@
 package com.llc.bumpr.sdk.models;
 
-import com.llc.restrofit.Restrofit;
-
 public class Driver extends User {
 	
 	private double balance;
-	private String licenseId, insuranceId;
-	private boolean cab, trustworthy, status;
+	private String licenseId;
+	private String insuranceId;
+	private boolean cab;
+	private boolean trustworthy;
+	private boolean status;
+	
+	private Driver(Builder builder) {
+		super(builder);
+		
+		this.licenseId = builder.licenseId;
+		this.insuranceId = builder.insuranceId;
+		this.balance = 0;
+		this.status = false;
+	}
 	
 	/**
 	 * Returns the drivers balance. This represents the amount they have made off of driving users. 
@@ -55,4 +65,18 @@ public class Driver extends User {
 		status = !status;
 		return status;
 	}
+	
+	public class Builder extends User.Builder {
+		
+		private String licenseId;
+		private String insuranceId;
+		
+		public Builder setLicenseId(String licenseId) { this.licenseId = licenseId; return this; }
+		public Builder setInsuranceId(String insuranceId) { this.insuranceId = insuranceId; return this; }
+		
+		public Driver build() {
+			return new Driver(this);
+		}
+	}
+	
 }

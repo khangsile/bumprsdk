@@ -2,16 +2,16 @@ package com.llc.bumpr.sdk.models;
 
 public class User {
 	
-	private int id;
+	protected int id;
 	
-	private String firstname;
-	private String lastname;
-	private String city;
-	private String state;
-	private String email;
-	private String profileImage;
-	private String description;
-	private String phoneNumber;
+	protected String firstname;
+	protected String lastname;
+	protected String city;
+	protected String state;
+	protected String email;
+	protected String profileImage;
+	protected String description;
+	protected String phoneNumber;
 	
 	public User(Builder builder) {
 		this.firstname = builder.firstname;
@@ -35,6 +35,15 @@ public class User {
 	}
 			
 	/**************************** GETTERS *************************/
+	
+	/**
+	 * Returns the users id
+	 * @return an integer indicating the id of the user
+	 */
+	public int getId() {
+		return id;
+	}
+	
 	
 	/**
 	 * Returns the first name of the user
@@ -131,5 +140,5 @@ public class User {
 		}
 		
 	}
-	
 }
+

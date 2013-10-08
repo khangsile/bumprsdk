@@ -33,9 +33,9 @@ public class Session {
 	 * @param passwordConfirmation The password confirmation of the user (This must match with password)
 	 * @return A new Session once a successful registration has been returned from the server
 	 */
-	public static void register(User user, String password, String passwordConfirmation, Callback<Session> cb) {
+	public static void register(Registration registration, Callback<Session> cb) {
 		Sessions sessions = BumpRest.sessions();
-		sessions.register(user, password, passwordConfirmation, cb);
+		sessions.register(registration, cb);
 	}
 	
 	/**
@@ -46,12 +46,12 @@ public class Session {
 	 */
 	public static void login(String email, String password, Callback<Session> cb) {
 		Sessions sessions = BumpRest.sessions();
-		sessions.login(email, password, cb);
+		sessions.login(new Login(email, password), cb);
 	}
 	
 	public void update(final User user, final Callback<User> cb) {
 		Sessions sessions = BumpRest.sessions();
-		sessions.update(accessToken, user, new Callback<User>() {
+		sessions.update(accessToken, user, user.getId(), new Callback<User>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {

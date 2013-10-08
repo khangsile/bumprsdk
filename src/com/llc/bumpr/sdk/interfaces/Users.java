@@ -9,8 +9,8 @@ import com.llc.bumpr.sdk.models.User;
 public interface Users {
 	
 	@GET("/users/{id}")
-	public void get(@Path("id") String user_id, Callback<User> cb);
+	public void get(@Path("id") int user_id, Callback<User> cb);
 	
 	@GET("/users/{id}")
-	public User get(@Path("id") String user_id);
+	public User get(@Path("id") int user_id);
 }
