@@ -6,7 +6,7 @@ import com.llc.bumpr.sdk.interfaces.Sessions;
 import com.llc.bumpr.sdk.interfaces.Users;
 import com.llc.restrofit.Restrofit;
 
-public class BumpRest {
+public class BumprClient {
 	
 	private static final String baseURL = "https://www.bumpr.io/api/v1";
 	private static Restrofit rest; 

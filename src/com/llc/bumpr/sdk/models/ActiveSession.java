@@ -5,7 +5,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import com.llc.bumpr.sdk.interfaces.Sessions;
-import com.llc.bumpr.sdk.lib.BumpRest;
+import com.llc.bumpr.sdk.lib.BumprClient;
 
 public class ActiveSession extends Session {
 
@@ -13,7 +13,7 @@ public class ActiveSession extends Session {
 	private String accessToken;
 	
 	public void logout(final Callback<InactiveSession> cb) {
-		Sessions sessions = BumpRest.sessions();
+		Sessions sessions = BumprClient.sessions();
 		sessions.logout(accessToken, new Callback<InactiveSession>() {
 
 			@Override
@@ -31,9 +31,14 @@ public class ActiveSession extends Session {
 			
 		});
 	}
+
+	public void request(Request request, final Callback<Request> cb) {
+		Sessions sessions = BumprClient.sessions();
+		sessions.logout(accessToken, cb);
+	}
 	
 	public void update(final User user, final Callback<User> cb) {
-		Sessions sessions = BumpRest.sessions();
+		Sessions sessions = BumprClient.sessions();
 		sessions.update(accessToken, user, user.getId(), new Callback<User>() {
 
 			@Override

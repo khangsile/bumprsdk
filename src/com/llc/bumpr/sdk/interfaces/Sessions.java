@@ -1,5 +1,8 @@
 package com.llc.bumpr.sdk.interfaces;
 
+import java.util.List;
+import java.util.Map;
+
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -9,9 +12,11 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 
 import com.llc.bumpr.sdk.models.ActiveSession;
+import com.llc.bumpr.sdk.models.Driver;
 import com.llc.bumpr.sdk.models.InactiveSession;
 import com.llc.bumpr.sdk.models.Login;
 import com.llc.bumpr.sdk.models.Registration;
+import com.llc.bumpr.sdk.models.Request;
 import com.llc.bumpr.sdk.models.Session;
 import com.llc.bumpr.sdk.models.User;
 
@@ -37,5 +42,17 @@ public interface Sessions {
 	
 	@POST ("/registration")
 	public Session register(@Body Registration user);
-	
+
+	@POST ("/requests")
+	public void request(@Header("Access-Token") String token, @Body Request request, Callback<Request> cb);
+
+	@POST ("/requests")
+	public Request request(@Header("Access-Token") String token, @Body Request request);
+
+	@POST ("/search")
+	public void searchDrivers(@Body Map<String, String> search, Callback<List<Driver>> cb);
+
+	@POST ("/search")
+	public List<Driver> searchDrivers(@Body Map<String, String> search);
+
 }
