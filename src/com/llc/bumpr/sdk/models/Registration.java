@@ -7,7 +7,8 @@ public class Registration extends User {
 
 	public Registration(Builder builder) {
 		super(builder);
-		// TODO Auto-generated constructor stub
+		this.password = builder.password;
+		this.passwordConfirmation = builder.passwordConfirmation;
 	}
 	
 	public class Builder extends User.Builder {

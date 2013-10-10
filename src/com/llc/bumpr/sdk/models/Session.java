@@ -1,13 +1,8 @@
 package com.llc.bumpr.sdk.models;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
-import com.llc.bumpr.sdk.interfaces.Sessions;
-import com.llc.bumpr.sdk.lib.BumprClient;
-
-public class Session {
+abstract public class Session {
+	
 	private static Session activeSession = new InactiveSession();
 	
 	/**

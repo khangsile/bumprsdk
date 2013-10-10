@@ -21,7 +21,13 @@ public class User {
 		this.email = builder.email;
 		this.profileImage = builder.profileImage;
 		this.description = builder.description;
-		this.phoneNumber = builder.phoneNumber;
+		this.phoneNumber = builder.phoneNumber;		
+	}
+	
+	public Builder getBuilder() {
+		return new Builder().setCity(city).setDescription(description)
+				.setEmail(email).setFirstname(firstname).setLastname(lastname)
+				.setPhoneNumber(phoneNumber).setProfileImage(profileImage).setState(state);
 	}
 	
 	/*************************** API METHODS **********************/
@@ -138,7 +144,6 @@ public class User {
 			
 			return new User(this);
 		}
-		
 	}
 }
 

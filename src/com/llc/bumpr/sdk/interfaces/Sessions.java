@@ -34,14 +34,11 @@ public interface Sessions {
 	@DELETE ("/user/sessions")
 	public InactiveSession logout(@Header("Access-Token") String token);
 	
-	@PUT ("/users/{id}")
-	public void update(@Header("Access-Token") String token, @Body User user, @Path("id") int userId, Callback<User> cb);
-	
 	@POST ("/registration")
 	public void register(@Body Registration user, Callback<ActiveSession> cb);
 	
 	@POST ("/registration")
-	public Session register(@Body Registration user);
+	public ActiveSession register(@Body Registration user);
 
 	@POST ("/requests")
 	public void request(@Header("Access-Token") String token, @Body Request request, Callback<Request> cb);
