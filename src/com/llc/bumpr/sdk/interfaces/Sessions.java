@@ -3,13 +3,13 @@ package com.llc.bumpr.sdk.interfaces;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Header;
 import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
 
 import com.llc.bumpr.sdk.models.ActiveSession;
 import com.llc.bumpr.sdk.models.Driver;
@@ -17,28 +17,26 @@ import com.llc.bumpr.sdk.models.InactiveSession;
 import com.llc.bumpr.sdk.models.Login;
 import com.llc.bumpr.sdk.models.Registration;
 import com.llc.bumpr.sdk.models.Request;
-import com.llc.bumpr.sdk.models.Session;
-import com.llc.bumpr.sdk.models.User;
 
 public interface Sessions {
 	
-	@POST ("/user/sessions")
-	public void login(@Body Login user_login, Callback<ActiveSession> cb);
+	@POST ("/sessions.json")
+	public void login(@Body Map<String, Login> userLogin, Callback<ActiveSession> cb);
 	
-	@POST ("/user/login")
-	public ActiveSession login(@Body Login user_login);
+	@POST ("/sessions.json")
+	public ActiveSession login(@Body Map<String, Login> userLogin);
 	
-	@DELETE ("/user/sessions/")
+	@DELETE ("/user/sessions.json")
 	public void logout(@Header("Access-Token") String token, Callback<InactiveSession> cb);
 	
-	@DELETE ("/user/sessions")
+	@DELETE ("/user/sessions.json")
 	public InactiveSession logout(@Header("Access-Token") String token);
 	
-	@POST ("/registration")
-	public void register(@Body Registration user, Callback<ActiveSession> cb);
+	@POST ("/registrations.json")
+	public void register(@Body Map<String, Registration> user, Callback<ActiveSession> cb);
 	
-	@POST ("/registration")
-	public ActiveSession register(@Body Registration user);
+	@POST ("/registrations.json")
+	public ActiveSession register(@Body Map<String, Registration> user);
 
 	@POST ("/requests")
 	public void request(@Header("Access-Token") String token, @Body Request request, Callback<Request> cb);

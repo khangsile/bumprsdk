@@ -4,30 +4,17 @@ public class User {
 	
 	protected int id;
 	
-	protected String firstname;
-	protected String lastname;
+	protected String firstName;
+	protected String lastName;
 	protected String city;
 	protected String state;
 	protected String email;
 	protected String profileImage;
 	protected String description;
 	protected String phoneNumber;
-	
-	public User(Builder builder) {
-		this.firstname = builder.firstname;
-		this.lastname = builder.lastname;
-		this.city  = builder.city;
-		this.state = builder.state;
-		this.email = builder.email;
-		this.profileImage = builder.profileImage;
-		this.description = builder.description;
-		this.phoneNumber = builder.phoneNumber;		
-	}
-	
-	public Builder getBuilder() {
-		return new Builder().setCity(city).setDescription(description)
-				.setEmail(email).setFirstname(firstname).setLastname(lastname)
-				.setPhoneNumber(phoneNumber).setProfileImage(profileImage).setState(state);
+			
+	public Builder<User> getBuilder() {
+		return new Builder<User>(this);
 	}
 	
 	/*************************** API METHODS **********************/
@@ -56,7 +43,7 @@ public class User {
 	 * @return a string that indicates the first name
 	 */
 	public String getFirstName() {
-		return firstname;
+		return firstName;
 	}
 	
 	/**
@@ -64,7 +51,7 @@ public class User {
 	 * @return a string that indicates the last name
 	 */
 	public String getLastName() {
-		return lastname;
+		return lastName;
 	}
 	
 	/**
@@ -114,36 +101,32 @@ public class User {
 	public String getProfileImage() {
 		return profileImage;
 	}
-	
+		
 	/****************************** BUILDER ************************************/
 	
-	public static class Builder {
+	public static class Builder<T extends User> {
+		private final T item;
 		
-		private String firstname;
-		private String lastname;
-		private String city;
-		private String state;
-		private String email;
-		private String profileImage;
-		private String description;
-		private String phoneNumber;
+		protected String firstName;
+		protected String lastName;
+		protected String city;
+		protected String state;
+		protected String email;
+		protected String profileImage;
+		protected String description;
+		protected String phoneNumber;
 		
-		public Builder setFirstname(String firstname) { this.firstname = firstname; return this; }
-		public Builder setLastname(String lastname) { this.lastname = lastname; return this; }
-		public Builder setCity(String city) { this.city = city; return this; }
-		public Builder setState(String state) { this.state = state; return this; }
-		public Builder setEmail(String email) { this.email = email; return this; }
-		public Builder setProfileImage(String profileImage) { this.profileImage = profileImage; return this; }
-		public Builder setDescription(String description) { this.description = description; return this; }
-		public Builder setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; return this; }
+		protected Builder(T item) { this.item = item; }
+		public Builder<T> setFirstName(String firstName) { item.firstName = firstName; return this; }
+		public Builder<T> setLastName(String lastName) { item.lastName = lastName; return this; }
+		public Builder<T> setCity(String city) { item.city = city; return this; }
+		public Builder<T> setState(String state) { item.state = state; return this; }
+		public Builder<T> setEmail(String email) { item.email = email; return this; }
+		public Builder<T> setProfileImage(String profileImage) { item.profileImage = profileImage; return this; }
+		public Builder<T> setDescription(String description) { item.description = description; return this; }
+		public Builder<T> setPhoneNumber(String phoneNumber) { item.phoneNumber = phoneNumber; return this; }
 		
-		public User build() throws Exception {
-			if (firstname == null || lastname == null || email == null) {
-				throw new Exception("Invalid User state: missing params");
-			}
-			
-			return new User(this);
-		}
+		public T build() { return item; }
 	}
 }
 

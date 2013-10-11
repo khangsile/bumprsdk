@@ -8,16 +8,7 @@ public class Driver extends User {
 	private boolean cab;
 	private boolean trustworthy;
 	private boolean status;
-	
-	private Driver(Builder builder) {
-		super(builder);
 		
-		this.licenseId = builder.licenseId;
-		this.insuranceId = builder.insuranceId;
-		this.balance = 0;
-		this.status = false;
-	}
-	
 	/**
 	 * Returns the drivers balance. This represents the amount they have made off of driving users. 
 	 *
@@ -66,17 +57,14 @@ public class Driver extends User {
 		return status;
 	}
 	
-	public class Builder extends User.Builder {
+	public static final class Builder extends User.Builder<Driver> {
 		
 		private String licenseId;
 		private String insuranceId;
 		
-		public Builder setLicenseId(String licenseId) { this.licenseId = licenseId; return this; }
-		public Builder setInsuranceId(String insuranceId) { this.insuranceId = insuranceId; return this; }
-		
-		public Driver build() {
-			return new Driver(this);
-		}
+		public Builder() { super(new Driver()); }
+		public Builder setLicenseId(String licenseId) { build().licenseId = licenseId; return this; }
+		public Builder setInsuranceId(String insuranceId) { build().insuranceId = insuranceId; return this; }
 	}
 	
 }

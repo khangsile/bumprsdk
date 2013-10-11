@@ -8,7 +8,7 @@ import com.llc.restrofit.Restrofit;
 
 public class BumprClient {
 	
-	private static final String baseURL = "https://www.bumpr.io/api/v1";
+	private static final String baseURL = "http://bumpr.herokuapp.com/api/v1";
 	private static Restrofit rest; 
 	
 	private static RestAdapter sharedAdapter() {

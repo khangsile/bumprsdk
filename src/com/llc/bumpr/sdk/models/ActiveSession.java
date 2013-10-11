@@ -11,11 +11,11 @@ import com.llc.bumpr.sdk.lib.BumprClient;
 public class ActiveSession extends Session {
 
 	private User user;
-	private String accessToken;
+	private String authToken;
 	
 	public void logout(final Callback<InactiveSession> cb) {
 		Sessions sessions = BumprClient.sessions();
-		sessions.logout(accessToken, new Callback<InactiveSession>() {
+		sessions.logout(authToken, new Callback<InactiveSession>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -35,12 +35,17 @@ public class ActiveSession extends Session {
 
 	public void request(Request request, final Callback<Request> cb) {
 		Sessions sessions = BumprClient.sessions();
-		sessions.request(accessToken, request, cb);
+		sessions.request(authToken, request, cb);
 	}
 	
+	/**
+	 * Takes a User object and 
+	 * @param user
+	 * @param cb
+	 */
 	public void update(final User user, final Callback<User> cb) {
 		Users users = BumprClient.users();
-		users.update(accessToken, user, user.getId(), new Callback<Boolean>() {
+		users.update(authToken, user, user.getId(), new Callback<Boolean>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -59,6 +64,22 @@ public class ActiveSession extends Session {
 			}
 			
 		});
+	}
+	
+	/**
+	 * Get the active user
+	 * @return a User object representing the active user
+	 */
+	public User getUser() {
+		return user;
+	}
+	
+	/**
+	 * Get the authentication token
+	 * @return a String representing the authentication token of the user
+	 */
+	public String getAuthToken() {
+		return authToken;
 	}
 	
 	/*********************** Private Methods ***********************/

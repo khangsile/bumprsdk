@@ -1,5 +1,7 @@
 package com.llc.bumpr.sdk.models;
 
+import java.util.HashMap;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -23,7 +25,9 @@ public class InactiveSession extends Session {
 	 */
 	public void register(Registration registration, final Callback<ActiveSession> cb) {
 		Sessions sessions = BumprClient.sessions();
-		sessions.register(registration, new Callback<ActiveSession>() {
+		HashMap<String, Registration> map = new HashMap<String, Registration>();
+		map.put("user", registration);
+		sessions.register(map, new Callback<ActiveSession>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -43,7 +47,9 @@ public class InactiveSession extends Session {
 	
 	public ActiveSession register(Registration registration) {
 		Sessions sessions = BumprClient.sessions();
-		ActiveSession session = sessions.register(registration);
+		HashMap<String, Registration> map = new HashMap<String, Registration>();
+		map.put("user", registration);
+		ActiveSession session = sessions.register(map);
 		Session.setSession(session);
 		return session;
 	}
@@ -52,12 +58,14 @@ public class InactiveSession extends Session {
 	 * method which logs a User in to the Bumpr network
 	 * @param email the email of the user
 	 * @param password the password of the user
-	 * @param cb a callback method for implementation of failure and success
-	 * @return A User object once a login has been successful or nil if the failed
+	 * @param cb a callback method for implementation of failure and success. Note this callback returns 
+	 * the ActiveSession in the event that the login is successful. 
 	 */
 	public void login(String email, String password, final Callback<ActiveSession> cb) {
 		Sessions sessions = BumprClient.sessions();
-		sessions.login(new Login(email, password), new Callback<ActiveSession>() {
+		HashMap<String, Login> map = new HashMap<String, Login>();
+		map.put("user_login", new Login(email, password));
+		sessions.login(map, new Callback<ActiveSession>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -83,7 +91,9 @@ public class InactiveSession extends Session {
 	 */
 	public ActiveSession login(String email, String password) {
 		Sessions sessions = BumprClient.sessions();
-		ActiveSession session = sessions.login(new Login(email, password));
+		HashMap<String, Login> map = new HashMap<String, Login>();
+		map.put("user_login", new Login(email, password));
+		ActiveSession session = sessions.login(map);
 		Session.setSession(session);
 		return session;
 	}
