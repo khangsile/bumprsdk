@@ -2,7 +2,7 @@ package com.llc.bumpr.sdk.lib;
 
 import retrofit.RestAdapter;
 
-import com.llc.bumpr.sdk.interfaces.Sessions;
+import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.interfaces.Users;
 import com.llc.restrofit.Restrofit;
 
@@ -16,14 +16,9 @@ public class BumprClient {
 			Restrofit.sharedAdapter() : Restrofit.defaultAdapter(baseURL);
 	}
 	
-	public static Sessions sessions() {
+	public static BumprAPI api() {
 		RestAdapter rest = sharedAdapter();
-		return rest.create(Sessions.class);
-	}
-	
-	public static Users users() {
-		RestAdapter rest = sharedAdapter();
-		return rest.create(Users.class);
+		return rest.create(BumprAPI.class);
 	}
 	
 }

@@ -26,6 +26,17 @@ public class User {
 	public void request(Request request) {
 		
 	}
+	
+	public void update(User user) {
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.city = user.getCity();
+		this.state = user.getState();
+		this.email = user.getEmail();
+		this.profileImage = user.getProfileImage();
+		this.description = user.getDescription();
+		this.phoneNumber = user.getPhoneNumber();
+	}
 			
 	/**************************** GETTERS *************************/
 	
@@ -36,7 +47,6 @@ public class User {
 	public int getId() {
 		return id;
 	}
-	
 	
 	/**
 	 * Returns the first name of the user
@@ -116,7 +126,7 @@ public class User {
 		protected String description;
 		protected String phoneNumber;
 		
-		protected Builder(T item) { this.item = item; }
+		public Builder(T item) { this.item = item; }
 		public Builder<T> setFirstName(String firstName) { item.firstName = firstName; return this; }
 		public Builder<T> setLastName(String lastName) { item.lastName = lastName; return this; }
 		public Builder<T> setCity(String city) { item.city = city; return this; }
@@ -125,7 +135,6 @@ public class User {
 		public Builder<T> setProfileImage(String profileImage) { item.profileImage = profileImage; return this; }
 		public Builder<T> setDescription(String description) { item.description = description; return this; }
 		public Builder<T> setPhoneNumber(String phoneNumber) { item.phoneNumber = phoneNumber; return this; }
-		
 		public T build() { return item; }
 	}
 }

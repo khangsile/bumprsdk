@@ -1,10 +1,12 @@
 package com.llc.bumpr.sdk.models;
 
+import java.util.HashMap;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import com.llc.bumpr.sdk.interfaces.Sessions;
+import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.interfaces.Users;
 import com.llc.bumpr.sdk.lib.BumprClient;
 
@@ -14,8 +16,8 @@ public class ActiveSession extends Session {
 	private String authToken;
 	
 	public void logout(final Callback<InactiveSession> cb) {
-		Sessions sessions = BumprClient.sessions();
-		sessions.logout(authToken, new Callback<InactiveSession>() {
+		BumprAPI api = BumprClient.api();
+		api.logout(authToken, new Callback<InactiveSession>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -34,18 +36,22 @@ public class ActiveSession extends Session {
 	}
 
 	public void request(Request request, final Callback<Request> cb) {
-		Sessions sessions = BumprClient.sessions();
+		BumprAPI sessions = BumprClient.api();
 		sessions.request(authToken, request, cb);
 	}
 	
 	/**
-	 * Takes a User object and 
-	 * @param user
-	 * @param cb
+	 * Updates a user
+	 * @param user a User object with the changes to the user. This object should be built from the 
+	 * original user that you are attempting to update.
+	 * @param cb a Callback that returns the updated User object from the database.
 	 */
 	public void update(final User user, final Callback<User> cb) {
-		Users users = BumprClient.users();
-		users.update(authToken, user, user.getId(), new Callback<Boolean>() {
+		BumprAPI api = BumprClient.api();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("user", user);
+		map.put("auth_token", authToken);
+		api.update(user.getId(), map, new Callback<User>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -53,16 +59,15 @@ public class ActiveSession extends Session {
 			}
 
 			@Override
-			public void success(Boolean success, Response response) {
+			public void success(User user, Response response) {
 				if (user != null) {
 					Session session = Session.getSession();
 					if (session.getClass() == ActiveSession.class) {
-						((ActiveSession) session).updateUser(user); 
+						((ActiveSession) session).getUser().update(user); 
 					}
 				}
 				cb.success(user, response);
 			}
-			
 		});
 	}
 	
@@ -83,8 +88,8 @@ public class ActiveSession extends Session {
 	}
 	
 	/*********************** Private Methods ***********************/
-	
-	private void updateUser(User user) {
-		this.user = user;
+
+	private boolean isDriver() {
+		return (user instanceof Driver);
 	}
 }
