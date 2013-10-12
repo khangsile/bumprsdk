@@ -1,5 +1,8 @@
 package com.llc.bumpr.sdk.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
 	
 	protected int id;
@@ -12,6 +15,8 @@ public class User {
 	protected String profileImage;
 	protected String description;
 	protected String phoneNumber;
+	
+	protected List<Request> sentRequests = new ArrayList<Request>();
 			
 	public Builder<User> getBuilder() {
 		return new Builder<User>(this);
@@ -27,6 +32,8 @@ public class User {
 		
 	}
 	
+	/*************************** SETTERS **************************/
+	
 	public void update(User user) {
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
@@ -36,6 +43,11 @@ public class User {
 		this.profileImage = user.getProfileImage();
 		this.description = user.getDescription();
 		this.phoneNumber = user.getPhoneNumber();
+	}
+	
+	public void addRequest(Request request) {
+		if (sentRequests == null) sentRequests = new ArrayList<Request>();
+		sentRequests.add(request);
 	}
 			
 	/**************************** GETTERS *************************/
@@ -110,6 +122,10 @@ public class User {
 	 */
 	public String getProfileImage() {
 		return profileImage;
+	}
+	
+	public List<Request> getSentRequests() {
+		return new ArrayList<Request>(sentRequests);
 	}
 		
 	/****************************** BUILDER ************************************/
