@@ -24,10 +24,10 @@ import com.llc.bumpr.sdk.models.User;
 public interface BumprAPI {
 	
 	@POST ("/registrations.json")
-	public void register(@Body Map<String, Registration> user, Callback<ActiveSession> cb);
+	public void register(@Body Registration user, Callback<ActiveSession> cb);
 	
 	@POST ("/registrations.json")
-	public ActiveSession register(@Body Map<String, Registration> user);
+	public ActiveSession register(@Body Registration user);
 	
 	@POST ("/requests.json")
 	public void request(@Header("Access-Token") String token, @Body Request request, Callback<Request> cb);
@@ -45,10 +45,10 @@ public interface BumprAPI {
 	public List<Driver> searchDrivers(@Body SearchQuery query);
 	
 	@POST ("/sessions.json")
-	public void login(@Body Map<String, Login> userLogin, Callback<ActiveSession> cb);
+	public void login(@Body Login login, Callback<ActiveSession> cb);
 	
 	@POST ("/sessions.json")
-	public ActiveSession login(@Body Map<String, Login> userLogin);
+	public ActiveSession login(@Body Login login);
 	
 	@DELETE ("/sessions.json")
 	public void logout(@Header("Access-Token") String token, Callback<InactiveSession> cb);

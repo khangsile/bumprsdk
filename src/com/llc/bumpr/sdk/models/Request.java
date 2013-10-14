@@ -46,6 +46,16 @@ public class Request {
 		return true;
 	}
 	
+	/************************** GETTERS *****************************/
+	
+	public int getId() {
+		return id;
+	}
+	
+	public boolean getAccepted() {
+		return accepted;
+	}
+	
 	/*************************** BUILDER ****************************/
 	
 	public class Builder {

@@ -1,13 +1,10 @@
 package com.llc.bumpr.sdk.models;
 
-import java.util.HashMap;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
-import com.llc.bumpr.sdk.interfaces.Users;
 import com.llc.bumpr.sdk.lib.BumprClient;
 
 public class InactiveSession extends Session {
@@ -26,9 +23,7 @@ public class InactiveSession extends Session {
 	 */
 	public void register(Registration registration, final Callback<ActiveSession> cb) {
 		BumprAPI api = BumprClient.api();
-		HashMap<String, Registration> map = new HashMap<String, Registration>();
-		map.put("user", registration);
-		api.register(map, new Callback<ActiveSession>() {
+		api.register(registration, new Callback<ActiveSession>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -48,9 +43,7 @@ public class InactiveSession extends Session {
 	
 	public ActiveSession register(Registration registration) {
 		BumprAPI api = BumprClient.api();
-		HashMap<String, Registration> map = new HashMap<String, Registration>();
-		map.put("user", registration);
-		ActiveSession session = api.register(map);
+		ActiveSession session = api.register(registration);
 		Session.setSession(session);
 		return session;
 	}
@@ -64,9 +57,7 @@ public class InactiveSession extends Session {
 	 */
 	public void login(String email, String password, final Callback<ActiveSession> cb) {
 		BumprAPI api = BumprClient.api();
-		HashMap<String, Login> map = new HashMap<String, Login>();
-		map.put("user_login", new Login(email, password));
-		api.login(map, new Callback<ActiveSession>() {
+		api.login(new Login(email, password), new Callback<ActiveSession>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -92,9 +83,7 @@ public class InactiveSession extends Session {
 	 */
 	public ActiveSession login(String email, String password) {
 		BumprAPI sessions = BumprClient.api();
-		HashMap<String, Login> map = new HashMap<String, Login>();
-		map.put("user_login", new Login(email, password));
-		ActiveSession session = sessions.login(map);
+		ActiveSession session = sessions.login(new Login(email, password));
 		Session.setSession(session);
 		return session;
 	}
