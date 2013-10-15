@@ -12,7 +12,6 @@ import com.llc.bumpr.sdk.lib.BumprClient;
 
 public class ActiveSession extends Session {
 
-	private User user;
 	private String authToken;
 	
 	public void logout(final Callback<InactiveSession> cb) {
@@ -45,59 +44,17 @@ public class ActiveSession extends Session {
 		sessions.request(authToken, request, cb);
 	}
 	
-	/**
-	 * Updates a user
-	 * @param user a User object with the changes to the user. This object should be built from the 
-	 * original user that you are attempting to update.
-	 * @param cb a Callback that returns the updated User object from the database.
-	 */
-	public void update(final User user, final Callback<User> cb) {
-		BumprAPI api = BumprClient.api();
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("user", user);
-		map.put("auth_token", authToken);
-		api.update(user.getId(), map, new Callback<User>() {
-
-			@Override
-			public void failure(RetrofitError arg0) {
-				cb.failure(arg0);
-			}
-
-			@Override
-			public void success(User user, Response response) {
-				if (user != null) {
-					Session session = Session.getSession();
-					if (session.getClass() == ActiveSession.class) {
-						((ActiveSession) session).getUser().update(user); 
-					}
-				}
-				cb.success(user, response);
-			}
-		});
-	}
 	
 	/*********************** Driver Method's ***********************/
 	
 	public boolean respondTo(Request request, Callback<String> cb) {
-		if (!isDriver()) return false;
 		
 		BumprAPI api = BumprClient.api();
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("request_id", new Integer(request.getId()));
-		map.put("response", new Boolean(request.getAccepted()));
-		api.respondTo(authToken, map, cb);
+		map.put("accepted", new Boolean(request.getAccepted()));
+		api.respondTo(authToken, request.getId(), map, cb);
 		
 		return true;
-	}
-	
-	/*********************** GETTERS *******************************/
-	
-	/**
-	 * Get the active user
-	 * @return a User object representing the active user
-	 */
-	public User getUser() {
-		return user;
 	}
 	
 	/**
@@ -109,8 +66,4 @@ public class ActiveSession extends Session {
 	}
 	
 	/*********************** Private Methods ***********************/
-
-	private boolean isDriver() {
-		return (user instanceof Driver);
-	}
 }

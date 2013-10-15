@@ -1,7 +1,16 @@
 package com.llc.bumpr.sdk.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import com.llc.bumpr.sdk.interfaces.BumprAPI;
+import com.llc.bumpr.sdk.lib.ApiRequest;
+import com.llc.bumpr.sdk.lib.BumprClient;
 
 public class User {
 	
@@ -15,21 +24,112 @@ public class User {
 	protected String profileImage;
 	protected String description;
 	protected String phoneNumber;
+	protected Driver driverProfile;
 	
 	protected List<Request> sentRequests = new ArrayList<Request>();
-			
+	
+	private static User activeUser = null;
+	
+	/************************** SINGLETON ************************/
+	
+	public static User getActiveUser() {
+		return activeUser;
+	}
+	
+	public static void setActiveUser(User user) {
+		activeUser = user;
+	}
+	
 	public Builder<User> getBuilder() {
 		return new Builder<User>(this);
 	}
 	
 	/*************************** API METHODS **********************/
 	
+	/************* STATIC ***************/
+	
+	public static ApiRequest getUser(final int id, final Callback<User> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String authToken) {
+				// TODO Auto-generated method stub
+				BumprAPI api = BumprClient.api();
+				api.get(id, cb);
+			}
+
+			@Override
+			public boolean needsAuth() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+		};
+	}
+	
+	/************* INSTANCE ***************/
+	
 	/**
-	 * Sends a request from the user
-	 * @param request
+	 * Updates a user
+	 * @param user a User object with the changes to the user. This object should be built from the 
+	 * original user that you are attempting to update.
+	 * @param cb a Callback that returns the updated User object from the database.
 	 */
-	public void request(Request request) {
+	public ApiRequest getUpdateRequest(final User user, final Callback<User> cb) {
 		
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String authToken) {
+				// TODO Auto-generated method stub
+				BumprAPI api = BumprClient.api();
+				api.update(id, user, new Callback<User>() {
+
+					@Override
+					public void failure(RetrofitError arg0) {
+						// TODO Auto-generated method stub
+						cb.failure(arg0);
+					}
+
+					@Override
+					public void success(User arg0, Response arg1) {
+						// TODO Auto-generated method stub
+						update(arg0);
+						cb.success(arg0, arg1);
+					}		
+				});
+			}
+
+			@Override
+			public boolean needsAuth() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+		};
+	}
+	
+	/**
+	 * Sends a request from the user to the driver
+	 * @param request
+	 * @return 
+	 */
+	public ApiRequest getDriverRequest(final Request request, final Callback<Request> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String authToken) {
+				// TODO Auto-generated method stub
+				BumprAPI api = BumprClient.api();
+				api.request(authToken, request, cb);
+			}
+
+			@Override
+			public boolean needsAuth() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+		};
 	}
 	
 	/*************************** SETTERS **************************/
@@ -132,15 +232,6 @@ public class User {
 	
 	public static class Builder<T extends User> {
 		private final T item;
-		
-		protected String firstName;
-		protected String lastName;
-		protected String city;
-		protected String state;
-		protected String email;
-		protected String profileImage;
-		protected String description;
-		protected String phoneNumber;
 		
 		public Builder(T item) { this.item = item; }
 		public Builder<T> setFirstName(String firstName) { item.firstName = firstName; return this; }
