@@ -1,5 +1,7 @@
 package com.llc.bumpr.sdk.models;
 
+import java.util.HashMap;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -48,9 +50,9 @@ public class Session {
 		return true;
 	}
 	
-	public void logout(final Callback<InactiveSession> cb) {
+	public void logout(final Callback<Response> cb) {
 		BumprAPI api = BumprClient.api();
-		api.logout(authToken, new Callback<InactiveSession>() {
+		api.logout(authToken, new Callback<Response>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -59,10 +61,10 @@ public class Session {
 			}
 
 			@Override
-			public void success(InactiveSession session, Response response) {
+			public void success(Response body, Response response) {
 				// TODO Auto-generated method stub
-				Session.setSession(session);
-				cb.success(session, response);
+				//Session.setSession(session);
+				//cb.success(session, response);
 			}
 			
 		});
@@ -78,9 +80,9 @@ public class Session {
 	 * @param passwordConfirmation The password confirmation of the user (This must match with password)
 	 * @return A new Session once a successful registration has been returned from the server
 	 */
-	public void register(Registration registration, final Callback<ActiveSession> cb) {
+	public void register(Registration registration, final Callback<HashMap<String, Object>> cb) {
 		BumprAPI api = BumprClient.api();
-		api.register(registration, new Callback<ActiveSession>() {
+		api.register(registration, new Callback<HashMap<String, Object>>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -89,10 +91,10 @@ public class Session {
 			}
 
 			@Override
-			public void success(ActiveSession session, Response response) {
+			public void success(HashMap<String, Object> session, Response response) {
 				// TODO Auto-generated method stub
-				Session.setSession(session);
-				cb.success(session, response);
+				//Session.setSession(session);
+				//cb.success(session, response);
 			}
 			
 		});
@@ -105,9 +107,9 @@ public class Session {
 	 * @param cb a callback method for implementation of failure and success. Note this callback returns 
 	 * the ActiveSession in the event that the login is successful. 
 	 */
-	public void login(String email, String password, final Callback<Session> cb) {
+	public void login(String email, String password, final Callback<HashMap<String, Object>> cb) {
 		BumprAPI api = BumprClient.api();
-		api.login(new Login(email, password), new Callback<ActiveSession>() {
+		api.login(new Login(email, password), new Callback<HashMap<String, Object>>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -116,10 +118,10 @@ public class Session {
 			}
 
 			@Override
-			public void success(ActiveSession session, Response response) {
+			public void success(HashMap<String, Object> body, Response response) {
 				// TODO Auto-generated method stub
-				Session.setSession(session);
-				cb.success(session, response);
+				//Session.setSession(session);
+				//cb.success(session, response);
 			}
 			
 		});

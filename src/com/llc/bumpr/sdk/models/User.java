@@ -30,7 +30,7 @@ public class User {
 	
 	private static User activeUser = null;
 	
-	/************************** SINGLETON ************************/
+	/************************** STATIC ************************/
 	
 	public static User getActiveUser() {
 		return activeUser;
@@ -39,6 +39,8 @@ public class User {
 	public static void setActiveUser(User user) {
 		activeUser = user;
 	}
+	
+	/*************************** INSTANCE *************************/
 	
 	public Builder<User> getBuilder() {
 		return new Builder<User>(this);

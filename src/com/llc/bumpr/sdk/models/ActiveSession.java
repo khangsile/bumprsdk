@@ -14,26 +14,6 @@ public class ActiveSession extends Session {
 
 	private String authToken;
 	
-	public void logout(final Callback<InactiveSession> cb) {
-		BumprAPI api = BumprClient.api();
-		api.logout(authToken, new Callback<InactiveSession>() {
-
-			@Override
-			public void failure(RetrofitError arg0) {
-				// TODO Auto-generated method stub
-				cb.failure(arg0);
-			}
-
-			@Override
-			public void success(InactiveSession session, Response response) {
-				// TODO Auto-generated method stub
-				Session.setSession(session);
-				cb.success(session, response);
-			}
-			
-		});
-	}
-	
 	/**
 	 * Sends a request to the server
 	 * @param request The request to the server
