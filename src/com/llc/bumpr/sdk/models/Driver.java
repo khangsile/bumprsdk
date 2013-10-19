@@ -5,27 +5,59 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
 
-public class Driver extends User {
-	
+/**
+ * A Driver class that represents the driver's profile.
+ * @author KhangSiLe
+ * @version 0.1
+ */
+public class Driver {
+	/**
+	 * The driver's balance (money)
+	 */
 	private double balance;
+	/**
+	 * The driver id (linked to the driver table)
+	 */
 	private int id;
+	/**
+	 * The driver license number
+	 */
 	private String licenseId;
+	/**
+	 * The driver insurance number
+	 */
 	private String insuranceId;
+	/**
+	 * A boolean indicating if the driver is a cab
+	 */
 	private boolean cab;
+	/**
+	 * A boolean if the driver has been authorized by us.
+	 */
 	private boolean trustworthy;
+	/**
+	 * A boolean if the driver is currently available to drive.
+	 */
 	private boolean status;
-	
+	/**
+	 * A List of Request objects that represents the requests to the driver
+	 */
 	private List<Request> requests = new ArrayList<Request>();
 	
 	/****************************** API ***********************************/
 	
 	/**
-	 * 
+	 * Respond to the given request.
+	 * @param request The request that the driver is responding to.
+	 * @param cb The Callback method that needs to be implemented when response is returned from the server
+	 * @return an ApiRequest object which can be sent to the session object to be executed.
 	 */
 	public ApiRequest respondToRequest(final Request request, final Callback<String> cb) {
 		return new ApiRequest() {
@@ -61,7 +93,7 @@ public class Driver extends User {
 	}
 	
 	/**
-	 * Adds a request to the requests list.
+	 * Adds a request to the requests list of the driver.
 	 * @param request a Request object to add to the requests list
 	 */
 	public void addRequest(Request request) {
@@ -77,7 +109,6 @@ public class Driver extends User {
 	 * @return the balance of the driver
 	 */
 	public double getBalance() {
-		
 		return balance;
 	}
 	

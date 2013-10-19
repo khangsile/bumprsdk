@@ -1,9 +1,24 @@
 package com.llc.bumpr.sdk.lib;
 
+import java.io.InputStream;
+import java.util.Scanner;
+
+import retrofit.RetrofitError;
+
+import com.google.gson.Gson;
+import com.llc.restrofit.Restrofit;
+
 public class BumprError {
 	
 	private int code;
 	private String message;
+	
+	public static BumprError errorToBumprError(RetrofitError e) throws Exception {
+		InputStream in = e.getResponse().getBody().in();
+        String json = new Scanner(in,"UTF-8").useDelimiter("\\A").next();
+        Gson gson = Restrofit.defaultGson();
+        return gson.fromJson(json, BumprError.class); 
+	}
 	
 	/**
 	 * Returns the error code of the the error. This correlates directly to the error listings

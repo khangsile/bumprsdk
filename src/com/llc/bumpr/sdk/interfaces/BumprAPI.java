@@ -16,6 +16,7 @@ import retrofit.http.Path;
 
 import com.llc.bumpr.sdk.models.Driver;
 import com.llc.bumpr.sdk.models.Login;
+import com.llc.bumpr.sdk.models.LoginResponse;
 import com.llc.bumpr.sdk.models.Registration;
 import com.llc.bumpr.sdk.models.Request;
 import com.llc.bumpr.sdk.models.SearchQuery;
@@ -24,10 +25,10 @@ import com.llc.bumpr.sdk.models.User;
 public interface BumprAPI {
 	
 	@POST ("/registrations.json")
-	public void register(@Body Registration user, Callback<HashMap<String, Object>> cb);
+	public void register(@Body Registration user, Callback<LoginResponse> cb);
 	
 	@POST ("/registrations.json")
-	public HashMap<String, Object> register(@Body Registration user);
+	public LoginResponse register(@Body Registration user);
 	
 	@POST ("/requests.json")
 	public void request(@Header("X-AUTH-TOKEN") String token, @Body Request request, Callback<Request> cb);
@@ -45,10 +46,10 @@ public interface BumprAPI {
 	public List<Driver> searchDrivers(@Body SearchQuery query);
 	
 	@POST ("/sessions.json")
-	public void login(@Body Login login, Callback<HashMap<String, Object>> cb);
+	public void login(@Body Login login, Callback<LoginResponse> cb);
 	
 	@POST ("/sessions.json")
-	public HashMap<String, Object> login(@Body Login login);
+	public LoginResponse login(@Body HashMap<String, Login> login);
 	
 	@DELETE ("/sessions.json")
 	public void logout(@Header("X-AUTH-TOKEN") String token, Callback<Response> cb);

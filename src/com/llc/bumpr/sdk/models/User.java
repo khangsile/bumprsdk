@@ -12,36 +12,85 @@ import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
 
+/**
+ * A User class that represents a User on the Bumpr network.
+ * @author KhangSiLe
+ * @version 0.1
+ */
 public class User {
-	
+	/**
+	 * The user's id in the database
+	 */
 	protected int id;
-	
+	/**
+	 * The user's first name
+	 */
 	protected String firstName;
+	/**
+	 * The user's last name
+	 */
 	protected String lastName;
+	/**
+	 * The user's current city (that they are living in)
+	 */
 	protected String city;
+	/**
+	 * The user's current state (that they are living in)
+	 */
 	protected String state;
+	/**
+	 * The user's email
+	 */
 	protected String email;
+	/**
+	 * The link the the user's profile image
+	 */
 	protected String profileImage;
+	/**
+	 * The description (provided by the user) of the user
+	 */
 	protected String description;
+	/**
+	 * The user's phone number
+	 */
 	protected String phoneNumber;
+	/**
+	 * The user's driver profile
+	 */
 	protected Driver driverProfile;
-	
+	/**
+	 * A List of Request objects that represent the requests that the user has sent out
+	 */
 	protected List<Request> sentRequests = new ArrayList<Request>();
-	
+	/**
+	 * A Singleton that represents the current user (on the device).
+	 */
 	private static User activeUser = null;
 	
 	/************************** STATIC ************************/
 	
+	/**
+	 * A Static method that gets the active user (one who is using the device)
+	 * @return a User object indicating the active user
+	 */
 	public static User getActiveUser() {
 		return activeUser;
 	}
 	
+	/**
+	 * A Static method to set the active user (one who is using the device)
+	 * @param user The user object that represents the active user
+	 */
 	public static void setActiveUser(User user) {
 		activeUser = user;
 	}
 	
 	/*************************** INSTANCE *************************/
 	
+	/**
+	 * Returns a Builder<User> object for the class. This allows you to create a new copy of the user instance.
+	 * @return A Builder<User> object for the class.
+	 */
 	public Builder<User> getBuilder() {
 		return new Builder<User>(this);
 	}

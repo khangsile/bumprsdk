@@ -80,9 +80,9 @@ public class Session {
 	 * @param passwordConfirmation The password confirmation of the user (This must match with password)
 	 * @return A new Session once a successful registration has been returned from the server
 	 */
-	public void register(Registration registration, final Callback<HashMap<String, Object>> cb) {
+	public void register(Registration registration, final Callback<User> cb) {
 		BumprAPI api = BumprClient.api();
-		api.register(registration, new Callback<HashMap<String, Object>>() {
+		api.register(registration, new Callback<LoginResponse>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -91,10 +91,10 @@ public class Session {
 			}
 
 			@Override
-			public void success(HashMap<String, Object> session, Response response) {
+			public void success(LoginResponse login, Response response) {
 				// TODO Auto-generated method stub
 				//Session.setSession(session);
-				//cb.success(session, response);
+				cb.success(login.getUser(), response);
 			}
 			
 		});
@@ -107,9 +107,9 @@ public class Session {
 	 * @param cb a callback method for implementation of failure and success. Note this callback returns 
 	 * the ActiveSession in the event that the login is successful. 
 	 */
-	public void login(String email, String password, final Callback<HashMap<String, Object>> cb) {
+	public void login(String email, String password, final Callback<User> cb) {
 		BumprAPI api = BumprClient.api();
-		api.login(new Login(email, password), new Callback<HashMap<String, Object>>() {
+		api.login(new Login(email, password), new Callback<LoginResponse>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -118,10 +118,10 @@ public class Session {
 			}
 
 			@Override
-			public void success(HashMap<String, Object> body, Response response) {
+			public void success(LoginResponse login, Response response) {
 				// TODO Auto-generated method stub
 				//Session.setSession(session);
-				//cb.success(session, response);
+				cb.success(login.getUser(), response);
 			}
 			
 		});
