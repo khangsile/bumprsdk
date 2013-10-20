@@ -6,13 +6,11 @@ import android.graphics.PointF;
 
 public class Trip {
 
-	private double fee;
 	private int id;
 	private int driverId;
-	private Date creationTime;
-	private Date startTime;
 	private PointF start;
 	private PointF end;
+	private double fee;
 	
 	public Trip(Builder builder) {
 		this.fee = builder.fee;
