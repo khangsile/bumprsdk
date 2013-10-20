@@ -17,6 +17,13 @@ public class Session {
 	private static Session activeSession = new Session();
 	
 	/**
+	 * TEMP
+	 */
+	public void setAuthToken(String token) {
+		this.authToken = token;
+	}
+	
+	/**
 	 * Get the active user session
 	 * @return a session object representing the active session 
 	 */
@@ -94,6 +101,7 @@ public class Session {
 			public void success(LoginResponse login, Response response) {
 				// TODO Auto-generated method stub
 				//Session.setSession(session);
+				authToken = login.getAuthToken();
 				cb.success(login.getUser(), response);
 			}
 			
@@ -121,6 +129,7 @@ public class Session {
 			public void success(LoginResponse login, Response response) {
 				// TODO Auto-generated method stub
 				//Session.setSession(session);
+				authToken = login.getAuthToken();
 				cb.success(login.getUser(), response);
 			}
 			

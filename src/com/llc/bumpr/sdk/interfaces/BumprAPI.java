@@ -30,6 +30,12 @@ public interface BumprAPI {
 	@POST ("/registrations.json")
 	public LoginResponse register(@Body Registration user);
 	
+	@POST ("/drivers.json")
+	public void registerDriver(@Header("X-AUTH-TOKEN") String token, Callback<Driver> cb);
+	
+	@POST ("/drivers.json")
+	public Driver registerDriver(@Header("X-AUTH-TOKEN") String token);
+	
 	@POST ("/requests.json")
 	public void request(@Header("X-AUTH-TOKEN") String token, @Body Request request, Callback<Request> cb);
 
@@ -49,7 +55,7 @@ public interface BumprAPI {
 	public void login(@Body Login login, Callback<LoginResponse> cb);
 	
 	@POST ("/sessions.json")
-	public LoginResponse login(@Body HashMap<String, Login> login);
+	public LoginResponse login(@Body Login login);
 	
 	@DELETE ("/sessions.json")
 	public void logout(@Header("X-AUTH-TOKEN") String token, Callback<Response> cb);
@@ -64,9 +70,9 @@ public interface BumprAPI {
 	public User get(@Path("id") int user_id);
 	
 	@PUT ("/users/{id}.json")
-	public void update(@Path("id") int userId, @Body User user, Callback<User> cb);
+	public void update(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user, Callback<User> cb);
 	
 	@PUT ("/users/{id}.json")
-	public User update(@Path("id") int userId, @Body User user);
+	public User update(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user);
 	
 }

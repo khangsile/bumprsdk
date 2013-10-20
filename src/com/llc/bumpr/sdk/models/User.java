@@ -84,17 +84,7 @@ public class User {
 	public static void setActiveUser(User user) {
 		activeUser = user;
 	}
-	
-	/*************************** INSTANCE *************************/
-	
-	/**
-	 * Returns a Builder<User> object for the class. This allows you to create a new copy of the user instance.
-	 * @return A Builder<User> object for the class.
-	 */
-	public Builder<User> getBuilder() {
-		return new Builder<User>(this);
-	}
-	
+		
 	/*************************** API METHODS **********************/
 	
 	/************* STATIC ***************/
@@ -126,7 +116,7 @@ public class User {
 	 * original user that you are attempting to update.
 	 * @param cb a Callback that returns the updated User object from the database.
 	 */
-	public ApiRequest getUpdateRequest(final User user, final Callback<User> cb) {
+	public ApiRequest getUpdateRequest(final HashMap<String, Object> user, final Callback<User> cb) {
 		
 		return new ApiRequest() {
 
@@ -134,7 +124,7 @@ public class User {
 			public void execute(String authToken) {
 				// TODO Auto-generated method stub
 				BumprAPI api = BumprClient.api();
-				api.update(id, user, new Callback<User>() {
+				api.update(authToken,id, user, new Callback<User>() {
 
 					@Override
 					public void failure(RetrofitError arg0) {
@@ -275,8 +265,19 @@ public class User {
 		return profileImage;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public List<Request> getSentRequests() {
 		return new ArrayList<Request>(sentRequests);
+	}
+	
+	/**
+	 * 
+	 */
+	public Driver getDriverProfile() {
+		return driverProfile;
 	}
 		
 	/****************************** BUILDER ************************************/

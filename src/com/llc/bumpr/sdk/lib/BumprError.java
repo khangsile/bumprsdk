@@ -12,12 +12,13 @@ public class BumprError {
 	
 	private int code;
 	private String message;
+	private String error;
 	
-	public static BumprError errorToBumprError(RetrofitError e) throws Exception {
+	public static String errorToBumprError(RetrofitError e) throws Exception {
 		InputStream in = e.getResponse().getBody().in();
-        String json = new Scanner(in,"UTF-8").useDelimiter("\\A").next();
-        Gson gson = Restrofit.defaultGson();
-        return gson.fromJson(json, BumprError.class); 
+        return new Scanner(in,"UTF-8").useDelimiter("\\A").next();
+        //Gson gson = Restrofit.defaultGson();
+        //return gson.fromJson(json, BumprError.class); 
 	}
 	
 	/**
@@ -35,5 +36,12 @@ public class BumprError {
 	 */
 	public String getMessage() {
 		return message;
+	}
+	
+	/**
+	 * Temp
+	 */
+	public String getError() {
+		return error;
 	}
 }
