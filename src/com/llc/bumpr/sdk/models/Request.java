@@ -2,7 +2,10 @@ package com.llc.bumpr.sdk.models;
 
 import java.util.Date;
 
-public class Request {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Request implements Parcelable {
 	private int id;
 	private int userId;
 	private int driverId;
@@ -23,6 +26,19 @@ public class Request {
 		this.userId = builder.userId;
 		this.driverId = builder.driverId;
 		this.trip = builder.trip;
+	}
+	
+	public Request(Parcel source) {
+		id = source.readInt();
+		userId = source.readInt();
+		driverId = source.readInt();
+		tripId = source.readInt();
+		timeSent = new Date(source.readLong());
+		timeAccepted = new Date(source.readLong());
+		confirmationCode = source.readString();
+		accepted = (source.readByte() != 0);
+		confirmed = (source.readByte() != 0);
+		trip = source.readParcelable(Trip.class.getClassLoader());
 	}
 	
 	/**
@@ -77,5 +93,44 @@ public class Request {
 			
 			return new Request(this);
 		}
+	}
+	
+	/***************************** PARCELABLE ********************************/
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		dest.writeInt(id);
+		dest.writeInt(userId);
+		dest.writeInt(driverId);
+		dest.writeInt(tripId);
+		dest.writeLong(timeSent.getTime());
+		dest.writeLong(timeAccepted.getTime());
+		dest.writeString(confirmationCode);
+		dest.writeByte((byte) (accepted ? 1 : 0));		
+		dest.writeByte((byte) (confirmed ? 1 : 0));
+		dest.writeParcelable(trip, 0);
+	}
+	
+	public class Creator implements Parcelable.Creator<Request> {
+
+		@Override
+		public Request createFromParcel(Parcel source) {
+			// TODO Auto-generated method stub
+			return new Request(source);
+		}
+
+		@Override
+		public Request[] newArray(int size) {
+			// TODO Auto-generated method stub
+			return new Request[size];
+		}
+		
 	}
 }

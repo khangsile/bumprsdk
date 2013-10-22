@@ -7,6 +7,8 @@ import java.util.List;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
@@ -17,7 +19,7 @@ import com.llc.bumpr.sdk.lib.BumprClient;
  * @author KhangSiLe
  * @version 0.1
  */
-public class User {
+public class User implements Parcelable {
 	/**
 	 * The user's id in the database
 	 */
@@ -84,11 +86,7 @@ public class User {
 	public static void setActiveUser(User user) {
 		activeUser = user;
 	}
-		
-	/*************************** API METHODS **********************/
-	
-	/************* STATIC ***************/
-	
+			
 	public static ApiRequest getUser(final int id, final Callback<User> cb) {
 		return new ApiRequest() {
 
@@ -109,6 +107,20 @@ public class User {
 	}
 	
 	/************* INSTANCE ***************/
+	
+	public User(Parcel source) {
+		id = source.readInt();
+		firstName = source.readString();
+		lastName = source.readString();
+		city = source.readString();
+		state = source.readString();
+		email = source.readString();
+		profileImage = source.readString();
+		description = source.readString();
+		phoneNumber = source.readString();
+		source.readList(sentRequests, Request.class.getClassLoader());
+		driverProfile = (Driver) source.readParcelable(Driver.class.getClassLoader());
+	}
 	
 	/**
 	 * Updates a user
@@ -176,6 +188,7 @@ public class User {
 	/*************************** SETTERS **************************/
 	
 	public void update(User user) {
+		this.id = user.getId();
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
 		this.city = user.getCity();
@@ -295,6 +308,46 @@ public class User {
 		public Builder<T> setDescription(String description) { item.description = description; return this; }
 		public Builder<T> setPhoneNumber(String phoneNumber) { item.phoneNumber = phoneNumber; return this; }
 		public T build() { return item; }
+	}
+
+	/*********************************** PARCELABLE *************************/
+	
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		dest.writeInt(id);
+		dest.writeString(firstName);
+		dest.writeString(lastName);
+		dest.writeString(city);
+		dest.writeString(state);
+		dest.writeString(email);
+		dest.writeString(profileImage);
+		dest.writeString(description);
+		dest.writeString(phoneNumber);
+		dest.writeList(sentRequests);
+		dest.writeParcelable(driverProfile, 0);
+	}
+	
+	public class Creator implements Parcelable.Creator<User> {
+
+		@Override
+		public User createFromParcel(Parcel source) {
+			// TODO Auto-generated method stub
+			return new User(source);
+		}
+
+		@Override
+		public User[] newArray(int size) {
+			// TODO Auto-generated method stub
+			return new User[size];
+		}
+		
 	}
 }
 

@@ -1,15 +1,16 @@
 package com.llc.bumpr.sdk.models;
 
-import java.util.Date;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import android.graphics.PointF;
+import com.llc.bumpr.sdk.lib.Coordinate;
 
-public class Trip {
+public class Trip implements Parcelable {
 
 	private int id;
 	private int driverId;
-	private PointF start;
-	private PointF end;
+	private Coordinate start;
+	private Coordinate end;
 	private double fee;
 	
 	public Trip(Builder builder) {
@@ -18,17 +19,25 @@ public class Trip {
 		this.end = builder.end;
 	}
 	
+	public Trip(Parcel source) {
+		id = source.readInt();
+		driverId = source.readInt();
+		start = source.readParcelable(Coordinate.class.getClassLoader());
+		end = source.readParcelable(Coordinate.class.getClassLoader());
+		fee = source.readDouble();
+	}
+	
 	/******************************** BUILDER **************************/
 	
 	public class Builder {
 		
 		private double fee;
-		private PointF start;
-		private PointF end;
+		private Coordinate start;
+		private Coordinate end;
 		
 		public Builder setFee(double fee) { this.fee = fee; return this; }
-		public Builder setStart(PointF start) { this.start = start; return this; }
-		public Builder setEnd(PointF end) { this.end = end; return this; }
+		public Builder setStart(Coordinate start) { this.start = start; return this; }
+		public Builder setEnd(Coordinate end) { this.end = end; return this; }
 		
 		public Trip build() throws Exception {
 			if (start == null || end == null) {
@@ -36,6 +45,39 @@ public class Trip {
 			}
 			
 			return new Trip(this);
+		}
+	}
+
+	/******************************* Parcelable ******************************/
+	
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		dest.writeInt(id);
+		dest.writeInt(driverId);
+		dest.writeParcelable(start, 0);
+		dest.writeParcelable(end, 0);
+		dest.writeDouble(fee);
+	}
+	
+	public class Creator implements Parcelable.Creator<Trip> {
+
+		@Override
+		public Trip createFromParcel(Parcel source) {
+			// TODO Auto-generated method stub
+			return new Trip(source);
+		}
+
+		@Override
+		public Trip[] newArray(int size) {
+			// TODO Auto-generated method stub
+			return new Trip[size];
 		}
 	}
 }

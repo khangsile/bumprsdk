@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
@@ -17,7 +18,7 @@ import com.llc.bumpr.sdk.lib.BumprClient;
  * @author KhangSiLe
  * @version 0.1
  */
-public class Driver {
+public class Driver implements Parcelable {
 	/**
 	 * The driver's balance (money)
 	 */
@@ -50,6 +51,15 @@ public class Driver {
 	 * A List of Request objects that represents the requests to the driver
 	 */
 	private List<Request> requests = new ArrayList<Request>();
+	
+	public Driver(Parcel source) {
+		id = source.readInt();
+		licenseId = source.readString();
+		insuranceId = source.readString();
+		balance = source.readDouble();
+		status = source.readByte() != 0;
+		source.readList(requests, Request.class.getClassLoader());
+	}
 	
 	/****************************** API ***********************************/
 	
@@ -154,6 +164,41 @@ public class Driver {
 		public Builder<T> setLicenseId(String licenseId) { item.licenseId = licenseId; return this; }
 		public Builder<T> setInsuranceId(String insuranceId) { item.insuranceId = insuranceId; return this; }
 		public T build() { return item; }
+	}
+
+	/********************** PARCELABLE *****************************/
+	
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		dest.writeInt(id);
+		dest.writeString(licenseId);
+		dest.writeString(insuranceId);
+		dest.writeDouble(balance);
+		dest.writeByte((byte) (status ? 1 : 0));
+		dest.writeList(requests);
+	}
+	
+	public class Creator implements Parcelable.Creator<Driver> {
+
+		@Override
+		public Driver createFromParcel(Parcel source) {
+			// TODO Auto-generated method stub
+			return new Driver(source);
+		}
+
+		@Override
+		public Driver[] newArray(int size) {
+			// TODO Auto-generated method stub
+			return new Driver[size];
+		}
+		
 	}
 	
 }

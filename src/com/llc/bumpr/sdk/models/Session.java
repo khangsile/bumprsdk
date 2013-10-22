@@ -1,7 +1,5 @@
 package com.llc.bumpr.sdk.models;
 
-import java.util.HashMap;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -100,7 +98,7 @@ public class Session {
 			@Override
 			public void success(LoginResponse login, Response response) {
 				// TODO Auto-generated method stub
-				//Session.setSession(session);
+				User.setActiveUser(login.getUser());
 				authToken = login.getAuthToken();
 				cb.success(login.getUser(), response);
 			}
@@ -128,7 +126,7 @@ public class Session {
 			@Override
 			public void success(LoginResponse login, Response response) {
 				// TODO Auto-generated method stub
-				//Session.setSession(session);
+				User.setActiveUser(login.getUser());
 				authToken = login.getAuthToken();
 				cb.success(login.getUser(), response);
 			}
