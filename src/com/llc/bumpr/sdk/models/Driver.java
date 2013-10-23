@@ -185,8 +185,7 @@ public class Driver implements Parcelable {
 		dest.writeList(requests);
 	}
 	
-	public class Creator implements Parcelable.Creator<Driver> {
-
+	public static final Parcelable.Creator<Driver> CREATOR = new Parcelable.Creator<Driver>() {
 		@Override
 		public Driver createFromParcel(Parcel source) {
 			// TODO Auto-generated method stub
@@ -199,6 +198,6 @@ public class Driver implements Parcelable {
 			return new Driver[size];
 		}
 		
-	}
+	};
 	
 }

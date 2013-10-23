@@ -20,53 +20,29 @@ import com.llc.bumpr.sdk.lib.BumprClient;
  * @version 0.1
  */
 public class User implements Parcelable {
-	/**
-	 * The user's id in the database
-	 */
+	/** The user's id in the database */
 	protected int id;
-	/**
-	 * The user's first name
-	 */
+	/** The user's first name */
 	protected String firstName;
-	/**
-	 * The user's last name
-	 */
+	/** The user's last name */
 	protected String lastName;
-	/**
-	 * The user's current city (that they are living in)
-	 */
+	/** The user's current city (that they are living in) */
 	protected String city;
-	/**
-	 * The user's current state (that they are living in)
-	 */
+	/** The user's current state (that they are living in) */
 	protected String state;
-	/**
-	 * The user's email
-	 */
+	/** The user's email */
 	protected String email;
-	/**
-	 * The link the the user's profile image
-	 */
+	/** The link the the user's profile image */
 	protected String profileImage;
-	/**
-	 * The description (provided by the user) of the user
-	 */
+	/** The description (provided by the user) of the user */
 	protected String description;
-	/**
-	 * The user's phone number
-	 */
+	/** The user's phone number */
 	protected String phoneNumber;
-	/**
-	 * The user's driver profile
-	 */
+	/** The user's driver profile */
 	protected Driver driverProfile;
-	/**
-	 * A List of Request objects that represent the requests that the user has sent out
-	 */
+	/** A List of Request objects that represent the requests that the user has sent out */
 	protected List<Request> sentRequests = new ArrayList<Request>();
-	/**
-	 * A Singleton that represents the current user (on the device).
-	 */
+	/** A Singleton that represents the current user (on the device). */
 	private static User activeUser = null;
 	
 	/************************** STATIC ************************/
@@ -108,18 +84,12 @@ public class User implements Parcelable {
 	
 	/************* INSTANCE ***************/
 	
+	protected User() {
+		
+	}
+	
 	public User(Parcel source) {
-		id = source.readInt();
-		firstName = source.readString();
-		lastName = source.readString();
-		city = source.readString();
-		state = source.readString();
-		email = source.readString();
-		profileImage = source.readString();
-		description = source.readString();
-		phoneNumber = source.readString();
-		source.readList(sentRequests, Request.class.getClassLoader());
-		driverProfile = (Driver) source.readParcelable(Driver.class.getClassLoader());
+		readFromParcel(source);
 	}
 	
 	/**
@@ -334,7 +304,21 @@ public class User implements Parcelable {
 		dest.writeParcelable(driverProfile, 0);
 	}
 	
-	public class Creator implements Parcelable.Creator<User> {
+	public void readFromParcel(Parcel source) {
+		id = source.readInt();
+		firstName = source.readString();
+		lastName = source.readString();
+		city = source.readString();
+		state = source.readString();
+		email = source.readString();
+		profileImage = source.readString();
+		description = source.readString();
+		phoneNumber = source.readString();
+		source.readList(sentRequests, Request.class.getClassLoader());
+		driverProfile = (Driver) source.readParcelable(Driver.class.getClassLoader());
+	}
+	
+	public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
 
 		@Override
 		public User createFromParcel(Parcel source) {
@@ -348,6 +332,6 @@ public class User implements Parcelable {
 			return new User[size];
 		}
 		
-	}
+	};
 }
 

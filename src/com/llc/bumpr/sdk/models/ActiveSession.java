@@ -3,11 +3,8 @@ package com.llc.bumpr.sdk.models;
 import java.util.HashMap;
 
 import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
-import com.llc.bumpr.sdk.interfaces.Users;
 import com.llc.bumpr.sdk.lib.BumprClient;
 
 public class ActiveSession extends Session {

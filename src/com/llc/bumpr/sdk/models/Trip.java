@@ -66,7 +66,7 @@ public class Trip implements Parcelable {
 		dest.writeDouble(fee);
 	}
 	
-	public class Creator implements Parcelable.Creator<Trip> {
+	public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {
 
 		@Override
 		public Trip createFromParcel(Parcel source) {
@@ -79,5 +79,5 @@ public class Trip implements Parcelable {
 			// TODO Auto-generated method stub
 			return new Trip[size];
 		}
-	}
+	};
 }

@@ -27,7 +27,7 @@ public class Coordinate implements Parcelable {
 		dest.writeFloat(latitude);
 	}
 	
-	public class Creator implements Parcelable.Creator<Coordinate> {
+	public static final Parcelable.Creator<Coordinate> CREATOR = new Parcelable.Creator<Coordinate>() {
 
 		@Override
 		public Coordinate createFromParcel(Parcel source) {
@@ -41,5 +41,5 @@ public class Coordinate implements Parcelable {
 			return new Coordinate[size];
 		}
 		
-	}
+	};
 }

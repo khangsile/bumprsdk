@@ -3,7 +3,6 @@ package com.llc.bumpr.sdk.lib;
 import retrofit.RestAdapter;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
-import com.llc.bumpr.sdk.interfaces.Users;
 import com.llc.restrofit.Restrofit;
 
 public class BumprClient {

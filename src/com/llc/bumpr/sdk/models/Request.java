@@ -118,8 +118,7 @@ public class Request implements Parcelable {
 		dest.writeParcelable(trip, 0);
 	}
 	
-	public class Creator implements Parcelable.Creator<Request> {
-
+	public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() {
 		@Override
 		public Request createFromParcel(Parcel source) {
 			// TODO Auto-generated method stub
@@ -132,5 +131,5 @@ public class Request implements Parcelable {
 			return new Request[size];
 		}
 		
-	}
+	};
 }
