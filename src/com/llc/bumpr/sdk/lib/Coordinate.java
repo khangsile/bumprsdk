@@ -7,6 +7,11 @@ public class Coordinate implements Parcelable {
 	public float latitude;
 	public float longitude;
 	
+	public Coordinate(float longitude, float latitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
+	
 	public Coordinate(Parcel source) {
 		longitude = source.readFloat();
 		latitude = source.readFloat();

@@ -14,11 +14,11 @@ public class BumprError {
 	private String message;
 	private String error;
 	
-	public static String errorToBumprError(RetrofitError e) throws Exception {
+	public static BumprError errorToBumprError(RetrofitError e) throws Exception {
 		InputStream in = e.getResponse().getBody().in();
-        return new Scanner(in,"UTF-8").useDelimiter("\\A").next();
-        //Gson gson = Restrofit.defaultGson();
-        //return gson.fromJson(json, BumprError.class); 
+        String json = new Scanner(in,"UTF-8").useDelimiter("\\A").next();
+        Gson gson = Restrofit.defaultGson();
+        return gson.fromJson(json, BumprError.class); 
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class BumprError {
 	}
 	
 	/**
-	 * Temp
+	 * return the error in the form of a string
 	 */
 	public String getError() {
 		return error;

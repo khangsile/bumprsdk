@@ -7,12 +7,17 @@ import com.llc.restrofit.Restrofit;
 
 public class BumprClient {
 	
-	private static final String baseURL = "http://bumpr.herokuapp.com/api/v1";
+	private static String baseURL = "http://bumpr.herokuapp.com/api/v1";
 	private static Restrofit rest; 
 	
 	private static RestAdapter sharedAdapter() {
 		return (Restrofit.sharedAdapter() != null) ? 
 			Restrofit.sharedAdapter() : Restrofit.defaultAdapter(baseURL);
+	}
+	
+	public static RestAdapter setBaseURL(String baseURL) {
+		BumprClient.baseURL = baseURL;
+		return Restrofit.defaultAdapter(baseURL);
 	}
 	
 	public static BumprAPI api() {

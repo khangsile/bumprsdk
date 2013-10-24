@@ -15,7 +15,7 @@ public class Session {
 	private static Session activeSession = new Session();
 	
 	/**
-	 * TEMP
+	 * Temp for testing
 	 */
 	public void setAuthToken(String token) {
 		this.authToken = token;
@@ -57,22 +57,7 @@ public class Session {
 	
 	public void logout(final Callback<Response> cb) {
 		BumprAPI api = BumprClient.api();
-		api.logout(authToken, new Callback<Response>() {
-
-			@Override
-			public void failure(RetrofitError arg0) {
-				// TODO Auto-generated method stub
-				cb.failure(arg0);
-			}
-
-			@Override
-			public void success(Response body, Response response) {
-				// TODO Auto-generated method stub
-				//Session.setSession(session);
-				//cb.success(session, response);
-			}
-			
-		});
+		api.logout(authToken, cb);
 	}
 	
 	/**
@@ -133,9 +118,7 @@ public class Session {
 			
 		});
 	}
-	
-	/*********************** Driver Method's ***********************/
-	
+		
 	/*********************** GETTERS *****************************/
 	
 	/**

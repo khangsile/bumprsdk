@@ -43,7 +43,6 @@ public class Request implements Parcelable {
 	
 	/**
 	 * Answers the request sent to the user giving the option to accept or deny the request.
-	 * 
 	 * @param accept A boolean indicating whether the request was accepted or denied
 	 */
 	public void answerRequest(boolean accept) {
@@ -53,7 +52,6 @@ public class Request implements Parcelable {
 	/**
 	 * Confirms if the request has been completed by matching the inputed confirmation code to the one give
 	 * to the passenger.
-	 * 
 	 * @param confirmationCode The confirmation code given by the passenger. If this matches, then the request 
 	 * has been completed.
 	 * @return a boolean indicating if the confirmation was successful.
@@ -74,7 +72,7 @@ public class Request implements Parcelable {
 	
 	/*************************** BUILDER ****************************/
 	
-	public class Builder {
+	public static class Builder {
 		
 		private int id;
 		private int userId;
@@ -86,9 +84,9 @@ public class Request implements Parcelable {
 		public Builder setDriverId(int driverId) { this.driverId = driverId; return this; }
 		public Builder setTrip(Trip trip) { this.trip = trip; return this; }
 		
-		public Request build() throws Exception {
-			if (id < 1 || userId < 1 || driverId < 1 || trip == null) {
-				throw new Exception("Invalid Request state: missing parameters");
+		public Request build() {
+			if (userId < 1 || driverId < 1 || trip == null) {
+				throw new IllegalStateException("Invalid Request state: missing parameters");
 			}
 			
 			return new Request(this);

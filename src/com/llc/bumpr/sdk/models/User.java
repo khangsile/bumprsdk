@@ -84,10 +84,16 @@ public class User implements Parcelable {
 	
 	/************* INSTANCE ***************/
 	
-	protected User() {
-		
+	/**
+	 * Constructor (for Registration.Builder)
+	 */
+	public User() {	
 	}
 	
+	/**
+	 * Constructor for implementing User as a Parcelable
+	 * @param source The parcel from which we can read the information
+	 */
 	public User(Parcel source) {
 		readFromParcel(source);
 	}
@@ -99,7 +105,6 @@ public class User implements Parcelable {
 	 * @param cb a Callback that returns the updated User object from the database.
 	 */
 	public ApiRequest getUpdateRequest(final HashMap<String, Object> user, final Callback<User> cb) {
-		
 		return new ApiRequest() {
 
 			@Override
@@ -134,7 +139,7 @@ public class User implements Parcelable {
 	/**
 	 * Sends a request from the user to the driver
 	 * @param request
-	 * @return 
+	 * @return an ApiRequest object/interface to be given to the session
 	 */
 	public ApiRequest getDriverRequest(final Request request, final Callback<Request> cb) {
 		return new ApiRequest() {
@@ -157,7 +162,15 @@ public class User implements Parcelable {
 	
 	/*************************** SETTERS **************************/
 	
+	/**
+	 * Update a user from another user.
+	 * @param user the User from which the data is transferred over
+	 */
 	public void update(User user) {
+		if (user == null) {
+			throw new IllegalArgumentException("Object (User) is null");
+		}
+		
 		this.id = user.getId();
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
@@ -169,7 +182,15 @@ public class User implements Parcelable {
 		this.phoneNumber = user.getPhoneNumber();
 	}
 	
+	/**
+	 * Add a request to the user's list of sent requests
+	 * @param request The request to be added to the list
+	 */
 	public void addRequest(Request request) {
+		if (request == null) {
+			throw new IllegalArgumentException("Object (Request) is null");
+		}
+		
 		if (sentRequests == null) sentRequests = new ArrayList<Request>();
 		sentRequests.add(request);
 	}
@@ -249,15 +270,15 @@ public class User implements Parcelable {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Return the users list of requests
+	 * @return returns a copy of the list of sent requests
 	 */
 	public List<Request> getSentRequests() {
 		return new ArrayList<Request>(sentRequests);
 	}
 	
 	/**
-	 * 
+	 * @return the user's driver profile information in the form of a driver object
 	 */
 	public Driver getDriverProfile() {
 		return driverProfile;

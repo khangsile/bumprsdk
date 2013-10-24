@@ -7,18 +7,31 @@ import com.llc.bumpr.sdk.lib.Coordinate;
 
 public class Trip implements Parcelable {
 
+	/** The id of the trip */
 	private int id;
+	/** The driverId that the trip belongs to */
 	private int driverId;
+	/** The start of the trip */
 	private Coordinate start;
+	/** The end of the trip */
 	private Coordinate end;
+	/** The trip's fee */
 	private double fee;
 	
-	public Trip(Builder builder) {
+	/**
+	 * Private constructor for the trip
+	 * @param builder A builder class that builds the Trip
+	 */
+	private Trip(Builder builder) {
 		this.fee = builder.fee;
 		this.start = builder.start;
 		this.end = builder.end;
 	}
 	
+	/**
+	 * Constructor for implementing parcelable objects
+	 * @param source The parcel containing the data for the trip
+	 */
 	public Trip(Parcel source) {
 		id = source.readInt();
 		driverId = source.readInt();
