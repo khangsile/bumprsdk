@@ -66,8 +66,16 @@ public class Request implements Parcelable {
 		return id;
 	}
 	
+	public int getDriverId() {
+		return driverId;
+	}
+	
 	public boolean getAccepted() {
 		return accepted;
+	}
+	
+	public Trip getTrip() {
+		return trip;
 	}
 	
 	/*************************** BUILDER ****************************/

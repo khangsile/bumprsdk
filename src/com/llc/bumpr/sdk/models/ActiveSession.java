@@ -11,17 +11,6 @@ public class ActiveSession extends Session {
 
 	private String authToken;
 	
-	/**
-	 * Sends a request to the server
-	 * @param request The request to the server
-	 * @param cb A Callback for when the response body is returned 
-	 */
-	public void request(Request request, final Callback<Request> cb) {
-		BumprAPI sessions = BumprClient.api();
-		sessions.request(authToken, request, cb);
-	}
-	
-	
 	/*********************** Driver Method's ***********************/
 	
 	public boolean respondTo(Request request, Callback<String> cb) {

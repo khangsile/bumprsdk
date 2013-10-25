@@ -19,16 +19,12 @@ import com.llc.bumpr.sdk.models.Login;
 import com.llc.bumpr.sdk.models.LoginResponse;
 import com.llc.bumpr.sdk.models.Registration;
 import com.llc.bumpr.sdk.models.Request;
+import com.llc.bumpr.sdk.models.Review;
 import com.llc.bumpr.sdk.models.SearchQuery;
+import com.llc.bumpr.sdk.models.Trip;
 import com.llc.bumpr.sdk.models.User;
 
 public interface BumprAPI {
-	
-	@POST ("/registrations.json")
-	public void register(@Body Registration user, Callback<LoginResponse> cb);
-	
-	@POST ("/registrations.json")
-	public LoginResponse register(@Body Registration user);
 	
 	@POST ("/drivers.json")
 	public void registerDriver(@Header("X-AUTH-TOKEN") String token, Callback<Driver> cb);
@@ -36,11 +32,23 @@ public interface BumprAPI {
 	@POST ("/drivers.json")
 	public Driver registerDriver(@Header("X-AUTH-TOKEN") String token);
 	
-	@POST ("/requests.json")
-	public void request(@Header("X-AUTH-TOKEN") String token, @Body Request request, Callback<Request> cb);
+	@POST ("/drivers/{id}/driver_review.json")
+	public void createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body Review review, Callback<Response> cb);
+	
+	@POST ("/drivers/{id}/driver_review.json")
+	public Response createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body Review review);
+	
+	@POST ("/users.json")
+	public void register(@Body Registration user, Callback<LoginResponse> cb);
+	
+	@POST ("/users.json")
+	public LoginResponse register(@Body Registration user);
+	
+	@POST ("/drivers/{id}/requests.json")
+	public void request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Trip trip, Callback<Request> cb);
 
-	@POST ("/requests.json")
-	public Request request(@Header("X-AUTH-TOKEN") String token, @Body Request request);
+	@POST ("/drivers/{id}/requests.json")
+	public Request request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Trip trip);
 	
 	@PUT ("/requests/{id}.json")
 	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Map<String, Object> map, Callback<String> cb);

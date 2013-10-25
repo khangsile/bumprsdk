@@ -141,14 +141,14 @@ public class User implements Parcelable {
 	 * @param request
 	 * @return an ApiRequest object/interface to be given to the session
 	 */
-	public ApiRequest getDriverRequest(final Request request, final Callback<Request> cb) {
+	public ApiRequest getRequestRequest(final Request request, final Callback<Request> cb) {
 		return new ApiRequest() {
 
 			@Override
 			public void execute(String authToken) {
 				// TODO Auto-generated method stub
 				BumprAPI api = BumprClient.api();
-				api.request(authToken, request, cb);
+				api.request(authToken, request.getId(), request.getTrip(), cb);
 			}
 
 			@Override

@@ -42,7 +42,7 @@ public class Trip implements Parcelable {
 	
 	/******************************** BUILDER **************************/
 	
-	public class Builder {
+	public static class Builder {
 		
 		private double fee;
 		private Coordinate start;
@@ -52,9 +52,9 @@ public class Trip implements Parcelable {
 		public Builder setStart(Coordinate start) { this.start = start; return this; }
 		public Builder setEnd(Coordinate end) { this.end = end; return this; }
 		
-		public Trip build() throws Exception {
+		public Trip build() {
 			if (start == null || end == null) {
-				throw new Exception("Invalid Trip state: Trip missing parameters");
+				throw new IllegalArgumentException("Invalid Trip state: Trip missing parameters");
 			}
 			
 			return new Trip(this);

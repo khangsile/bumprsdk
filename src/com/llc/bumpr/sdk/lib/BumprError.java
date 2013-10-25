@@ -15,10 +15,14 @@ public class BumprError {
 	private String error;
 	
 	public static BumprError errorToBumprError(RetrofitError e) throws Exception {
-		InputStream in = e.getResponse().getBody().in();
-        String json = new Scanner(in,"UTF-8").useDelimiter("\\A").next();
+		String json = BumprError.errorToString(e);
         Gson gson = Restrofit.defaultGson();
         return gson.fromJson(json, BumprError.class); 
+	}
+	
+	public static String errorToString(RetrofitError e) throws Exception {
+		InputStream in = e.getResponse().getBody().in();
+        return new Scanner(in,"UTF-8").useDelimiter("\\A").next();
 	}
 	
 	/**
