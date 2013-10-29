@@ -38,12 +38,6 @@ public interface BumprAPI {
 	@POST ("/drivers/{id}/driver_review.json")
 	public Response createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body Review review);
 	
-	@POST ("/users.json")
-	public void register(@Body Registration user, Callback<LoginResponse> cb);
-	
-	@POST ("/users.json")
-	public LoginResponse register(@Body Registration user);
-	
 	@POST ("/drivers/{id}/requests.json")
 	public void request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Trip trip, Callback<Request> cb);
 
@@ -76,6 +70,12 @@ public interface BumprAPI {
 	
 	@GET("/users/{id}.json")
 	public User get(@Path("id") int user_id);
+
+	@POST ("/users.json")
+	public void register(@Body Registration user, Callback<LoginResponse> cb);
+	
+	@POST ("/users.json")
+	public LoginResponse register(@Body Registration user);
 	
 	@PUT ("/users/{id}.json")
 	public void update(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user, Callback<User> cb);
