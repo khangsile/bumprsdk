@@ -4,12 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Coordinate implements Parcelable {
-	public float latitude;
-	public float longitude;
+	public double latitude;
+	public double longitude;
 	
-	public Coordinate(float longitude, float latitude) {
-		this.latitude = latitude;
+	public Coordinate(double longitude, double latitude) {
 		this.longitude = longitude;
+		this.latitude = latitude;
 	}
 	
 	public Coordinate(Parcel source) {
@@ -28,8 +28,8 @@ public class Coordinate implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		// TODO Auto-generated method stub
-		dest.writeFloat(longitude);
-		dest.writeFloat(latitude);
+		dest.writeDouble(longitude);
+		dest.writeDouble(latitude);
 	}
 	
 	public static final Parcelable.Creator<Coordinate> CREATOR = new Parcelable.Creator<Coordinate>() {

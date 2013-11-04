@@ -2,23 +2,40 @@ package com.llc.bumpr.sdk.models;
 
 import java.util.Date;
 
+import retrofit.Callback;
+
+import com.llc.bumpr.sdk.interfaces.BumprAPI;
+import com.llc.bumpr.sdk.lib.ApiRequest;
+import com.llc.bumpr.sdk.lib.BumprClient;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ *
+ * @author KhangSiLe
+ *
+ */
 public class Request implements Parcelable {
+	/** The id of the request */
 	private int id;
+	/** The id of the passenger */
 	private int userId;
+	/** The id of the driver */
 	private int driverId;
+	/** The id of the trip */
 	private int tripId;
-	
+	/** The date time that the request was sent */
 	private Date timeSent;
+	/** The time the request was accepted */
 	private Date timeAccepted;
-	
+	/** The confirmation code of the request */
 	private String confirmationCode;
-	
+	/** A boolean denoting if the request was accepted (or not). True for yes/False for no. */
 	private boolean accepted;
+	/** A boolean denoting if the correct confirmation code was delivered. */
 	private boolean confirmed;
-	
+	/** The trip of the request */
 	private Trip trip;
 	
 	public Request(Builder builder) {
@@ -39,6 +56,27 @@ public class Request implements Parcelable {
 		accepted = (source.readByte() != 0);
 		confirmed = (source.readByte() != 0);
 		trip = source.readParcelable(Trip.class.getClassLoader());
+	}
+	
+	/**
+	 * Sends a request from the user to the driver
+	 * @param request
+	 * @return an ApiRequest object/interface to be given to the session
+	 */
+	public ApiRequest getPostRequest(final Request request, final Callback<Request> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String authToken) {
+				BumprAPI api = BumprClient.api();
+				api.request(authToken, request.getId(), request.getTrip(), cb);
+			}
+
+			@Override
+			public boolean needsAuth() {
+				return true;
+			}
+		};
 	}
 	
 	/**

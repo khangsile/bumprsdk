@@ -1,7 +1,6 @@
 package com.llc.bumpr.sdk.interfaces;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -13,7 +12,9 @@ import retrofit.http.Header;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
+import com.llc.bumpr.sdk.lib.Coordinate;
 import com.llc.bumpr.sdk.models.Driver;
 import com.llc.bumpr.sdk.models.Login;
 import com.llc.bumpr.sdk.models.LoginResponse;
@@ -44,20 +45,39 @@ public interface BumprAPI {
 	@POST ("/drivers/{id}/requests.json")
 	public Request request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Trip trip);
 	
+	/**
+	 * search drivers method. currently Retrofit does not support variable-query params
+	 */
+	@GET ("/drivers.json")
+	public void searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, @Query("right") double right, Callback<Response> cb);
+	
+	@GET ("/drivers.json")
+	public void searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, 
+			@Query("right") double right, @Query("min_fee") double minFee, @Query("min_seats") int minSeats, Callback<Response> cb);
+	
+	@GET ("/drivers.json")
+	public Response searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, @Query("right") double right);
+	
+	@PUT ("/drivers/{id}/update_location.json")
+	public void updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordiante, Callback<Response> cb);
+	
+	@PUT ("/drivers/{id}/update_location.json")
+	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordinate);
+	
 	@PUT ("/requests/{id}.json")
-	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Map<String, Object> map, Callback<String> cb);
-
-	@POST ("/search.json")
-	public void searchDrivers(@Body SearchQuery query, Callback<List<Driver>> cb);
-
-	@POST ("/search.json")
-	public List<Driver> searchDrivers(@Body SearchQuery query);
+	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Map<String, Object> map, Callback<Response> cb);
 	
 	@POST ("/sessions.json")
 	public void login(@Body Login login, Callback<LoginResponse> cb);
 	
 	@POST ("/sessions.json")
 	public LoginResponse login(@Body Login login);
+	
+	@POST ("/sessions.json")
+	public void login(@Body HashMap<String, Object> login, Callback<LoginResponse> cb);
+	
+	@POST ("/sessions.json")
+	public LoginResponse login(@Body HashMap<String, Object> login);
 	
 	@DELETE ("/sessions.json")
 	public void logout(@Header("X-AUTH-TOKEN") String token, Callback<Response> cb);

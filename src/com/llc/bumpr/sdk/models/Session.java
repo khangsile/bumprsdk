@@ -1,5 +1,7 @@
 package com.llc.bumpr.sdk.models;
 
+import java.util.HashMap;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -118,7 +120,41 @@ public class Session {
 			
 		});
 	}
+	
+	/**
+	 * method which logs a User in to the Bumpr network
+	 * @param email the email of the user
+	 * @param password the password of the user
+	 * @param gcmRegistrationId the GCM Registration Id for the phone
+	 * @param cb a callback method for implementation of failure and success. Note this callback returns 
+	 * the ActiveSession in the event that the login is successful. 
+	 */
+	public void login(String email, String password, String gcmRegistrationId, final Callback<User> cb) {
+		BumprAPI api = BumprClient.api();
 		
+		HashMap<String, Object> login = new HashMap<String, Object>();
+		login.put("email", email);
+		login.put("password", password);
+		login.put("registration_id", gcmRegistrationId);
+		
+		api.login(login, new Callback<LoginResponse>() {
+
+			@Override
+			public void failure(RetrofitError arg0) {
+				// TODO Auto-generated method stub
+				cb.failure(arg0);
+			}
+
+			@Override
+			public void success(LoginResponse login, Response response) {
+				// TODO Auto-generated method stub
+				User.setActiveUser(login.getUser());
+				authToken = login.getAuthToken();
+				cb.success(login.getUser(), response);
+			}
+		});		
+	}
+	
 	/*********************** GETTERS *****************************/
 	
 	/**

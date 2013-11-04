@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -13,6 +17,7 @@ import android.os.Parcelable;
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
+import com.llc.restrofit.ResponseConverter;
 
 /**
  * A User class that represents a User on the Bumpr network.
@@ -62,20 +67,70 @@ public class User implements Parcelable {
 	public static void setActiveUser(User user) {
 		activeUser = user;
 	}
-			
+	
+	private static User jsonToUser(JSONObject json) throws JSONException {
+		User user = new User(json.getJSONObject("user"));
+		Driver driver = new Driver(json);
+		return new User.Builder<User>(user).setDriverProfile(driver).build();
+	}
+		
+	/**
+	 * A Static method to get information of a user
+	 * @param id The id of the user to look up
+	 * @param cb A Callback for on success or failure of the call
+	 * @return an ApiRequest object to be sent to the Session.execute
+	 */
 	public static ApiRequest getUser(final int id, final Callback<User> cb) {
 		return new ApiRequest() {
 
 			@Override
 			public void execute(String authToken) {
-				// TODO Auto-generated method stub
 				BumprAPI api = BumprClient.api();
 				api.get(id, cb);
 			}
 
 			@Override
 			public boolean needsAuth() {
-				// TODO Auto-generated method stub
+				return false;
+			}
+			
+		};
+	}
+	
+	public static ApiRequest searchDrivers(final SearchQuery query, final Callback<List<User>> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String authToken) {
+				BumprAPI api = BumprClient.api();
+				api.searchDrivers(query.getTopRight().longitude, query.getBottomLeft().latitude, 
+						query.getBottomLeft().longitude, query.getTopRight().latitude, query.getMinFee(), query.getMinSeats(),
+						new Callback<Response>() {
+
+							@Override
+							public void failure(RetrofitError arg0) {
+								cb.failure(arg0);
+							}
+
+							@Override
+							public void success(Response arg0, Response arg1) {
+								try {
+									JSONArray array = ResponseConverter.responseToJSONArray(arg0);
+									ArrayList<User> list = new ArrayList<User>();
+									for(int i=0; i<array.length(); i++) {
+										JSONObject object = array.getJSONObject(i);
+										list.add(User.jsonToUser(object));
+									}
+									cb.success(list, arg1);
+								} catch (Exception e) {
+									cb.failure(null);
+								}
+							}
+				});
+			}
+
+			@Override
+			public boolean needsAuth() {
 				return false;
 			}
 			
@@ -88,6 +143,15 @@ public class User implements Parcelable {
 	 * Constructor (for Registration.Builder)
 	 */
 	public User() {	
+	}
+	
+	/**
+	 * Constructor for creating user from JSON
+	 */
+	public User(JSONObject user) throws JSONException{
+		id = user.getInt("id");
+		firstName = user.getString("first_name");
+		lastName = user.getString("last_name");
 	}
 	
 	/**
@@ -109,19 +173,16 @@ public class User implements Parcelable {
 
 			@Override
 			public void execute(String authToken) {
-				// TODO Auto-generated method stub
 				BumprAPI api = BumprClient.api();
 				api.update(authToken,id, user, new Callback<User>() {
 
 					@Override
 					public void failure(RetrofitError arg0) {
-						// TODO Auto-generated method stub
 						cb.failure(arg0);
 					}
 
 					@Override
 					public void success(User arg0, Response arg1) {
-						// TODO Auto-generated method stub
 						update(arg0);
 						cb.success(arg0, arg1);
 					}		
@@ -130,42 +191,10 @@ public class User implements Parcelable {
 
 			@Override
 			public boolean needsAuth() {
-				// TODO Auto-generated method stub
 				return true;
 			}
 		};
 	}
-	
-	/**
-	 * Sends a request from the user to the driver
-	 * @param request
-	 * @return an ApiRequest object/interface to be given to the session
-	 */
-	public ApiRequest getSendRequestRequest(final Request request, final Callback<Request> cb) {
-		return new ApiRequest() {
-
-			@Override
-			public void execute(String authToken) {
-				// TODO Auto-generated method stub
-				BumprAPI api = BumprClient.api();
-				api.request(authToken, request.getId(), request.getTrip(), cb);
-			}
-
-			@Override
-			public boolean needsAuth() {
-				// TODO Auto-generated method stub
-				return true;
-			}
-			
-		};
-	}
-
-	/**
-	 *
-	 *
-	 *
-	*/
-
 	
 	/*************************** SETTERS **************************/
 	
@@ -305,6 +334,7 @@ public class User implements Parcelable {
 		public Builder<T> setProfileImage(String profileImage) { item.profileImage = profileImage; return this; }
 		public Builder<T> setDescription(String description) { item.description = description; return this; }
 		public Builder<T> setPhoneNumber(String phoneNumber) { item.phoneNumber = phoneNumber; return this; }
+		public Builder<T> setDriverProfile(Driver driverProfile) { item.driverProfile = driverProfile; return this; }
 		public T build() { return item; }
 	}
 
@@ -312,13 +342,11 @@ public class User implements Parcelable {
 	
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
 		dest.writeInt(id);
 		dest.writeString(firstName);
 		dest.writeString(lastName);
@@ -359,7 +387,5 @@ public class User implements Parcelable {
 			// TODO Auto-generated method stub
 			return new User[size];
 		}
-		
 	};
 }
-
