@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -45,6 +46,12 @@ public class Driver implements Parcelable {
 	private Coordinate position;
 	/** A List of Request objects that represents the requests to the driver */
 	private List<Request> requests = new ArrayList<Request>();
+	
+	/**
+	 * Driver default constructor
+	 */
+	public Driver() {	
+	}
 	
 	/**
 	 * A constructor for implementing the Driver as a Parcelable.
@@ -89,8 +96,7 @@ public class Driver implements Parcelable {
 			@Override
 			public boolean needsAuth() {
 				return true;
-			}
-			
+			}	
 		};
 	}
 	
@@ -115,10 +121,50 @@ public class Driver implements Parcelable {
 			public boolean needsAuth() {
 				return true;
 			}
-			
 		};
 	}
-		
+	
+	/**
+	 * 
+	 */
+	public ApiRequest getUpdateRequest(final HashMap<String, Object> driver, final Callback<Driver> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String authToken) {
+				BumprAPI api = BumprClient.api();
+				api.updateDriver(authToken,id, driver, new Callback<Driver>() {
+
+					@Override
+					public void failure(RetrofitError arg0) {
+						cb.failure(arg0);
+					}
+
+					@Override
+					public void success(Driver arg0, Response arg1) {
+						update(arg0);
+						cb.success(arg0, arg1);
+					}		
+				});
+			}
+
+			@Override
+			public boolean needsAuth() {
+				return true;
+			}
+		};
+	}
+	
+	/**
+	 * Sets the driver's status if he is available to drive or not.
+	 * @param status a boolean indicating the mode that the driver would like to switch to
+	 */
+	public ApiRequest getStatusRequest(final boolean status, final Callback<Driver> cb) {
+		final HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("status", (Boolean) status);
+		return getUpdateRequest(map, cb);
+	}
+	
 	/****************************** SETTERS *******************************/
 	
 	/**
@@ -142,6 +188,13 @@ public class Driver implements Parcelable {
 	
 	
 	/******************************* GETTERS *******************************/
+	
+	/**
+	 * @return the id of the driver
+	 */
+	public int getId() {
+		return id;
+	}
 	
 	/**
 	 * Returns the drivers balance. This represents the amount they have made off of driving users. 
@@ -176,11 +229,43 @@ public class Driver implements Parcelable {
 	}
 	
 	/**
+	 * @return the fee (double) of the driver per mile
+	 */
+	public double getFee() {
+		return fee;
+	}
+	
+	/**
+	 * @return the Coordinate location of the driver
+	 */
+	public Coordinate getPosition() {
+		return position;
+	}
+	
+	/**
 	 * Returns the requests sent to the driver.
 	 * @return an List of the drivers requests
 	 */
 	public List<Request> getRequests() {
 		return new ArrayList<Request>(requests);
+	}
+	
+	/************************ PRIVATE ******************************/
+	
+	/**
+	 * Update a driver from another driver.
+	 * @param user the Driver from which the data is transferred over
+	 */
+	private void update(Driver driver) {
+		if (driver == null) {
+			throw new IllegalArgumentException("Object (Driver) is null");
+		}
+		
+		this.id = driver.getId();
+		this.balance = driver.getBalance();
+		this.fee = driver.getFee();
+		this.licenseId = driver.getLicenseId();
+		this.status = driver.getStatus();
 	}
 	
 	/************************ BUILDER *****************************/

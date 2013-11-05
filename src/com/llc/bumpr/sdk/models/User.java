@@ -44,7 +44,7 @@ public class User implements Parcelable {
 	/** The user's phone number */
 	protected String phoneNumber;
 	/** The user's driver profile */
-	protected Driver driverProfile;
+	protected Driver driver;
 	/** A List of Request objects that represent the requests that the user has sent out */
 	protected List<Request> sentRequests = new ArrayList<Request>();
 	/** A Singleton that represents the current user (on the device). */
@@ -86,7 +86,7 @@ public class User implements Parcelable {
 			@Override
 			public void execute(String authToken) {
 				BumprAPI api = BumprClient.api();
-				api.get(id, cb);
+				api.getUser(id, cb);
 			}
 
 			@Override
@@ -174,7 +174,7 @@ public class User implements Parcelable {
 			@Override
 			public void execute(String authToken) {
 				BumprAPI api = BumprClient.api();
-				api.update(authToken,id, user, new Callback<User>() {
+				api.updateUser(authToken,id, user, new Callback<User>() {
 
 					@Override
 					public void failure(RetrofitError arg0) {
@@ -216,6 +216,10 @@ public class User implements Parcelable {
 		this.profileImage = user.getProfileImage();
 		this.description = user.getDescription();
 		this.phoneNumber = user.getPhoneNumber();
+	}
+	
+	public void setDriverProfile(Driver driver) {
+		this.driver = driver;
 	}
 	
 	/**
@@ -317,7 +321,7 @@ public class User implements Parcelable {
 	 * @return the user's driver profile information in the form of a driver object
 	 */
 	public Driver getDriverProfile() {
-		return driverProfile;
+		return driver;
 	}
 		
 	/****************************** BUILDER ************************************/
@@ -334,7 +338,7 @@ public class User implements Parcelable {
 		public Builder<T> setProfileImage(String profileImage) { item.profileImage = profileImage; return this; }
 		public Builder<T> setDescription(String description) { item.description = description; return this; }
 		public Builder<T> setPhoneNumber(String phoneNumber) { item.phoneNumber = phoneNumber; return this; }
-		public Builder<T> setDriverProfile(Driver driverProfile) { item.driverProfile = driverProfile; return this; }
+		public Builder<T> setDriverProfile(Driver driver) { item.driver = driver; return this; }
 		public T build() { return item; }
 	}
 
@@ -357,7 +361,7 @@ public class User implements Parcelable {
 		dest.writeString(description);
 		dest.writeString(phoneNumber);
 		dest.writeList(sentRequests);
-		dest.writeParcelable(driverProfile, 0);
+		dest.writeParcelable(driver, 0);
 	}
 	
 	public void readFromParcel(Parcel source) {
@@ -371,7 +375,7 @@ public class User implements Parcelable {
 		description = source.readString();
 		phoneNumber = source.readString();
 		source.readList(sentRequests, Request.class.getClassLoader());
-		driverProfile = (Driver) source.readParcelable(Driver.class.getClassLoader());
+		driver = (Driver) source.readParcelable(Driver.class.getClassLoader());
 	}
 	
 	public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

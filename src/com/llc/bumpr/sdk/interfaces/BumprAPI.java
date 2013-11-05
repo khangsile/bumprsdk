@@ -25,6 +25,12 @@ import com.llc.bumpr.sdk.models.SearchQuery;
 import com.llc.bumpr.sdk.models.Trip;
 import com.llc.bumpr.sdk.models.User;
 
+/**
+ * The list of API calls provided by the Appa API. 
+ * See kdubblabs.com/java/retrofit-by-square/ for more info on setting up API calls.
+ * @author KhangSiLe
+ *
+ */
 public interface BumprAPI {
 	
 	@POST ("/drivers.json")
@@ -32,6 +38,12 @@ public interface BumprAPI {
 	
 	@POST ("/drivers.json")
 	public Driver registerDriver(@Header("X-AUTH-TOKEN") String token);
+	
+	@PUT ("/drivers/{id}.json")
+	public void updateDriver(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body HashMap<String, Object> driver, Callback<Driver> cb);
+	
+	@PUT ("/drivers/{id}.json")
+	public Driver updateDriver(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body HashMap<String, Object> driver);
 	
 	@POST ("/drivers/{id}/driver_review.json")
 	public void createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body Review review, Callback<Response> cb);
@@ -86,10 +98,10 @@ public interface BumprAPI {
 	public Response logout(@Header("X-AUTH-TOKEN") String token);
 	
 	@GET("/users/{id}.json")
-	public void get(@Path("id") int user_id, Callback<User> cb);
+	public void getUser(@Path("id") int user_id, Callback<User> cb);
 	
 	@GET("/users/{id}.json")
-	public User get(@Path("id") int user_id);
+	public User getUser(@Path("id") int user_id);
 
 	@POST ("/users.json")
 	public void register(@Body Registration user, Callback<LoginResponse> cb);
@@ -98,9 +110,9 @@ public interface BumprAPI {
 	public LoginResponse register(@Body Registration user);
 	
 	@PUT ("/users/{id}.json")
-	public void update(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user, Callback<User> cb);
+	public void updateUser(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user, Callback<User> cb);
 	
 	@PUT ("/users/{id}.json")
-	public User update(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user);
+	public User updateUser(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user);
 	
 }
