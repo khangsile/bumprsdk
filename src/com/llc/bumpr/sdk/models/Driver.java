@@ -159,7 +159,7 @@ public class Driver implements Parcelable {
 	 * Sets the driver's status if he is available to drive or not.
 	 * @param status a boolean indicating the mode that the driver would like to switch to
 	 */
-	public ApiRequest getStatusRequest(final boolean status, final Callback<Driver> cb) {
+	public ApiRequest toggleStatusRequest(final boolean status, final Callback<Driver> cb) {
 		final HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("status", (Boolean) status);
 		return getUpdateRequest(map, cb);

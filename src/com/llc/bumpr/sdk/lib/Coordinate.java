@@ -7,7 +7,7 @@ public class Coordinate implements Parcelable {
 	public double lat;
 	public double lon;
 	
-	public Coordinate(double longitude, double latitude) {
+	public Coordinate(double latitude, double longitude) {
 		this.lon = longitude;
 		this.lat = latitude;
 	}

@@ -13,6 +13,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
@@ -103,8 +104,8 @@ public class User implements Parcelable {
 			@Override
 			public void execute(String authToken) {
 				BumprAPI api = BumprClient.api();
-				api.searchDrivers(query.getTopRight().lon, query.getBottomLeft().lat, 
-						query.getBottomLeft().lon, query.getTopRight().lon, query.getMinFee(), query.getMinSeats(),
+				api.searchDrivers(query.getTopRight().lat, query.getBottomLeft().lon, 
+						query.getBottomLeft().lat, query.getTopRight().lon, query.getMinFee(), query.getMinSeats(),
 						new Callback<Response>() {
 
 							@Override
@@ -115,14 +116,21 @@ public class User implements Parcelable {
 							@Override
 							public void success(Response arg0, Response arg1) {
 								try {
-									JSONArray array = ResponseConverter.responseToJSONArray(arg0);
+									JSONArray array = ResponseConverter.responseToJSONArray(arg0);									
 									ArrayList<User> list = new ArrayList<User>();
+									Log.i("this", array.length() + "");
+									if (array.length() < 1) {
+										cb.success(list, arg1);
+										return;
+									}
+									
 									for(int i=0; i<array.length(); i++) {
 										JSONObject object = array.getJSONObject(i);
 										list.add(User.jsonToUser(object));
 									}
 									cb.success(list, arg1);
 								} catch (Exception e) {
+									e.printStackTrace();
 									cb.failure(null);
 								}
 							}
