@@ -1,15 +1,15 @@
 package com.llc.bumpr.sdk.models;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import retrofit.Callback;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
-
-import android.os.Parcel;
-import android.os.Parcelable;
 
 /**
  *
@@ -63,13 +63,16 @@ public class Request implements Parcelable {
 	 * @param request
 	 * @return an ApiRequest object/interface to be given to the session
 	 */
-	public ApiRequest getPostRequest(final Request request, final Callback<Request> cb) {
+	public ApiRequest getPostRequest(final Callback<Request> cb) {
 		return new ApiRequest() {
 
 			@Override
 			public void execute(String authToken) {
 				BumprAPI api = BumprClient.api();
-				api.request(authToken, request.getId(), request.getTrip(), cb);
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("start", trip.getStart());
+				map.put("end", trip.getEnd());
+				api.request(authToken, driverId, map, cb);
 			}
 
 			@Override

@@ -136,6 +136,7 @@ public class Session {
 		login.put("email", email);
 		login.put("password", password);
 		login.put("registration_id", gcmRegistrationId);
+		login.put("platform", "android");
 		
 		api.login(login, new Callback<LoginResponse>() {
 

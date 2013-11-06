@@ -9,6 +9,7 @@ import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
@@ -21,8 +22,6 @@ import com.llc.bumpr.sdk.models.LoginResponse;
 import com.llc.bumpr.sdk.models.Registration;
 import com.llc.bumpr.sdk.models.Request;
 import com.llc.bumpr.sdk.models.Review;
-import com.llc.bumpr.sdk.models.SearchQuery;
-import com.llc.bumpr.sdk.models.Trip;
 import com.llc.bumpr.sdk.models.User;
 
 /**
@@ -52,10 +51,10 @@ public interface BumprAPI {
 	public Response createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body Review review);
 	
 	@POST ("/drivers/{id}/requests.json")
-	public void request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Trip trip, Callback<Request> cb);
+	public void request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body HashMap<String, Object> trip, Callback<Request> cb);
 
 	@POST ("/drivers/{id}/requests.json")
-	public Request request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Trip trip);
+	public Request request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body HashMap<String, Object> trip);
 	
 	/**
 	 * search drivers method. currently Retrofit does not support variable-query params
@@ -70,10 +69,10 @@ public interface BumprAPI {
 	@GET ("/drivers.json")
 	public Response searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, @Query("right") double right);
 	
-	@PUT ("/drivers/{id}/update_location.json")
+	@PATCH ("/drivers/{id}/driver_location.json")
 	public void updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordiante, Callback<Response> cb);
 	
-	@PUT ("/drivers/{id}/update_location.json")
+	@PATCH ("/drivers/{id}/driver_location.json")
 	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordinate);
 	
 	@PUT ("/requests/{id}.json")

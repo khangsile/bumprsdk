@@ -40,6 +40,16 @@ public class Trip implements Parcelable {
 		fee = source.readDouble();
 	}
 	
+	/******************************** GETTERS **************************/
+	
+	public Coordinate getStart() {
+		return start;
+	}
+	
+	public Coordinate getEnd() {
+		return end;
+	}
+	
 	/******************************** BUILDER **************************/
 	
 	public static class Builder {
