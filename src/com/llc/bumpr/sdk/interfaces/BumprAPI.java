@@ -69,10 +69,10 @@ public interface BumprAPI {
 	@GET ("/drivers.json")
 	public Response searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, @Query("right") double right);
 	
-	@PATCH ("/drivers/{id}/driver_location.json")
+	@PUT ("/drivers/{id}/driver_location.json")
 	public void updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordiante, Callback<Response> cb);
 	
-	@PATCH ("/drivers/{id}/driver_location.json")
+	@PUT ("/drivers/{id}/driver_location.json")
 	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordinate);
 	
 	@PUT ("/requests/{id}.json")

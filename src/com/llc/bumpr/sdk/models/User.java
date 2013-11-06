@@ -103,8 +103,8 @@ public class User implements Parcelable {
 			@Override
 			public void execute(String authToken) {
 				BumprAPI api = BumprClient.api();
-				api.searchDrivers(query.getTopRight().longitude, query.getBottomLeft().latitude, 
-						query.getBottomLeft().longitude, query.getTopRight().latitude, query.getMinFee(), query.getMinSeats(),
+				api.searchDrivers(query.getTopRight().lon, query.getBottomLeft().lat, 
+						query.getBottomLeft().lon, query.getTopRight().lon, query.getMinFee(), query.getMinSeats(),
 						new Callback<Response>() {
 
 							@Override
