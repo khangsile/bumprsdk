@@ -81,7 +81,9 @@ public class Driver implements Parcelable {
 	public Driver(JSONObject json) throws JSONException {
 		id = json.getInt("id");
 		fee = json.getDouble("fee");
-		rating = json.getDouble("rating");
+		String sRating = json.getString("rating");
+		if (sRating.equals("null")) rating = 0;
+		else rating = Double.parseDouble(sRating);
 		position = new Coordinate(json.getDouble("lat"), json.getDouble("lon"));
 	}
 	

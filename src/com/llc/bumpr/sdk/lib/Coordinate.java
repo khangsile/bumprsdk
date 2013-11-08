@@ -13,8 +13,8 @@ public class Coordinate implements Parcelable {
 	}
 	
 	public Coordinate(Parcel source) {
-		lon = source.readFloat();
-		lat = source.readFloat();
+		lon = source.readDouble();
+		lat = source.readDouble();
 	}
 	
 	/************************* PARCELABLE ********************/

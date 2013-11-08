@@ -54,11 +54,11 @@ public class Trip implements Parcelable {
 	 * @param source The parcel containing the data for the trip
 	 */
 	public Trip(Parcel source) {
-		id = source.readInt();
-		driverId = source.readInt();
-		start = source.readParcelable(Coordinate.class.getClassLoader());
-		end = source.readParcelable(Coordinate.class.getClassLoader());
-		fee = source.readDouble();
+		this.id = source.readInt();
+		this.driverId = source.readInt();
+		this.start = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
+		this.end = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
+		this.fee = source.readDouble();
 	}
 	
 	/******************************** GETTERS **************************/
