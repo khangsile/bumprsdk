@@ -66,6 +66,7 @@ public class Driver implements Parcelable {
 	 */
 	public Driver(Parcel source) {
 		id = source.readInt();
+		fee = source.readDouble();
 		licenseId = source.readString();
 		insuranceId = source.readString();
 		balance = source.readDouble();
@@ -275,6 +276,7 @@ public class Driver implements Parcelable {
 		private T item;
 				
 		public Builder(T item) { this.item = item; }
+		public Builder<T> setFee(double fee) { item.fee = fee; return this; } 
 		public Builder<T> setLicenseId(String licenseId) { item.licenseId = licenseId; return this; }
 		public Builder<T> setInsuranceId(String insuranceId) { item.insuranceId = insuranceId; return this; }
 		public T build() { return item; }
@@ -292,6 +294,7 @@ public class Driver implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		// TODO Auto-generated method stub
 		dest.writeInt(id);
+		dest.writeDouble(fee);
 		dest.writeString(licenseId);
 		dest.writeString(insuranceId);
 		dest.writeDouble(balance);
