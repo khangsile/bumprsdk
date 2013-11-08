@@ -50,10 +50,10 @@ public interface BumprAPI {
 	@PUT ("/drivers/{id}.json")
 	public Driver updateDriver(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body HashMap<String, Object> driver);
 	
-	@POST ("/drivers/{id}/driver_review.json")
-	public void createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body Review review, Callback<Response> cb);
+	@POST ("/drivers/{id}/driver_reviews.json")
+	public void createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body HashMap<String, Object> review, Callback<Response> cb);
 	
-	@POST ("/drivers/{id}/driver_review.json")
+	@POST ("/drivers/{id}/driver_reviews.json")
 	public Response createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body Review review);
 	
 	@POST ("/drivers/{id}/requests.json")
