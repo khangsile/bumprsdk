@@ -51,8 +51,8 @@ public class Request implements Parcelable {
 		userId = source.readInt();
 		driverId = source.readInt();
 		tripId = source.readInt();
-		timeSent = new Date(source.readLong());
-		timeAccepted = new Date(source.readLong());
+		//timeSent = new Date(source.readLong());
+		//timeAccepted = new Date(source.readLong());
 		confirmationCode = source.readString();
 		accepted = (source.readByte() != 0);
 		confirmed = (source.readByte() != 0);
@@ -172,8 +172,8 @@ public class Request implements Parcelable {
 		dest.writeInt(userId);
 		dest.writeInt(driverId);
 		dest.writeInt(tripId);
-		dest.writeLong(timeSent.getTime());
-		dest.writeLong(timeAccepted.getTime());
+		//dest.writeLong(timeSent.getTime());
+		//dest.writeLong(timeAccepted.getTime());
 		dest.writeString(confirmationCode);
 		dest.writeByte((byte) (accepted ? 1 : 0));		
 		dest.writeByte((byte) (confirmed ? 1 : 0));
