@@ -283,6 +283,7 @@ public class Driver implements Parcelable {
 		private T item;
 				
 		public Builder(T item) { this.item = item; }
+		public Builder<T> setId(int Id) { item.id = Id; return this; }
 		public Builder<T> setFee(double fee) { item.fee = fee; return this; } 
 		public Builder<T> setLicenseId(String licenseId) { item.licenseId = licenseId; return this; }
 		public Builder<T> setInsuranceId(String insuranceId) { item.insuranceId = insuranceId; return this; }
