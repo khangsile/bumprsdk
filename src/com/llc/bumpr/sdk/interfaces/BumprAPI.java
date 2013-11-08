@@ -33,7 +33,7 @@ import com.llc.bumpr.sdk.models.User;
 public interface BumprAPI {
 	
 	@POST ("/drivers.json")
-	public void registerDriver(@Header("X-AUTH-TOKEN") String token, HashMap<String, Object> driver, Callback<Driver> cb);
+	public void registerDriver(@Header("X-AUTH-TOKEN") String token,@Body HashMap<String, Object> driver, Callback<Driver> cb);
 	
 	@POST ("/drivers.json")
 	public Driver registerDriver(@Header("X-AUTH-TOKEN") String token);
