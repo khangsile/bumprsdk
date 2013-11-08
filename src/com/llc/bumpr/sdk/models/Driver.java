@@ -136,7 +136,7 @@ public class Driver implements Parcelable {
 	}
 	
 	/**
-	 * 
+	 * Get request to update driver
 	 */
 	public ApiRequest getUpdateRequest(final HashMap<String, Object> driver, final Callback<Driver> cb) {
 		return new ApiRequest() {

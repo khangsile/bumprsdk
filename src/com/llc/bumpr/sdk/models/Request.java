@@ -103,7 +103,7 @@ public class Request implements Parcelable {
 			}			
 		};
 	}
-	
+		
 	/**
 	 * Confirms if the request has been completed by matching the inputed confirmation code to the one give
 	 * to the passenger.
@@ -111,9 +111,21 @@ public class Request implements Parcelable {
 	 * has been completed.
 	 * @return a boolean indicating if the confirmation was successful.
 	 */
-	public boolean confirmRequest(String confirmationCode) {
-		//TODO V1.0
-		return true;
+	public ApiRequest confirmRequest(final boolean completed, Callback<Response> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String authToken) {
+				BumprAPI api = BumprClient.api();
+			}
+
+			@Override
+			public boolean needsAuth() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+		};
 	}
 	
 	/************************** GETTERS *****************************/

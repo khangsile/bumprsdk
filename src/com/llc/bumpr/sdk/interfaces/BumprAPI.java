@@ -62,6 +62,8 @@ public interface BumprAPI {
 	@POST ("/drivers/{id}/requests.json")
 	public Request request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body HashMap<String, Object> trip);
 	
+	//@PUT ("/drivers/{id}/")
+	
 	/**
 	 * search drivers method. currently Retrofit does not support variable-query params
 	 */
