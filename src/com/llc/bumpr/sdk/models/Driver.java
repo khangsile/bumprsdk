@@ -124,7 +124,7 @@ public class Driver implements Parcelable {
 				BumprAPI api = BumprClient.api();
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("accepted", new Boolean(request.getAccepted()));
-				api.respondTo(authToken, request.getId(), map, cb);
+				api.respondTo(authToken, id, request.getId(), map, cb);
 			}
 
 			@Override

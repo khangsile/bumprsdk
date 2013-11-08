@@ -81,8 +81,8 @@ public interface BumprAPI {
 	@PUT ("/drivers/{id}/driver_location.json")
 	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordinate);
 	
-	@PUT ("/requests/{id}.json")
-	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Map<String, Object> map, Callback<Response> cb);
+	@PUT ("/drivers/{driverId}/requests/{id}.json")
+	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("driverId") int driverId, @Path("id") int id, @Body Map<String, Object> map, Callback<Response> cb);
 	
 	@GET ("/requests/{id}.json")
 	public void getRequest(@Path("id") int id, Callback<Request> cb);
