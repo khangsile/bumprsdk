@@ -236,6 +236,13 @@ public class Driver implements Parcelable {
 	}
 	
 	/**
+	 * @return the rating (double) of the driver
+	 */
+	public double getRating() {
+		return rating;
+	}
+	
+	/**
 	 * @return the Coordinate location of the driver
 	 */
 	public Coordinate getPosition() {
