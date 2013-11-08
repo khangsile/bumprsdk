@@ -207,7 +207,7 @@ public class User implements Parcelable {
 	/**
 	 * Register driver
 	 */
-	public ApiRequest getRegisterRequest(final Callback<Driver> cb, final HashMap<String, Object> driver) {
+	public ApiRequest getRegisterRequest(final HashMap<String, Object> driver, final Callback<Driver> cb) {
 		return new ApiRequest() {
 
 			@Override
