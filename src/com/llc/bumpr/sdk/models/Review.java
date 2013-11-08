@@ -1,5 +1,7 @@
 package com.llc.bumpr.sdk.models;
 
+import java.util.HashMap;
+
 import retrofit.Callback;
 import retrofit.client.Response;
 
@@ -11,17 +13,15 @@ public class Review {
 	private int userId;
 	private int driverId;
 	private int requestId;
-	private int driverRating;
-	private String description;
-	private User user;
+	private int rating;
+	private String content;
 	
 	public Review(Builder builder) {
 		this.userId = builder.userId;
 		this.driverId = builder.driverId;
 		this.requestId = builder.requestId;
-		this.driverRating = builder.driverRating;
-		this.description = builder.description;
-		this.user = builder.user;
+		this.rating = builder.rating;
+		this.content = builder.content;
 	}
 
 	/********************** API ***********************/
@@ -33,7 +33,11 @@ public class Review {
 			@Override
 			public void execute(String authToken) {
 				BumprAPI api = BumprClient.api();
-				api.createReview(authToken, review.getDriverId(), review, cb);			
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("request_id", requestId);
+				map.put("rating", rating);
+				map.put("content", content);
+				api.createReview(authToken, driverId, map, cb);			
 			}
 
 			@Override
@@ -59,11 +63,11 @@ public class Review {
 	}
 	
 	public int getDriverRating() {
-		return driverRating;
+		return rating;
 	}
 	
-	public String getDescription() {
-		return description;
+	public String getContent() {
+		return content;
 	}
 
 	/********************* BUILDER **********************/
@@ -72,15 +76,15 @@ public class Review {
 		private int userId;
 		private int driverId;
 		private int requestId;
-		private int driverRating;
-		private String description;
+		private int rating;
+		private String content;
 		private User user;
 		
 		public Builder setUserId(int id) { userId = id; return this; }
 		public Builder setDriverId(int id) { driverId = id; return this; }
 		public Builder setRequestId(int id) { requestId = id; return this; }
-		public Builder setDriverRating(int rating) { driverRating = rating; return this; }
-		public Builder setDescription(String description) { this.description = description; return this; }
+		public Builder setRating(int rating) { rating = rating; return this; }
+		public Builder setContent(String content) { this.content = content; return this; }
 		public Builder setUser(User user) { this.user = user; return this; }
 		public Review build() {
 			return new Review(this);

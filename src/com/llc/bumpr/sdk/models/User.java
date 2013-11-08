@@ -259,6 +259,10 @@ public class User implements Parcelable {
 		this.phoneNumber = user.getPhoneNumber();
 	}
 	
+	/**
+	 * Set the driver profile for the user
+	 * @param driverProfile the driver profile of the user
+	 */
 	public void setDriverProfile(Driver driverProfile) {
 		this.driverProfile = driverProfile;
 	}
