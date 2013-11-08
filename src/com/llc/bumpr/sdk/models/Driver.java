@@ -12,6 +12,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
@@ -85,7 +86,11 @@ public class Driver implements Parcelable {
 		String sRating = json.getString("rating");
 		if (sRating.equals("null")) rating = 0;
 		else rating = Double.parseDouble(sRating);
-		position = new Coordinate(json.getDouble("lat"), json.getDouble("lon"));
+		try {
+			position = new Coordinate(json.getDouble("lat"), json.getDouble("lon"));
+		}catch(JSONException e){
+			Log.i("com.llc.bumpr.sdk", "Lat/Long not passed to driver");
+		}
 	}
 	
 	/****************************** API ***********************************/
