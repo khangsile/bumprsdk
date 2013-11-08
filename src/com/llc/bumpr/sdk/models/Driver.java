@@ -43,7 +43,7 @@ public class Driver implements Parcelable {
 	/** A boolean if the driver has been authorized by us. */
 	private boolean trustworthy;
 	/** A boolean if the driver is currently available to drive. */
-	private boolean status;
+	private boolean active;
 	/** A coordinate that represents the position of the driver */
 	private Coordinate position;
 	/** A List of Request objects that represents the requests to the driver */
@@ -69,7 +69,7 @@ public class Driver implements Parcelable {
 		licenseId = source.readString();
 		insuranceId = source.readString();
 		balance = source.readDouble();
-		status = source.readByte() != 0;
+		active = source.readByte() != 0;
 		source.readList(requests, Request.class.getClassLoader());
 	}
 	
@@ -171,7 +171,7 @@ public class Driver implements Parcelable {
 	 */
 	public ApiRequest toggleStatusRequest(final boolean status, final Callback<Driver> cb) {
 		final HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("status", (Boolean) status);
+		map.put("active", (Boolean) status);
 		return getUpdateRequest(map, cb);
 	}
 	
@@ -225,7 +225,7 @@ public class Driver implements Parcelable {
 	 * @return a boolean representing the status of the driver
 	 */
 	public boolean getStatus() {
-		return status;
+		return active;
 	}
 	
 	/**
@@ -265,7 +265,7 @@ public class Driver implements Parcelable {
 		this.balance = driver.getBalance();
 		this.fee = driver.getFee();
 		this.licenseId = driver.getLicenseId();
-		this.status = driver.getStatus();
+		this.active = driver.getStatus();
 	}
 	
 	/************************ BUILDER *****************************/
@@ -295,7 +295,7 @@ public class Driver implements Parcelable {
 		dest.writeString(licenseId);
 		dest.writeString(insuranceId);
 		dest.writeDouble(balance);
-		dest.writeByte((byte) (status ? 1 : 0));
+		dest.writeByte((byte) (active ? 1 : 0));
 		dest.writeList(requests);
 	}
 	
