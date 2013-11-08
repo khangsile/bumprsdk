@@ -36,6 +36,8 @@ public class Driver implements Parcelable {
 	private double fee;
 	/** The driver's number of seats */
 	private int seats;
+	/** The driver's rating */
+	private double rating;
 	/** A boolean indicating if the driver is a cab */
 	private boolean cab;
 	/** A boolean if the driver has been authorized by us. */
@@ -46,6 +48,11 @@ public class Driver implements Parcelable {
 	private Coordinate position;
 	/** A List of Request objects that represents the requests to the driver */
 	private List<Request> requests = new ArrayList<Request>();
+	
+	/********************************** STATIC *****************************/
+	
+	
+	/********************************** INSTANCE ***************************/
 	
 	/**
 	 * Driver default constructor
@@ -74,7 +81,8 @@ public class Driver implements Parcelable {
 	public Driver(JSONObject json) throws JSONException {
 		id = json.getInt("id");
 		fee = json.getDouble("fee");
-		position = new Coordinate(json.getDouble("lon"), json.getDouble("lat"));
+		rating = json.getDouble("rating");
+		position = new Coordinate(json.getDouble("lat"), json.getDouble("lon"));
 	}
 	
 	/****************************** API ***********************************/
@@ -166,16 +174,6 @@ public class Driver implements Parcelable {
 	}
 	
 	/****************************** SETTERS *******************************/
-	
-	/**
-	 * Toggles the status of the driver. If the status is true, then the driver is currently driving.
-	 * If the status is false, then the driver is not driving currently.
-	 * @return a boolean indicating if the driver is driving
-	 */
-	public boolean toggleStatus() {
-		status = !status;
-		return status;
-	}
 	
 	/**
 	 * Adds a request to the requests list of the driver.

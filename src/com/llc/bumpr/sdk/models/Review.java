@@ -13,6 +13,7 @@ public class Review {
 	private int requestId;
 	private int driverRating;
 	private String description;
+	private User user;
 	
 	public Review(Builder builder) {
 		this.userId = builder.userId;
@@ -20,6 +21,7 @@ public class Review {
 		this.requestId = builder.requestId;
 		this.driverRating = builder.driverRating;
 		this.description = builder.description;
+		this.user = builder.user;
 	}
 
 	/********************** API ***********************/
@@ -72,12 +74,14 @@ public class Review {
 		private int requestId;
 		private int driverRating;
 		private String description;
+		private User user;
 		
 		public Builder setUserId(int id) { userId = id; return this; }
 		public Builder setDriverId(int id) { driverId = id; return this; }
 		public Builder setRequestId(int id) { requestId = id; return this; }
 		public Builder setDriverRating(int rating) { driverRating = rating; return this; }
 		public Builder setDescription(String description) { this.description = description; return this; }
+		public Builder setUser(User user) { this.user = user; return this; }
 		public Review build() {
 			return new Review(this);
 		}

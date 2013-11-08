@@ -191,7 +191,7 @@ public class User implements Parcelable {
 
 					@Override
 					public void success(User arg0, Response arg1) {
-						update(arg0);
+						update(arg0); // update the user
 						cb.success(arg0, arg1);
 					}		
 				});
@@ -207,13 +207,13 @@ public class User implements Parcelable {
 	/**
 	 * Register driver
 	 */
-	public ApiRequest getRegisterRequest(final Callback<Driver> cb) {
+	public ApiRequest getRegisterRequest(final Callback<Driver> cb, final HashMap<String, Object> driver) {
 		return new ApiRequest() {
 
 			@Override
 			public void execute(String authToken) {
 				BumprAPI api = BumprClient.api();
-				api.registerDriver(authToken, new Callback<Driver>() {
+				api.registerDriver(authToken, driver, new Callback<Driver>() {
 
 					@Override
 					public void failure(RetrofitError arg0) {

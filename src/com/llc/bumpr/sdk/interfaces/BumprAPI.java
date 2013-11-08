@@ -33,10 +33,16 @@ import com.llc.bumpr.sdk.models.User;
 public interface BumprAPI {
 	
 	@POST ("/drivers.json")
-	public void registerDriver(@Header("X-AUTH-TOKEN") String token, Callback<Driver> cb);
+	public void registerDriver(@Header("X-AUTH-TOKEN") String token, HashMap<String, Object> driver, Callback<Driver> cb);
 	
 	@POST ("/drivers.json")
 	public Driver registerDriver(@Header("X-AUTH-TOKEN") String token);
+	
+	@GET ("/drivers/{id}.json")
+	public void getDriver(@Path("id") int driverId, Callback<Response> cb);
+	
+	@GET ("/drivers/{id}.json")
+	public Response getDriver(@Path("id") int driverId);
 	
 	@PUT ("/drivers/{id}.json")
 	public void updateDriver(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body HashMap<String, Object> driver, Callback<Driver> cb);
@@ -77,6 +83,9 @@ public interface BumprAPI {
 	
 	@PUT ("/requests/{id}.json")
 	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Map<String, Object> map, Callback<Response> cb);
+	
+	@GET ("/requests/{id}.json")
+	public void getRequest(@Path("id") int id, Callback<Request> cb);
 	
 	@POST ("/sessions.json")
 	public void login(@Body Login login, Callback<LoginResponse> cb);

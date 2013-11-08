@@ -1,5 +1,8 @@
 package com.llc.bumpr.sdk.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -26,6 +29,24 @@ public class Trip implements Parcelable {
 		this.fee = builder.fee;
 		this.start = builder.start;
 		this.end = builder.end;
+	}
+	
+	/**
+	 * Constructor for reading from JSONObject
+	 * @param json The JSON representation of the trip object
+	 * @throws JSONException
+	 */
+	public Trip(JSONObject json) throws JSONException {
+		JSONObject start = json.getJSONObject("start");
+		JSONObject end = json.getJSONObject("end");
+		
+		this.start = new Coordinate(start.getDouble("lat"), start.getDouble("lon"));
+		this.end = new Coordinate(end.getDouble("lat"), end.getDouble("lon"));
+		
+		try {
+			driverId = json.getInt("driver_id");
+		} catch (JSONException e) {
+		}
 	}
 	
 	/**
