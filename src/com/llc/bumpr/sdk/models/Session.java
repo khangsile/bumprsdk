@@ -142,18 +142,40 @@ public class Session {
 
 			@Override
 			public void failure(RetrofitError arg0) {
-				// TODO Auto-generated method stub
 				cb.failure(arg0);
 			}
 
 			@Override
 			public void success(LoginResponse login, Response response) {
-				// TODO Auto-generated method stub
 				User.setActiveUser(login.getUser());
 				authToken = login.getAuthToken();
 				cb.success(login.getUser(), response);
 			}
 		});		
+	}
+	
+	/**
+	 * @param login A HashMap that represents the login information to send to the server
+	 * @param cb A callback for when the server responds
+	 */
+	public void login(HashMap<String, Object> login, final Callback<User> cb) {
+		BumprAPI api = BumprClient.api();
+		
+		api.login(login, new Callback<LoginResponse>() {
+
+			@Override
+			public void failure(RetrofitError arg0) {
+				cb.failure(arg0);
+			}
+
+			@Override
+			public void success(LoginResponse login, Response arg1) {
+				User.setActiveUser(login.getUser());
+				authToken = login.getAuthToken();
+				cb.success(login.getUser(), arg1);
+			}
+			
+		});
 	}
 	
 	/*********************** GETTERS *****************************/
