@@ -18,6 +18,7 @@ import android.util.Log;
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
+import com.llc.bumpr.sdk.lib.BumprError;
 import com.llc.restrofit.ResponseConverter;
 
 /**
@@ -250,6 +251,13 @@ public class User implements Parcelable {
 
 					@Override
 					public void success(Driver arg0, Response arg1) {
+						try {
+							//String json = BumprError.responseToString(arg1);
+							String json = arg1.getBody().toString();
+							Log.i("BUMPRAPI", json);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						setDriverProfile(arg0);
 						cb.success(arg0, arg1);
 					}

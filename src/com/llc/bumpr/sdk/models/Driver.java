@@ -25,10 +25,11 @@ import com.llc.bumpr.sdk.lib.Coordinate;
  * @version 0.1
  */
 public class Driver implements Parcelable {
-	/** The driver's balance (money) */
-	private double balance;
+
 	/** The driver id (linked to the driver table) */
 	private int id;
+	/** The driver's balance (money) */
+	private double balance;
 	/** The driver license number */
 	private String licenseId;
 	/** The driver insurance number */

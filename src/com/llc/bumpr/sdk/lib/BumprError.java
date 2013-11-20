@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import com.google.gson.Gson;
 import com.llc.restrofit.Restrofit;
@@ -23,6 +24,11 @@ public class BumprError {
 	public static String errorToString(RetrofitError e) throws Exception {
 		InputStream in = e.getResponse().getBody().in();
         return new Scanner(in,"UTF-8").useDelimiter("\\A").next();
+	}
+	
+	public static String responseToString(Response e) throws Exception {
+		InputStream in = e.getBody().in();
+		return new Scanner(in, "UTF-8").useDelimiter("\\A").next();
 	}
 	
 	/**
