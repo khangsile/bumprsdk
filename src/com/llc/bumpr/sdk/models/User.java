@@ -54,6 +54,34 @@ public class User implements Parcelable {
 	/************************** STATIC ************************/
 	
 	/**
+	 * A Static method that creates a request to get the active user information
+	 * @param cb The callback method once the user has been created
+	 */
+	public static ApiRequest getActiveUserRequest(final Callback<User> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String authToken) {
+				if (activeUser != null) {
+					cb.success(activeUser, null);
+				} else {
+					//BumprAPI api = BumprClient.api();
+					//User user = api.getActiveUser();
+					//activeUser = user;
+					cb.success(activeUser, null); 
+				} 
+			}
+
+			@Override
+			public boolean needsAuth() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+		};
+	}
+	
+	/**
 	 * A Static method that gets the active user (one who is using the device)
 	 * @return a User object indicating the active user
 	 */
