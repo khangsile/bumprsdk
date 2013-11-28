@@ -11,14 +11,18 @@ import org.json.JSONObject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
-import com.llc.bumpr.sdk.lib.BumprError;
 import com.llc.restrofit.ResponseConverter;
 
 /**
@@ -27,28 +31,42 @@ import com.llc.restrofit.ResponseConverter;
  * @version 0.1
  */
 public class User implements Parcelable {
+	
 	/** The user's id in the database */
 	protected int id;
+	
 	/** The user's first name */
+	@SerializedName("first_name")
 	protected String firstName;
+	
 	/** The user's last name */
+	@SerializedName("last_name")
 	protected String lastName;
+	
 	/** The user's current city (that they are living in) */
 	protected String city;
+	
 	/** The user's current state (that they are living in) */
 	protected String state;
+	
 	/** The user's email */
 	protected String email;
+	
 	/** The link the the user's profile image */
+	@SerializedName("profile_image")
 	protected String profileImage;
+	
 	/** The description (provided by the user) of the user */
 	protected String description;
+	
 	/** The user's phone number */
+	@SerializedName("phone_number")
 	protected String phoneNumber;
+	
 	/** The user's driver profile */
+	@SerializedName("driver_profile")
 	protected Driver driverProfile;
-	/** A List of Request objects that represent the requests that the user has sent out */
-	protected List<Request> sentRequests = new ArrayList<Request>();
+	
 	/** A Singleton that represents the current user (on the device). */
 	private static User activeUser = null;
 	
@@ -58,24 +76,32 @@ public class User implements Parcelable {
 	 * A Static method that creates a request to get the active user information
 	 * @param cb The callback method once the user has been created
 	 */
-	public static ApiRequest getActiveUserRequest(final Callback<User> cb) {
+	public static ApiRequest getMeRequest(final Context context, final FutureCallback<User> cb) {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
-				if (activeUser != null) {
-					cb.success(activeUser, null);
-				} else {
-					//BumprAPI api = BumprClient.api();
-					//User user = api.getActiveUser();
-					//activeUser = user;
-					cb.success(activeUser, null); 
-				} 
+			public void execute(String baseURL, String authToken) {
+				Ion.with(context).load("GET", baseURL + "/sessions.json")
+					.addHeader("X-AUTH-TOKEN", authToken)
+					.as(new TypeToken<LoginResponse>() {})
+					.setCallback(new FutureCallback<LoginResponse>() {
+
+						@Override
+						public void onCompleted(Exception arg0, LoginResponse login) {
+							User user = null;
+							if (arg0 == null) {
+								activeUser = login.getUser();
+								user = activeUser;
+							}
+							
+							cb.onCompleted(arg0, user);
+						}
+						
+					});
 			}
 
 			@Override
 			public boolean needsAuth() {
-				// TODO Auto-generated method stub
 				return true;
 			}
 			
@@ -110,13 +136,14 @@ public class User implements Parcelable {
 	 * @param cb A Callback for on success or failure of the call
 	 * @return an ApiRequest object to be sent to the Session.execute
 	 */
-	public static ApiRequest getUser(final int id, final Callback<User> cb) {
+	public static ApiRequest getUser(final Context context, final int id, final FutureCallback<User> cb) {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
-				BumprAPI api = BumprClient.api();
-				api.getUser(id, cb);
+			public void execute(String baseURL, String authToken) {
+				Ion.with(context).load(baseURL + "/users/" + id + ".json")
+					.as(new TypeToken<User>() {})
+					.setCallback(cb);
 			}
 
 			@Override
@@ -131,7 +158,7 @@ public class User implements Parcelable {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 				api.searchDrivers(query.getTopRight().lat, query.getBottomLeft().lon, 
 						query.getBottomLeft().lat, query.getTopRight().lon, query.getMinFee(), query.getMinSeats(),
@@ -205,25 +232,27 @@ public class User implements Parcelable {
 	 * original user that you are attempting to update.
 	 * @param cb a Callback that returns the updated User object from the database.
 	 */
-	public ApiRequest getUpdateRequest(final HashMap<String, Object> user, final Callback<User> cb) {
+	public ApiRequest getUpdateRequest(final Context context, final HashMap<String, Object> user, final FutureCallback<User> cb) {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
-				BumprAPI api = BumprClient.api();
-				api.updateUser(authToken,id, user, new Callback<User>() {
+			public void execute(String baseURL, String authToken) {				
+				Ion.with(context).load("PUT", baseURL + "/users/" + id + ".json")
+					.addHeader("X-AUTH-TOKEN", authToken)
+					.setJsonObjectBody(new JSONObject(user))
+					.as(new TypeToken<User>() {})
+					.setCallback(new FutureCallback<User>() {
 
-					@Override
-					public void failure(RetrofitError arg0) {
-						cb.failure(arg0);
-					}
-
-					@Override
-					public void success(User arg0, Response arg1) {
-						update(arg0); // update the user
-						cb.success(arg0, arg1);
-					}		
-				});
+						@Override
+						public void onCompleted(Exception arg0, User arg1) {
+							if (arg0 == null) {
+								update(arg1);
+								cb.onCompleted(arg0, arg1);
+							} else {
+								arg0.printStackTrace();
+							}
+						}
+				});	
 			}
 
 			@Override
@@ -240,7 +269,7 @@ public class User implements Parcelable {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 				api.registerDriver(authToken, driver, new Callback<Driver>() {
 
@@ -303,19 +332,6 @@ public class User implements Parcelable {
 		this.driverProfile = driverProfile;
 	}
 	
-	/**
-	 * Add a request to the user's list of sent requests
-	 * @param request The request to be added to the list
-	 */
-	public void addRequest(Request request) {
-		if (request == null) {
-			throw new IllegalArgumentException("Object (Request) is null");
-		}
-		
-		if (sentRequests == null) sentRequests = new ArrayList<Request>();
-		sentRequests.add(request);
-	}
-			
 	/**************************** GETTERS *************************/
 	
 	/**
@@ -391,14 +407,6 @@ public class User implements Parcelable {
 	}
 	
 	/**
-	 * Return the users list of requests
-	 * @return returns a copy of the list of sent requests
-	 */
-	public List<Request> getSentRequests() {
-		return new ArrayList<Request>(sentRequests);
-	}
-	
-	/**
 	 * @return the user's driver profile information in the form of a driver object
 	 */
 	public Driver getDriverProfile() {
@@ -441,7 +449,6 @@ public class User implements Parcelable {
 		dest.writeString(profileImage);
 		dest.writeString(description);
 		dest.writeString(phoneNumber);
-		dest.writeList(sentRequests);
 		dest.writeParcelable(driverProfile, 0);
 	}
 	
@@ -455,7 +462,6 @@ public class User implements Parcelable {
 		profileImage = source.readString();
 		description = source.readString();
 		phoneNumber = source.readString();
-		source.readList(sentRequests, Request.class.getClassLoader());
 		driverProfile = (Driver) source.readParcelable(Driver.class.getClassLoader());
 	}
 	

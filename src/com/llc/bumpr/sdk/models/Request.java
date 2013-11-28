@@ -68,7 +68,7 @@ public class Request implements Parcelable {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("start", trip.getStart());
@@ -90,7 +90,7 @@ public class Request implements Parcelable {
 	public ApiRequest respondTo(final boolean accept, final Callback<Response> cb) {
 		return new ApiRequest() {
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("accepted", accept);
@@ -115,7 +115,7 @@ public class Request implements Parcelable {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 			}
 

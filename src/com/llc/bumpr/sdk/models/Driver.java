@@ -105,7 +105,7 @@ public class Driver implements Parcelable {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 				api.updateLocation(authToken, id, coordinate, cb);
 			}
@@ -127,7 +127,7 @@ public class Driver implements Parcelable {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("accepted", new Boolean(request.getAccepted()));
@@ -148,7 +148,7 @@ public class Driver implements Parcelable {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 				api.updateDriver(authToken,id, driver, new Callback<Driver>() {
 

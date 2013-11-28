@@ -12,6 +12,8 @@ public class Trip implements Parcelable {
 
 	/** The id of the trip */
 	private int id;
+	/** The userId that created the trip */
+	private int userId;
 	/** The driverId that the trip belongs to */
 	private int driverId;
 	/** The start of the trip */
@@ -19,16 +21,24 @@ public class Trip implements Parcelable {
 	/** The end of the trip */
 	private Coordinate end;
 	/** The trip's fee */
-	private double fee;
+	private double cost;
+	/** The min seats for the driver */
+	private int minSeats;
+	/** The number of seats for the driver */
+	private int numSeats;
 	
 	/**
 	 * Private constructor for the trip
 	 * @param builder A builder class that builds the Trip
 	 */
 	private Trip(Builder builder) {
-		this.fee = builder.fee;
+		this.userId = builder.userId;
+		this.driverId = builder.driverId;
+		this.cost = builder.cost;
 		this.start = builder.start;
 		this.end = builder.end;
+		this.minSeats = builder.minSeats;
+		this.numSeats = builder.numSeats;
 	}
 	
 	/**
@@ -58,7 +68,7 @@ public class Trip implements Parcelable {
 		this.driverId = source.readInt();
 		this.start = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
 		this.end = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
-		this.fee = source.readDouble();
+		this.cost = source.readDouble();
 	}
 	
 	/******************************** GETTERS **************************/
@@ -75,13 +85,21 @@ public class Trip implements Parcelable {
 	
 	public static class Builder {
 		
-		private double fee;
+		private double cost;
+		private int userId;
+		private int driverId;
 		private Coordinate start;
 		private Coordinate end;
+		private int minSeats;
+		private int numSeats;
 		
-		public Builder setFee(double fee) { this.fee = fee; return this; }
+		public Builder setUserId(int userId) { this.userId = userId; return this; }
+		public Builder setDriverId(int driverId) { this.driverId = driverId; return this; }
+		public Builder setFee(double cost) { this.cost = cost; return this; }
 		public Builder setStart(Coordinate start) { this.start = start; return this; }
 		public Builder setEnd(Coordinate end) { this.end = end; return this; }
+		public Builder setMinSeats(int minSeats) { this.minSeats = minSeats; return this; }
+		public Builder setNumSeats(int numSeats) { this.numSeats = numSeats; return this; }
 		
 		public Trip build() {
 			if (start == null || end == null) {
@@ -107,7 +125,7 @@ public class Trip implements Parcelable {
 		dest.writeInt(driverId);
 		dest.writeParcelable(start, 0);
 		dest.writeParcelable(end, 0);
-		dest.writeDouble(fee);
+		dest.writeDouble(cost);
 	}
 	
 	public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {

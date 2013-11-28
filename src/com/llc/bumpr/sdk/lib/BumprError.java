@@ -17,7 +17,7 @@ public class BumprError {
 	
 	public static BumprError errorToBumprError(RetrofitError e) throws Exception {
 		String json = BumprError.errorToString(e);
-        Gson gson = Restrofit.defaultGson();
+        Gson gson = Restrofit.defaultGsonBuilder().create();
         return gson.fromJson(json, BumprError.class); 
 	}
 	

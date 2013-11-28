@@ -6,10 +6,8 @@ import java.util.Map;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
-import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Header;
-import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
@@ -17,21 +15,11 @@ import retrofit.http.Query;
 
 import com.llc.bumpr.sdk.lib.Coordinate;
 import com.llc.bumpr.sdk.models.Driver;
-import com.llc.bumpr.sdk.models.Login;
-import com.llc.bumpr.sdk.models.LoginResponse;
-import com.llc.bumpr.sdk.models.Registration;
 import com.llc.bumpr.sdk.models.Request;
 import com.llc.bumpr.sdk.models.Review;
-import com.llc.bumpr.sdk.models.User;
 
-/**
- * The list of API calls provided by the Appa API. 
- * See kdubblabs.com/java/retrofit-by-square/ for more info on setting up API calls.
- * @author KhangSiLe
- *
- */
-public interface BumprAPI {
-	
+public interface DriverAPI {
+
 	@POST ("/drivers.json")
 	public void registerDriver(@Header("X-AUTH-TOKEN") String token, @Body HashMap<String, Object> driver, Callback<Driver> cb);
 	
@@ -62,6 +50,7 @@ public interface BumprAPI {
 	@POST ("/drivers/{id}/requests.json")
 	public Request request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body HashMap<String, Object> trip);
 	
+	
 	//@PUT ("/drivers/{id}/")
 	
 	/**
@@ -86,46 +75,5 @@ public interface BumprAPI {
 	@PUT ("/drivers/{driverId}/requests/{id}.json")
 	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("driverId") int driverId, @Path("id") int id, @Body Map<String, Object> map, Callback<Response> cb);
 	
-	@GET ("/requests/{id}.json")
-	public void getRequest(@Path("id") int id, Callback<Request> cb);
-	
-	@POST ("/sessions.json")
-	public void login(@Body Login login, Callback<LoginResponse> cb);
-	
-	@POST ("/sessions.json")
-	public LoginResponse login(@Body Login login);
-	
-	@POST ("/sessions.json")
-	public void login(@Body HashMap<String, Object> login, Callback<LoginResponse> cb);
-	
-	@POST ("/facebook_login.json")
-	public void login(@Header("OmniAuth") String header, @Body HashMap<String, Object> login, Callback<LoginResponse> cb);
-	
-	@POST ("/sessions.json")
-	public LoginResponse login(@Body HashMap<String, Object> login);
-	
-	@DELETE ("/sessions.json")
-	public void logout(@Header("X-AUTH-TOKEN") String token, Callback<Response> cb);
-	
-	@DELETE ("/sessions.json")
-	public Response logout(@Header("X-AUTH-TOKEN") String token);
-	
-	@GET("/users/{id}.json")
-	public void getUser(@Path("id") int user_id, Callback<User> cb);
-	
-	@GET("/users/{id}.json")
-	public User getUser(@Path("id") int user_id);
-
-	@POST ("/users.json")
-	public void register(@Body Registration user, Callback<LoginResponse> cb);
-	
-	@POST ("/users.json")
-	public LoginResponse register(@Body Registration user);
-	
-	@PUT ("/users/{id}.json")
-	public void updateUser(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user, Callback<User> cb);
-	
-	@PUT ("/users/{id}.json")
-	public User updateUser(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user);
 	
 }

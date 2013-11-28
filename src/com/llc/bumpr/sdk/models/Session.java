@@ -1,18 +1,18 @@
 package com.llc.bumpr.sdk.models;
 
-import java.util.HashMap;
+import android.content.Context;
+import android.util.Log;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import com.llc.bumpr.sdk.interfaces.BumprAPI;
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.async.http.AsyncHttpPost;
+import com.koushikdutta.ion.Ion;
 import com.llc.bumpr.sdk.lib.ApiRequest;
-import com.llc.bumpr.sdk.lib.BumprClient;
 
 public class Session {
 	
 	private String authToken;
+	public static String baseURL = "http://192.168.1.24:3000/api/v1";
 	
 	private static Session activeSession = new Session();
 	
@@ -47,19 +47,22 @@ public class Session {
 	public boolean sendRequest(ApiRequest request) {
 		if (request.needsAuth()) {
 			if (authToken != null && !authToken.trim().equals(""))
-				request.execute(authToken);
+				request.execute(baseURL, authToken);
 			else 
 				return false;
 		} else {
-			request.execute("");
+			request.execute(baseURL, "");
 		}
 		
 		return true;
 	}
 	
-	public void logout(final Callback<Response> cb) {
-		BumprAPI api = BumprClient.api();
-		api.logout(authToken, cb);
+	public void logout(Context context, final FutureCallback<String> cb) {
+		Ion.with(context).load("DELETE", baseURL + "/sessions.json")
+			.addHeader("X-AUTH-TOKEN", authToken)
+			.setHeader("Content-Length", "0")
+			.asString()
+			.setCallback(cb);
 	}
 	
 	/**
@@ -72,53 +75,34 @@ public class Session {
 	 * @param passwordConfirmation The password confirmation of the user (This must match with password)
 	 * @return A new Session once a successful registration has been returned from the server
 	 */
-	public void register(Registration registration, final Callback<User> cb) {
-		BumprAPI api = BumprClient.api();
-		api.register(registration, new Callback<LoginResponse>() {
+	public void register(Context context, Registration registration, final FutureCallback<User> cb) {		
+		Ion.with(context).load("POST", baseURL + "/users.json")
+			.setBodyParameter("first_name", registration.getFirstName())
+			.setBodyParameter("last_name", registration.getLastName())
+			.setBodyParameter("email", registration.getEmail())
+			.setBodyParameter("registration_id", registration.getRegistrationId())
+			.setBodyParameter("platform", "android")
+			.setBodyParameter("password_confirmation", registration.getPasswordConfirmation())
+			.setBodyParameter("password", registration.getPassword())
+			//.setJsonObjectBody(registration.toJson())
+			.as(new TypeToken<LoginResponse>(){})
+			.setCallback(new FutureCallback<LoginResponse>() {
 
-			@Override
-			public void failure(RetrofitError arg0) {
-				// TODO Auto-generated method stub
-				cb.failure(arg0);
-			}
-
-			@Override
-			public void success(LoginResponse login, Response response) {
-				// TODO Auto-generated method stub
-				User.setActiveUser(login.getUser());
-				authToken = login.getAuthToken();
-				cb.success(login.getUser(), response);
-			}
-			
-		});
-	}
-	
-	/**
-	 * method which logs a User in to the Bumpr network
-	 * @param email the email of the user
-	 * @param password the password of the user
-	 * @param cb a callback method for implementation of failure and success. Note this callback returns 
-	 * the ActiveSession in the event that the login is successful. 
-	 */
-	public void login(String email, String password, final Callback<User> cb) {
-		BumprAPI api = BumprClient.api();
-		api.login(new Login(email, password), new Callback<LoginResponse>() {
-
-			@Override
-			public void failure(RetrofitError arg0) {
-				// TODO Auto-generated method stub
-				cb.failure(arg0);
-			}
-
-			@Override
-			public void success(LoginResponse login, Response response) {
-				// TODO Auto-generated method stub
-				User.setActiveUser(login.getUser());
-				authToken = login.getAuthToken();
-				cb.success(login.getUser(), response);
-			}
-			
-		});
+				@Override
+				public void onCompleted(Exception arg0, LoginResponse login) {
+					User user = null;
+					if (arg0 == null) {
+						user = login.getUser();
+						User.setActiveUser(user);
+						authToken = login.getAuthToken();
+					} else {
+						arg0.printStackTrace();
+					}
+					
+					cb.onCompleted(arg0, user);
+				}
+				
+			});
 	}
 	
 	/**
@@ -129,52 +113,54 @@ public class Session {
 	 * @param cb a callback method for implementation of failure and success. Note this callback returns 
 	 * the ActiveSession in the event that the login is successful. 
 	 */
-	public void login(String email, String password, String gcmRegistrationId, final Callback<User> cb) {
-		BumprAPI api = BumprClient.api();
-		
-		HashMap<String, Object> login = new HashMap<String, Object>();
-		login.put("email", email);
-		login.put("password", password);
-		login.put("registration_id", gcmRegistrationId);
-		login.put("platform", "android");
-		
-		api.login(login, new Callback<LoginResponse>() {
+	public void login(Context context, Login login, final FutureCallback<User> cb) {
+		Ion.with(context).load("POST", baseURL + "/sessions.json")
+			.setBodyParameter("email", login.email)
+			.setBodyParameter("password", login.password)
+			.setBodyParameter("registration_id", login.registrationId)
+			.setBodyParameter("platform", login.platform)
+			.as(new TypeToken<LoginResponse>() {})
+			.setCallback(new FutureCallback<LoginResponse>() {
 
-			@Override
-			public void failure(RetrofitError arg0) {
-				cb.failure(arg0);
-			}
-
-			@Override
-			public void success(LoginResponse login, Response response) {
-				User.setActiveUser(login.getUser());
-				authToken = login.getAuthToken();
-				cb.success(login.getUser(), response);
-			}
-		});		
+				@Override
+				public void onCompleted(Exception arg0, LoginResponse login) {
+					User user = null;
+					if (arg0 == null) {
+						user = login.getUser();
+						User.setActiveUser(user);
+						authToken = login.getAuthToken();
+					} else {
+						arg0.printStackTrace();
+					}
+					
+					cb.onCompleted(arg0, user);
+				}
+				
+			});
 	}
 	
-	/**
-	 * @param login A HashMap that represents the login information to send to the server
-	 * @param cb A callback for when the server responds
-	 */
-	public void login(HashMap<String, Object> login, final Callback<User> cb) {
-		BumprAPI api = BumprClient.api();
-		
-		api.login(login, new Callback<LoginResponse>() {
-
-			@Override
-			public void failure(RetrofitError arg0) {
-				cb.failure(arg0);
-			}
-
-			@Override
-			public void success(LoginResponse login, Response arg1) {
-				User.setActiveUser(login.getUser());
-				authToken = login.getAuthToken();
-				cb.success(login.getUser(), arg1);
-			}
-			
+	public void loginWithFacebook(Context context, Login login, final FutureCallback<User> cb) {
+		Log.i("method", AsyncHttpPost.METHOD);
+		Ion.with(context).load("POST", baseURL + "/facebook_login.json")
+			.addHeader("OAUTH", login.accessToken)
+			.setBodyParameter("platform", login.platform)
+			.setBodyParameter("registration_id", login.registrationId)
+			.as(new TypeToken<LoginResponse>() {})
+			.setCallback(new FutureCallback<LoginResponse>() {
+				
+				@Override
+				public void onCompleted(Exception arg0, LoginResponse login) {
+					User user = null;
+					if (arg0 == null) {
+						user = login.getUser();
+						User.setActiveUser(user);
+						authToken = login.getAuthToken();
+					} else {
+						arg0.printStackTrace();
+					}
+					
+					cb.onCompleted(arg0, user);
+				}
 		});
 	}
 	

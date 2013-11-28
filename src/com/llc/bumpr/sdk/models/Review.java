@@ -5,14 +5,22 @@ import java.util.HashMap;
 import retrofit.Callback;
 import retrofit.client.Response;
 
+import com.google.gson.annotations.SerializedName;
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
 
 public class Review {
+	
+	@SerializedName("user_id")
 	private int userId;
+	
+	@SerializedName("driver_id")
 	private int driverId;
+	
+	@SerializedName("request_id")
 	private int requestId;
+	
 	private int rating;
 	private String content;
 	
@@ -31,7 +39,7 @@ public class Review {
 		final Review review = this;
 		return new ApiRequest() {
 			@Override
-			public void execute(String authToken) {
+			public void execute(String baseURL, String authToken) {
 				BumprAPI api = BumprClient.api();
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("request_id", requestId);
