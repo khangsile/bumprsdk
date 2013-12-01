@@ -1,11 +1,20 @@
 package com.llc.bumpr.sdk.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.Coordinate;
 
 public class Trip implements Parcelable {
@@ -26,6 +35,62 @@ public class Trip implements Parcelable {
 	private int minSeats;
 	/** The number of seats for the driver */
 	private int numSeats;
+	
+	
+	/************************************* STATIC METHODS ****************************/
+	
+	public static ApiRequest search(final Context context, final ArrayList<String> tags, final Coordinate start, final Coordinate end, final int radius) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String baseURL, String authToken) {
+				JSONObject json = new JSONObject();
+			
+				try {
+					json.put("tag_list", new JSONArray(tags));
+					
+					JSONObject jstart = new JSONObject();
+					jstart.put("latitude", start.lat);
+					jstart.put("longitude", start.lon);
+					jstart.put("distance", radius);
+					
+					JSONObject jend = new JSONObject();
+					jend.put("latitude", end.lat);
+					jend.put("longitude", end.lon);
+					jend.put("distance", radius);
+					
+					json.put("start_location", jstart);
+					json.put("end_location", jend);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+				
+				Ion.with(context).load(baseURL + "/trips/search")
+					.setJsonObjectBody(json)
+					.as(new TypeToken<List<Trip>>() {})
+					.setCallback(new FutureCallback<List<Trip>>() {
+
+						/*
+						 * tag_list - an array of strings
+						 * start_location - longitude, latitude, distance in meters
+						 * end_location - longitude, latitude, distance in meters
+						 */
+						@Override
+						public void onCompleted(Exception arg0, List<Trip> arg1) {
+							//Do something							
+						}
+						
+					});
+			}
+
+			@Override
+			public boolean needsAuth() {
+				return false;
+			}
+			
+		};
+	}
 	
 	/**
 	 * Private constructor for the trip
@@ -69,6 +134,37 @@ public class Trip implements Parcelable {
 		this.start = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
 		this.end = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
 		this.cost = source.readDouble();
+	}
+	
+	public ApiRequest post(final Context context, final FutureCallback<String> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String baseURL, String authToken) {
+				JSONObject json = new JSONObject();
+				
+				try {
+					json.put("end", end);
+					json.put("start", start);
+					json.put("cost", cost);
+					json.put("driver_id", driverId);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+				Ion.with(context).load("POST", baseURL + "/trips")
+					.addHeader("X-AUTH-TOKEN", authToken)
+					.setJsonObjectBody(json)
+					.asString()
+					.setCallback(cb);
+			}
+
+			@Override
+			public boolean needsAuth() {
+				return true;
+			}
+			
+		};
 	}
 	
 	/******************************** GETTERS **************************/
