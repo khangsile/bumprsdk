@@ -12,7 +12,7 @@ import com.llc.bumpr.sdk.lib.ApiRequest;
 public class Session {
 	
 	private String authToken;
-	public static String baseURL = "http://192.168.1.24:3000/api/v1";
+	public static String baseURL = "http://192.168.1.200:3000/api/v1";
 	
 	private static Session activeSession = new Session();
 	
@@ -75,16 +75,13 @@ public class Session {
 	 * @param passwordConfirmation The password confirmation of the user (This must match with password)
 	 * @return A new Session once a successful registration has been returned from the server
 	 */
-	public void register(Context context, Registration registration, final FutureCallback<User> cb) {		
+	public void register(Context context, Registration registration, final FutureCallback<User> cb) {	
+		Log.i("Registration",registration.toJson().toString());
+		
+		
 		Ion.with(context).load("POST", baseURL + "/users.json")
-			.setBodyParameter("first_name", registration.getFirstName())
-			.setBodyParameter("last_name", registration.getLastName())
-			.setBodyParameter("email", registration.getEmail())
-			.setBodyParameter("registration_id", registration.getRegistrationId())
-			.setBodyParameter("platform", "android")
-			.setBodyParameter("password_confirmation", registration.getPasswordConfirmation())
-			.setBodyParameter("password", registration.getPassword())
-			//.setJsonObjectBody(registration.toJson())
+			.setJsonObjectBody(registration.toJson())
+			//.setStringBody(registration.toJson().toString())
 			.as(new TypeToken<LoginResponse>(){})
 			.setCallback(new FutureCallback<LoginResponse>() {
 

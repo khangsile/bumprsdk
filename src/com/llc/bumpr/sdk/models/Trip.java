@@ -1,6 +1,7 @@
 package com.llc.bumpr.sdk.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -11,6 +12,8 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -21,20 +24,38 @@ public class Trip implements Parcelable {
 
 	/** The id of the trip */
 	private int id;
+	
 	/** The userId that created the trip */
+	@SerializedName("user_id")
 	private int userId;
+	
 	/** The driverId that the trip belongs to */
+	@SerializedName("driver_id")
 	private int driverId;
+	
 	/** The start of the trip */
 	private Coordinate start;
+	
 	/** The end of the trip */
 	private Coordinate end;
+	
 	/** The trip's fee */
 	private double cost;
+	
+	/** The start date of the trip **/
+	@SerializedName("start_time")
+	private Date startTime;
+	
 	/** The min seats for the driver */
+	@SerializedName("min_seats")
 	private int minSeats;
+	
 	/** The number of seats for the driver */
+	@SerializedName("num_seats")
 	private int numSeats;
+	
+	/** The tags of trip */
+	private ArrayList<String> tags;
 	
 	
 	/************************************* STATIC METHODS ****************************/
@@ -142,12 +163,14 @@ public class Trip implements Parcelable {
 			@Override
 			public void execute(String baseURL, String authToken) {
 				JSONObject json = new JSONObject();
+				Gson gson = new Gson();
 				
 				try {
-					json.put("end", end);
-					json.put("start", start);
+					json.put("end", gson.toJsonTree(end));
+					json.put("start", gson.toJsonTree(start));
 					json.put("cost", cost);
-					json.put("driver_id", driverId);
+					json.put("start_time", startTime);
+					if (driverId > 0) json.put("driver_id", driverId);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -188,6 +211,8 @@ public class Trip implements Parcelable {
 		private Coordinate end;
 		private int minSeats;
 		private int numSeats;
+		private Date startTime;
+		private ArrayList<String> tags;
 		
 		public Builder setUserId(int userId) { this.userId = userId; return this; }
 		public Builder setDriverId(int driverId) { this.driverId = driverId; return this; }
@@ -196,6 +221,8 @@ public class Trip implements Parcelable {
 		public Builder setEnd(Coordinate end) { this.end = end; return this; }
 		public Builder setMinSeats(int minSeats) { this.minSeats = minSeats; return this; }
 		public Builder setNumSeats(int numSeats) { this.numSeats = numSeats; return this; }
+		public Builder setTags(ArrayList<String> tags) { this.tags = tags; return this; }
+		public Builder setStartTime(Date startTime) { this.startTime = startTime; return this; }
 		
 		public Trip build() {
 			if (start == null || end == null) {

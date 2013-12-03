@@ -63,10 +63,6 @@ public class User implements Parcelable {
 	@SerializedName("phone_number")
 	protected String phoneNumber;
 	
-	/** The user's driver profile */
-	@SerializedName("driver_profile")
-	protected Driver driverProfile;
-	
 	/** A Singleton that represents the current user (on the device). */
 	private static User activeUser = null;
 	
@@ -126,8 +122,7 @@ public class User implements Parcelable {
 	
 	private static User jsonToUser(JSONObject json) throws JSONException {
 		User user = new User(json.getJSONObject("user"));
-		Driver driver = new Driver(json);
-		return new User.Builder<User>(user).setDriverProfile(driver).build();
+		return new User.Builder<User>(user).build();
 	}
 		
 	/**
@@ -329,7 +324,7 @@ public class User implements Parcelable {
 	 * @param driverProfile the driver profile of the user
 	 */
 	public void setDriverProfile(Driver driverProfile) {
-		this.driverProfile = driverProfile;
+		//Do nothing
 	}
 	
 	/**************************** GETTERS *************************/
@@ -410,7 +405,7 @@ public class User implements Parcelable {
 	 * @return the user's driver profile information in the form of a driver object
 	 */
 	public Driver getDriverProfile() {
-		return driverProfile;
+		return new Driver();
 	}
 		
 	/****************************** BUILDER ************************************/
@@ -427,7 +422,6 @@ public class User implements Parcelable {
 		public Builder<T> setProfileImage(String profileImage) { item.profileImage = profileImage; return this; }
 		public Builder<T> setDescription(String description) { item.description = description; return this; }
 		public Builder<T> setPhoneNumber(String phoneNumber) { item.phoneNumber = phoneNumber; return this; }
-		public Builder<T> setDriverProfile(Driver driver) { item.driverProfile = driver; return this; }
 		public T build() { return item; }
 	}
 
@@ -449,7 +443,6 @@ public class User implements Parcelable {
 		dest.writeString(profileImage);
 		dest.writeString(description);
 		dest.writeString(phoneNumber);
-		dest.writeParcelable(driverProfile, 0);
 	}
 	
 	public void readFromParcel(Parcel source) {
@@ -462,7 +455,6 @@ public class User implements Parcelable {
 		profileImage = source.readString();
 		description = source.readString();
 		phoneNumber = source.readString();
-		driverProfile = (Driver) source.readParcelable(Driver.class.getClassLoader());
 	}
 	
 	public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

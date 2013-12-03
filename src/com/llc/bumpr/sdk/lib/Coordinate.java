@@ -9,10 +9,15 @@ import android.os.Parcelable;
  *
  */
 public class Coordinate implements Parcelable {
+	
 	/** latitude **/
 	public double lat;
+	
 	/** longitude **/
 	public double lon;
+	
+	/** title of location **/
+	public String title;
 	
 	/** 
 	 * Basic constructor
@@ -31,6 +36,7 @@ public class Coordinate implements Parcelable {
 	public Coordinate(Parcel source) {
 		lon = source.readDouble();
 		lat = source.readDouble();
+		title = source.readString();
 	}
 	
 	/************************* PARCELABLE ********************/
@@ -46,6 +52,7 @@ public class Coordinate implements Parcelable {
 		// TODO Auto-generated method stub
 		dest.writeDouble(lon);
 		dest.writeDouble(lat);
+		dest.writeString(title);
 	}
 	
 	public static final Parcelable.Creator<Coordinate> CREATOR = new Parcelable.Creator<Coordinate>() {
