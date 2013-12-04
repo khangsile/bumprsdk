@@ -32,11 +32,11 @@ public class Login {
 	}
 	
 	public static class Builder {
-		private String email;
-		private String password;
-		private String registrationId;
-		private String platform;
-		private String accessToken;
+		private String email = null;
+		private String password = null;
+		private String registrationId = null;
+		private String platform = null;
+		private String accessToken = null;
 		
 		public Builder() {}
 		public Builder setEmail(String email) { this.email = email; return this; }

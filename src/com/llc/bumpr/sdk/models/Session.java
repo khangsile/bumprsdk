@@ -83,23 +83,7 @@ public class Session {
 			.setJsonObjectBody(registration.toJson())
 			//.setStringBody(registration.toJson().toString())
 			.as(new TypeToken<LoginResponse>(){})
-			.setCallback(new FutureCallback<LoginResponse>() {
-
-				@Override
-				public void onCompleted(Exception arg0, LoginResponse login) {
-					User user = null;
-					if (arg0 == null) {
-						user = login.getUser();
-						User.setActiveUser(user);
-						authToken = login.getAuthToken();
-					} else {
-						arg0.printStackTrace();
-					}
-					
-					cb.onCompleted(arg0, user);
-				}
-				
-			});
+			.setCallback(getLoginCallback(cb));
 	}
 	
 	/**
@@ -112,28 +96,13 @@ public class Session {
 	 */
 	public void login(Context context, Login login, final FutureCallback<User> cb) {
 		Ion.with(context).load("POST", baseURL + "/sessions.json")
-			.setBodyParameter("email", login.email)
+			/*.setBodyParameter("email", login.email)
 			.setBodyParameter("password", login.password)
 			.setBodyParameter("registration_id", login.registrationId)
-			.setBodyParameter("platform", login.platform)
+			.setBodyParameter("platform", login.platform)*/
+			.setJsonObjectBody(login)
 			.as(new TypeToken<LoginResponse>() {})
-			.setCallback(new FutureCallback<LoginResponse>() {
-
-				@Override
-				public void onCompleted(Exception arg0, LoginResponse login) {
-					User user = null;
-					if (arg0 == null) {
-						user = login.getUser();
-						User.setActiveUser(user);
-						authToken = login.getAuthToken();
-					} else {
-						arg0.printStackTrace();
-					}
-					
-					cb.onCompleted(arg0, user);
-				}
-				
-			});
+			.setCallback(getLoginCallback(cb));
 	}
 	
 	public void loginWithFacebook(Context context, Login login, final FutureCallback<User> cb) {
@@ -143,22 +112,7 @@ public class Session {
 			.setBodyParameter("platform", login.platform)
 			.setBodyParameter("registration_id", login.registrationId)
 			.as(new TypeToken<LoginResponse>() {})
-			.setCallback(new FutureCallback<LoginResponse>() {
-				
-				@Override
-				public void onCompleted(Exception arg0, LoginResponse login) {
-					User user = null;
-					if (arg0 == null) {
-						user = login.getUser();
-						User.setActiveUser(user);
-						authToken = login.getAuthToken();
-					} else {
-						arg0.printStackTrace();
-					}
-					
-					cb.onCompleted(arg0, user);
-				}
-		});
+			.setCallback(getLoginCallback(cb));
 	}
 	
 	/*********************** GETTERS *****************************/
@@ -169,6 +123,31 @@ public class Session {
 	 */
 	public String getAuthToken() {
 		return authToken;
+	}
+	
+	/************************ HELPER *******************************/
+	
+	private FutureCallback<LoginResponse> getLoginCallback(final FutureCallback<User> cb) {
+		return new FutureCallback<LoginResponse>() {
+			
+			@Override
+			public void onCompleted(Exception arg0, LoginResponse login) {
+				User user = null;
+				if (arg0 == null) {
+					user = login.getUser();
+					User.setActiveUser(user);
+					authToken = login.getAuthToken();
+				} else {
+					arg0.printStackTrace();
+				}
+				
+				if (user == null) {
+					arg0 = new Exception("User cannot be null");
+				}
+				
+				cb.onCompleted(arg0, user);
+			}
+		};
 	}
 	
 }

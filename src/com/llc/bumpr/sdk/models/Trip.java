@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.format.DateFormat;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -55,6 +56,7 @@ public class Trip implements Parcelable {
 	private int numSeats;
 	
 	/** The tags of trip */
+	@SerializedName("tag_list")
 	private ArrayList<String> tags;
 	
 	
@@ -125,6 +127,7 @@ public class Trip implements Parcelable {
 		this.end = builder.end;
 		this.minSeats = builder.minSeats;
 		this.numSeats = builder.numSeats;
+		this.tags = builder.tags;
 	}
 	
 	/**
@@ -155,6 +158,7 @@ public class Trip implements Parcelable {
 		this.start = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
 		this.end = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
 		this.cost = source.readDouble();
+		source.readList(tags, String.class.getClassLoader());
 	}
 	
 	public ApiRequest post(final Context context, final FutureCallback<String> cb) {
@@ -166,10 +170,13 @@ public class Trip implements Parcelable {
 				Gson gson = new Gson();
 				
 				try {
-					json.put("end", gson.toJsonTree(end));
-					json.put("start", gson.toJsonTree(start));
+					json.put("end_location", gson.toJsonTree(end));
+					json.put("start_location", gson.toJsonTree(start));
 					json.put("cost", cost);
-					json.put("start_time", startTime);
+					json.put("min_seats", minSeats);					
+					CharSequence date = DateFormat.format("yyyy-MM-DD'T'hh:mm:ss.sss'Z'", startTime);
+					json.put("start_time", date);
+					
 					if (driverId > 0) json.put("driver_id", driverId);
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -249,6 +256,7 @@ public class Trip implements Parcelable {
 		dest.writeParcelable(start, 0);
 		dest.writeParcelable(end, 0);
 		dest.writeDouble(cost);
+		dest.writeList(tags);
 	}
 	
 	public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {
