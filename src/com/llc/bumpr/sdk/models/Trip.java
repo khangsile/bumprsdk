@@ -14,6 +14,10 @@ import android.os.Parcelable;
 import android.text.format.DateFormat;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
@@ -88,23 +92,6 @@ public class Trip implements Parcelable {
 					e.printStackTrace();
 				}
 				
-				
-				Ion.with(context).load(baseURL + "/trips/search")
-					.setJsonObjectBody(json)
-					.as(new TypeToken<List<Trip>>() {})
-					.setCallback(new FutureCallback<List<Trip>>() {
-
-						/*
-						 * tag_list - an array of strings
-						 * start_location - longitude, latitude, distance in meters
-						 * end_location - longitude, latitude, distance in meters
-						 */
-						@Override
-						public void onCompleted(Exception arg0, List<Trip> arg1) {
-							//Do something							
-						}
-						
-					});
 			}
 
 			@Override
@@ -127,6 +114,7 @@ public class Trip implements Parcelable {
 		this.end = builder.end;
 		this.minSeats = builder.minSeats;
 		this.numSeats = builder.numSeats;
+		this.startTime = builder.startTime;
 		this.tags = builder.tags;
 	}
 	
@@ -239,6 +227,95 @@ public class Trip implements Parcelable {
 			return new Trip(this);
 		}
 	}
+	
+	/******************************* Search Request **************************/
+	
+	public static class SearchRequest implements ApiRequest {
+		
+		private Context context;
+		private FutureCallback<List<Trip>> cb;
+		
+		@Expose()
+		@SerializedName("start_location")
+		private Coordinate startLocation = null;
+		
+		@Expose()
+		@SerializedName("end_location")
+		private Coordinate endLocation = null;
+		
+		@Expose()
+		@SerializedName("tag_list")
+		private ArrayList<String> tags;
+		
+		@Expose()
+		@SerializedName("max_cost")
+		private double maxCost;
+		
+		@Expose()
+		@SerializedName("min_seats")
+		private int minSeats;
+		
+		/**
+		 * Standard constructor
+		 */
+		public SearchRequest() {
+		}
+		
+		public SearchRequest setContext(Context context) {
+			this.context = context;
+			return this;
+		}
+		
+		public SearchRequest setCallback(FutureCallback<List<Trip>> cb) {
+			this.cb = cb;
+			return this;
+		}
+		
+		public SearchRequest setStart(Coordinate start) {
+			this.startLocation = start;
+			return this;
+		}
+		
+		public SearchRequest setEnd(Coordinate end) {
+			this.endLocation = end;
+			return this;
+		}
+		
+		public SearchRequest setTags(ArrayList<String> tags) {
+			this.tags = tags;
+			return this;
+		}
+		
+		public SearchRequest setMaxCost(double maxCost) {
+			this.maxCost = maxCost;
+			return this;
+		}
+		
+		public SearchRequest setMinSeats(int minSeats) {
+			this.minSeats = minSeats;
+			return this;
+		}
+		
+		@Override
+		public void execute(String baseURL, String authToken) {
+			
+			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+						.create();
+			JsonElement json = gson.toJsonTree(this);
+			
+			Ion.with(context).load(baseURL + "/trips/search")
+			.setJsonObjectBody(json)
+			.as(new TypeToken<List<Trip>>() {})
+			.setCallback(cb);
+		}
+
+		@Override
+		public boolean needsAuth() {
+			return false;
+		}
+		
+	}
+	
 
 	/******************************* Parcelable ******************************/
 	
