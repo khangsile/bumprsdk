@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,20 +16,23 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.llc.bumpr.sdk.lib.ApiRequest;
-import com.llc.bumpr.sdk.lib.Coordinate;
+import com.llc.bumpr.sdk.lib.Location;
 
 public class Trip implements Parcelable {
 
 	/** The id of the trip */
+	@Expose(serialize=false)
 	private int id;
 	
 	/** The userId that created the trip */
+	@Expose(serialize=false)
 	@SerializedName("user_id")
 	private int userId;
 	
@@ -39,68 +41,39 @@ public class Trip implements Parcelable {
 	private int driverId;
 	
 	/** The start of the trip */
-	private Coordinate start;
+	@Expose()
+	private Location start;
 	
 	/** The end of the trip */
-	private Coordinate end;
+	@Expose()
+	private Location end;
 	
 	/** The trip's fee */
+	@Expose()
 	private double cost;
 	
 	/** The start date of the trip **/
+	@Expose()
 	@SerializedName("start_time")
 	private Date startTime;
 	
 	/** The min seats for the driver */
+	@Expose()
 	@SerializedName("min_seats")
 	private int minSeats;
 	
 	/** The number of seats for the driver */
+	@Expose(serialize=false)
 	@SerializedName("num_seats")
 	private int numSeats;
 	
 	/** The tags of trip */
+	@Expose()
 	@SerializedName("tag_list")
 	private ArrayList<String> tags;
 	
 	
 	/************************************* STATIC METHODS ****************************/
-	
-	public static ApiRequest search(final Context context, final ArrayList<String> tags, final Coordinate start, final Coordinate end, final int radius) {
-		return new ApiRequest() {
-
-			@Override
-			public void execute(String baseURL, String authToken) {
-				JSONObject json = new JSONObject();
-			
-				try {
-					json.put("tag_list", new JSONArray(tags));
-					
-					JSONObject jstart = new JSONObject();
-					jstart.put("latitude", start.lat);
-					jstart.put("longitude", start.lon);
-					jstart.put("distance", radius);
-					
-					JSONObject jend = new JSONObject();
-					jend.put("latitude", end.lat);
-					jend.put("longitude", end.lon);
-					jend.put("distance", radius);
-					
-					json.put("start_location", jstart);
-					json.put("end_location", jend);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				
-			}
-
-			@Override
-			public boolean needsAuth() {
-				return false;
-			}
-			
-		};
-	}
 	
 	/**
 	 * Private constructor for the trip
@@ -127,8 +100,8 @@ public class Trip implements Parcelable {
 		JSONObject start = json.getJSONObject("start");
 		JSONObject end = json.getJSONObject("end");
 		
-		this.start = new Coordinate(start.getDouble("lat"), start.getDouble("lon"));
-		this.end = new Coordinate(end.getDouble("lat"), end.getDouble("lon"));
+		this.start = new Location(start.getDouble("lat"), start.getDouble("lon"));
+		this.end = new Location(end.getDouble("lat"), end.getDouble("lon"));
 		
 		try {
 			driverId = json.getInt("driver_id");
@@ -143,8 +116,8 @@ public class Trip implements Parcelable {
 	public Trip(Parcel source) {
 		this.id = source.readInt();
 		this.driverId = source.readInt();
-		this.start = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
-		this.end = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
+		this.start = (Location) source.readParcelable(Location.class.getClassLoader());
+		this.end = (Location) source.readParcelable(Location.class.getClassLoader());
 		this.cost = source.readDouble();
 		source.readList(tags, String.class.getClassLoader());
 	}
@@ -153,22 +126,18 @@ public class Trip implements Parcelable {
 		return new ApiRequest() {
 
 			@Override
-			public void execute(String baseURL, String authToken) {
-				JSONObject json = new JSONObject();
+			public void execute(String baseURL, String authToken) {			
 				Gson gson = new Gson();
+				JsonObject json = new JsonObject(); //gson.toJsonTree(this);
 				
-				try {
-					json.put("end_location", gson.toJsonTree(end));
-					json.put("start_location", gson.toJsonTree(start));
-					json.put("cost", cost);
-					json.put("min_seats", minSeats);					
-					CharSequence date = DateFormat.format("yyyy-MM-DD'T'hh:mm:ss.sss'Z'", startTime);
-					json.put("start_time", date);
+				json.add("end_location", gson.toJsonTree(end));
+				json.add("start_location", gson.toJsonTree(start));
+				json.add("cost", new JsonPrimitive(cost));
+				json.add("min_seats", new JsonPrimitive(minSeats));					
+				CharSequence date = DateFormat.format("yyyy-MM-DD'T'hh:mm:ss.sss'Z'", startTime);
+				json.add("start_time", new JsonPrimitive(date.toString()));
 					
-					if (driverId > 0) json.put("driver_id", driverId);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				if (driverId > 0) json.add("driver_id", new JsonPrimitive(driverId));
 				
 				Ion.with(context).load("POST", baseURL + "/trips")
 					.addHeader("X-AUTH-TOKEN", authToken)
@@ -187,11 +156,11 @@ public class Trip implements Parcelable {
 	
 	/******************************** GETTERS **************************/
 	
-	public Coordinate getStart() {
+	public Location getStart() {
 		return start;
 	}
 	
-	public Coordinate getEnd() {
+	public Location getEnd() {
 		return end;
 	}
 	
@@ -202,8 +171,8 @@ public class Trip implements Parcelable {
 		private double cost;
 		private int userId;
 		private int driverId;
-		private Coordinate start;
-		private Coordinate end;
+		private Location start;
+		private Location end;
 		private int minSeats;
 		private int numSeats;
 		private Date startTime;
@@ -212,8 +181,8 @@ public class Trip implements Parcelable {
 		public Builder setUserId(int userId) { this.userId = userId; return this; }
 		public Builder setDriverId(int driverId) { this.driverId = driverId; return this; }
 		public Builder setFee(double cost) { this.cost = cost; return this; }
-		public Builder setStart(Coordinate start) { this.start = start; return this; }
-		public Builder setEnd(Coordinate end) { this.end = end; return this; }
+		public Builder setStart(Location start) { this.start = start; return this; }
+		public Builder setEnd(Location end) { this.end = end; return this; }
 		public Builder setMinSeats(int minSeats) { this.minSeats = minSeats; return this; }
 		public Builder setNumSeats(int numSeats) { this.numSeats = numSeats; return this; }
 		public Builder setTags(ArrayList<String> tags) { this.tags = tags; return this; }
@@ -237,11 +206,11 @@ public class Trip implements Parcelable {
 		
 		@Expose()
 		@SerializedName("start_location")
-		private Coordinate startLocation = null;
+		private Location startLocation = null;
 		
 		@Expose()
 		@SerializedName("end_location")
-		private Coordinate endLocation = null;
+		private Location endLocation = null;
 		
 		@Expose()
 		@SerializedName("tag_list")
@@ -249,11 +218,11 @@ public class Trip implements Parcelable {
 		
 		@Expose()
 		@SerializedName("max_cost")
-		private double maxCost;
+		private double maxCost = 100000;
 		
 		@Expose()
 		@SerializedName("min_seats")
-		private int minSeats;
+		private int minSeats = 1;
 		
 		/**
 		 * Standard constructor
@@ -271,12 +240,12 @@ public class Trip implements Parcelable {
 			return this;
 		}
 		
-		public SearchRequest setStart(Coordinate start) {
+		public SearchRequest setStart(Location start) {
 			this.startLocation = start;
 			return this;
 		}
 		
-		public SearchRequest setEnd(Coordinate end) {
+		public SearchRequest setEnd(Location end) {
 			this.endLocation = end;
 			return this;
 		}
@@ -303,7 +272,7 @@ public class Trip implements Parcelable {
 						.create();
 			JsonElement json = gson.toJsonTree(this);
 			
-			Ion.with(context).load(baseURL + "/trips/search")
+			Ion.with(context).load("POST", baseURL + "/search")
 			.setJsonObjectBody(json)
 			.as(new TypeToken<List<Trip>>() {})
 			.setCallback(cb);

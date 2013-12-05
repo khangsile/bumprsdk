@@ -1,6 +1,6 @@
 package com.llc.bumpr.sdk.models;
 
-import com.llc.bumpr.sdk.lib.Coordinate;
+import com.llc.bumpr.sdk.lib.Location;
 
 public class SearchQuery {
 	
@@ -11,12 +11,12 @@ public class SearchQuery {
 	private double minFee;
 	private int minSeats;
 	
-	public Coordinate getTopRight() {
-		return new Coordinate(top, right);
+	public Location getTopRight() {
+		return new Location(top, right);
 	}
 	
-	public Coordinate getBottomLeft() {
-		return new Coordinate(bottom, left);
+	public Location getBottomLeft() {
+		return new Location(bottom, left);
 	}
 	
 	public double getMinFee() {

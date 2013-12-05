@@ -13,7 +13,7 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-import com.llc.bumpr.sdk.lib.Coordinate;
+import com.llc.bumpr.sdk.lib.Location;
 import com.llc.bumpr.sdk.models.Driver;
 import com.llc.bumpr.sdk.models.Request;
 import com.llc.bumpr.sdk.models.Review;
@@ -67,10 +67,10 @@ public interface DriverAPI {
 	public Response searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, @Query("right") double right);
 	
 	@PUT ("/drivers/{id}/driver_location.json")
-	public void updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordiante, Callback<Response> cb);
+	public void updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Location coordiante, Callback<Response> cb);
 	
 	@PUT ("/drivers/{id}/driver_location.json")
-	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordinate);
+	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Location coordinate);
 	
 	@PUT ("/drivers/{driverId}/requests/{id}.json")
 	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("driverId") int driverId, @Path("id") int id, @Body Map<String, Object> map, Callback<Response> cb);

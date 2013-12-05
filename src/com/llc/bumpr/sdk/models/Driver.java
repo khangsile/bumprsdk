@@ -17,7 +17,7 @@ import android.util.Log;
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
-import com.llc.bumpr.sdk.lib.Coordinate;
+import com.llc.bumpr.sdk.lib.Location;
 
 /**
  * A Driver class that represents the driver's profile.
@@ -47,7 +47,7 @@ public class Driver implements Parcelable {
 	/** A boolean if the driver is currently available to drive. */
 	private boolean active;
 	/** A coordinate that represents the position of the driver */
-	private Coordinate position;
+	private Location position;
 	/** A List of Request objects that represents the requests to the driver */
 	private List<Request> requests = new ArrayList<Request>();
 	
@@ -88,7 +88,7 @@ public class Driver implements Parcelable {
 		if (sRating.equals("null")) rating = 0;
 		else rating = Double.parseDouble(sRating);
 		try {
-			position = new Coordinate(json.getDouble("lat"), json.getDouble("lon"));
+			position = new Location(json.getDouble("lat"), json.getDouble("lon"));
 		}catch(JSONException e){
 			Log.i("com.llc.bumpr.sdk", "Lat/Long not passed to driver");
 		}
@@ -101,7 +101,7 @@ public class Driver implements Parcelable {
 	 * @param coordinate A Coordinate object 
 	 * @return an ApiRequest object which can be sent to the session object to be executed
 	 */
-	public ApiRequest updateLocation(final Coordinate coordinate, final Callback<Response> cb) {
+	public ApiRequest updateLocation(final Location coordinate, final Callback<Response> cb) {
 		return new ApiRequest() {
 
 			@Override
@@ -252,7 +252,7 @@ public class Driver implements Parcelable {
 	/**
 	 * @return the Coordinate location of the driver
 	 */
-	public Coordinate getPosition() {
+	public Location getPosition() {
 		return position;
 	}
 	

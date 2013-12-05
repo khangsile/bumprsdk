@@ -3,6 +3,7 @@ package com.llc.bumpr.sdk.lib;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -10,27 +11,30 @@ import com.google.gson.annotations.SerializedName;
  * @author KhangSiLe
  *
  */
-public class Coordinate implements Parcelable {
+public class Location implements Parcelable {
 	
 	/** latitude **/
+	@Expose
 	@SerializedName("latitude")
 	public double lat;
 	
 	/** longitude **/
+	@Expose
 	@SerializedName("longitude")
 	public double lon;
 	
 	/** title of location **/
+	@Expose
 	public String title = null;
 	
-	public Coordinate() {}
+	public Location() {}
 	
 	/** 
 	 * Basic constructor
 	 * @param latitude the latitude of the coordinate
 	 * @param longitude the longitude of the coordinate
 	 */
-	public Coordinate(double latitude, double longitude) {
+	public Location(double latitude, double longitude) {
 		this.lon = longitude;
 		this.lat = latitude;
 	}
@@ -40,7 +44,7 @@ public class Coordinate implements Parcelable {
 	 * @param latitude the latitude of the coordinate
 	 * @return the object being modified
 	 */
-	public Coordinate setLatitude(double latitude) {
+	public Location setLatitude(double latitude) {
 		this.lat = latitude;
 		return this;
 	}
@@ -50,7 +54,7 @@ public class Coordinate implements Parcelable {
 	 * @param longitude the longitude of the coordinate
 	 * @return the object being modified
 	 */
-	public Coordinate setLongitude(double longitude) {
+	public Location setLongitude(double longitude) {
 		this.lon = longitude;
 		return this;
 	}
@@ -60,7 +64,7 @@ public class Coordinate implements Parcelable {
 	 * @param title the title of the coordinate
 	 * @return the object you are modifying
 	 */
-	public Coordinate setTitle(String title) {
+	public Location setTitle(String title) {
 		this.title = title;
 		return this;
 	}
@@ -69,7 +73,7 @@ public class Coordinate implements Parcelable {
 	 * Constructor to implement Parcelable
 	 * @param source the Parcel source 
 	 */
-	public Coordinate(Parcel source) {
+	public Location(Parcel source) {
 		lon = source.readDouble();
 		lat = source.readDouble();
 		title = source.readString();
@@ -89,16 +93,16 @@ public class Coordinate implements Parcelable {
 		dest.writeString(title);
 	}
 	
-	public static final Parcelable.Creator<Coordinate> CREATOR = new Parcelable.Creator<Coordinate>() {
+	public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
 
 		@Override
-		public Coordinate createFromParcel(Parcel source) {
-			return new Coordinate(source);
+		public Location createFromParcel(Parcel source) {
+			return new Location(source);
 		}
 
 		@Override
-		public Coordinate[] newArray(int size) {
-			return new Coordinate[size];
+		public Location[] newArray(int size) {
+			return new Location[size];
 		}
 		
 	};
