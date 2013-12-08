@@ -2,7 +2,6 @@ package com.llc.bumpr.sdk.models;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,20 +10,23 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.Location;
 
+/**
+ * Model that represents a trip
+ * @author KhangSiLe
+ *
+ */
 public class Trip implements Parcelable {
 
 	/** The id of the trip */
@@ -134,7 +136,8 @@ public class Trip implements Parcelable {
 				json.add("start_location", gson.toJsonTree(start));
 				json.add("cost", new JsonPrimitive(cost));
 				json.add("min_seats", new JsonPrimitive(minSeats));					
-				CharSequence date = DateFormat.format("yyyy-MM-DD'T'hh:mm:ss.sss'Z'", startTime);
+				CharSequence date = DateFormat.format("yyyy-MM-dd'T'hh:mm:ss.sss'Z'", startTime);
+				Log.i("trip", date.toString());
 				json.add("start_time", new JsonPrimitive(date.toString()));
 					
 				if (driverId > 0) json.add("driver_id", new JsonPrimitive(driverId));
@@ -197,95 +200,6 @@ public class Trip implements Parcelable {
 		}
 	}
 	
-	/******************************* Search Request **************************/
-	
-	public static class SearchRequest implements ApiRequest {
-		
-		private Context context;
-		private FutureCallback<List<Trip>> cb;
-		
-		@Expose()
-		@SerializedName("start_location")
-		private Location startLocation = null;
-		
-		@Expose()
-		@SerializedName("end_location")
-		private Location endLocation = null;
-		
-		@Expose()
-		@SerializedName("tag_list")
-		private ArrayList<String> tags;
-		
-		@Expose()
-		@SerializedName("max_cost")
-		private double maxCost = 100000;
-		
-		@Expose()
-		@SerializedName("min_seats")
-		private int minSeats = 1;
-		
-		/**
-		 * Standard constructor
-		 */
-		public SearchRequest() {
-		}
-		
-		public SearchRequest setContext(Context context) {
-			this.context = context;
-			return this;
-		}
-		
-		public SearchRequest setCallback(FutureCallback<List<Trip>> cb) {
-			this.cb = cb;
-			return this;
-		}
-		
-		public SearchRequest setStart(Location start) {
-			this.startLocation = start;
-			return this;
-		}
-		
-		public SearchRequest setEnd(Location end) {
-			this.endLocation = end;
-			return this;
-		}
-		
-		public SearchRequest setTags(ArrayList<String> tags) {
-			this.tags = tags;
-			return this;
-		}
-		
-		public SearchRequest setMaxCost(double maxCost) {
-			this.maxCost = maxCost;
-			return this;
-		}
-		
-		public SearchRequest setMinSeats(int minSeats) {
-			this.minSeats = minSeats;
-			return this;
-		}
-		
-		@Override
-		public void execute(String baseURL, String authToken) {
-			
-			Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-						.create();
-			JsonElement json = gson.toJsonTree(this);
-			
-			Ion.with(context).load("POST", baseURL + "/search")
-			.setJsonObjectBody(json)
-			.as(new TypeToken<List<Trip>>() {})
-			.setCallback(cb);
-		}
-
-		@Override
-		public boolean needsAuth() {
-			return false;
-		}
-		
-	}
-	
-
 	/******************************* Parcelable ******************************/
 	
 	@Override
