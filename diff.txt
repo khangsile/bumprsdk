@@ -1,0 +1,1808 @@
+diff --git a/libs/androidasync-1.2.0.jar b/libs/androidasync-1.2.0.jar
+deleted file mode 100644
+index f0ad931..0000000
+Binary files a/libs/androidasync-1.2.0.jar and /dev/null differ
+diff --git a/libs/ion-1.2.0.jar b/libs/ion-1.2.0.jar
+deleted file mode 100644
+index faf759a..0000000
+Binary files a/libs/ion-1.2.0.jar and /dev/null differ
+diff --git a/src/com/llc/bumpr/sdk/interfaces/BumprAPI.java b/src/com/llc/bumpr/sdk/interfaces/BumprAPI.java
+index 2cd2f79..435b5db 100644
+--- a/src/com/llc/bumpr/sdk/interfaces/BumprAPI.java
++++ b/src/com/llc/bumpr/sdk/interfaces/BumprAPI.java
+@@ -15,7 +15,7 @@ import retrofit.http.PUT;
+ import retrofit.http.Path;
+ import retrofit.http.Query;
+ 
+-import com.llc.bumpr.sdk.lib.Location;
++import com.llc.bumpr.sdk.lib.Coordinate;
+ import com.llc.bumpr.sdk.models.Driver;
+ import com.llc.bumpr.sdk.models.Login;
+ import com.llc.bumpr.sdk.models.LoginResponse;
+@@ -78,10 +78,10 @@ public interface BumprAPI {
+ 	public Response searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, @Query("right") double right);
+ 	
+ 	@PUT ("/drivers/{id}/driver_location.json")
+-	public void updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Location coordiante, Callback<Response> cb);
++	public void updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordiante, Callback<Response> cb);
+ 	
+ 	@PUT ("/drivers/{id}/driver_location.json")
+-	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Location coordinate);
++	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Coordinate coordinate);
+ 	
+ 	@PUT ("/drivers/{driverId}/requests/{id}.json")
+ 	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("driverId") int driverId, @Path("id") int id, @Body Map<String, Object> map, Callback<Response> cb);
+@@ -98,9 +98,6 @@ public interface BumprAPI {
+ 	@POST ("/sessions.json")
+ 	public void login(@Body HashMap<String, Object> login, Callback<LoginResponse> cb);
+ 	
+-	@POST ("/facebook_login.json")
+-	public void login(@Header("OmniAuth") String header, @Body HashMap<String, Object> login, Callback<LoginResponse> cb);
+-	
+ 	@POST ("/sessions.json")
+ 	public LoginResponse login(@Body HashMap<String, Object> login);
+ 	
+diff --git a/src/com/llc/bumpr/sdk/interfaces/DriverAPI.java b/src/com/llc/bumpr/sdk/interfaces/DriverAPI.java
+deleted file mode 100644
+index a81baa7..0000000
+--- a/src/com/llc/bumpr/sdk/interfaces/DriverAPI.java
++++ /dev/null
+@@ -1,79 +0,0 @@
+-package com.llc.bumpr.sdk.interfaces;
+-
+-import java.util.HashMap;
+-import java.util.Map;
+-
+-import retrofit.Callback;
+-import retrofit.client.Response;
+-import retrofit.http.Body;
+-import retrofit.http.GET;
+-import retrofit.http.Header;
+-import retrofit.http.POST;
+-import retrofit.http.PUT;
+-import retrofit.http.Path;
+-import retrofit.http.Query;
+-
+-import com.llc.bumpr.sdk.lib.Location;
+-import com.llc.bumpr.sdk.models.Driver;
+-import com.llc.bumpr.sdk.models.Request;
+-import com.llc.bumpr.sdk.models.Review;
+-
+-public interface DriverAPI {
+-
+-	@POST ("/drivers.json")
+-	public void registerDriver(@Header("X-AUTH-TOKEN") String token, @Body HashMap<String, Object> driver, Callback<Driver> cb);
+-	
+-	@POST ("/drivers.json")
+-	public Driver registerDriver(@Header("X-AUTH-TOKEN") String token);
+-	
+-	@GET ("/drivers/{id}.json")
+-	public void getDriver(@Path("id") int driverId, Callback<Response> cb);
+-	
+-	@GET ("/drivers/{id}.json")
+-	public Response getDriver(@Path("id") int driverId);
+-	
+-	@PUT ("/drivers/{id}.json")
+-	public void updateDriver(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body HashMap<String, Object> driver, Callback<Driver> cb);
+-	
+-	@PUT ("/drivers/{id}.json")
+-	public Driver updateDriver(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body HashMap<String, Object> driver);
+-	
+-	@POST ("/drivers/{id}/driver_reviews.json")
+-	public void createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body HashMap<String, Object> review, Callback<Response> cb);
+-	
+-	@POST ("/drivers/{id}/driver_reviews.json")
+-	public Response createReview(@Header("X-AUTH-TOKEN") String token, @Path("id") int driverId, @Body Review review);
+-	
+-	@POST ("/drivers/{id}/requests.json")
+-	public void request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body HashMap<String, Object> trip, Callback<Request> cb);
+-
+-	@POST ("/drivers/{id}/requests.json")
+-	public Request request(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body HashMap<String, Object> trip);
+-	
+-	
+-	//@PUT ("/drivers/{id}/")
+-	
+-	/**
+-	 * search drivers method. currently Retrofit does not support variable-query params
+-	 */
+-	@GET ("/drivers.json")
+-	public void searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, @Query("right") double right, Callback<Response> cb);
+-	
+-	@GET ("/drivers.json")
+-	public void searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, 
+-			@Query("right") double right, @Query("min_fee") double minFee, @Query("min_seats") int minSeats, Callback<Response> cb);
+-	
+-	@GET ("/drivers.json")
+-	public Response searchDrivers(@Query("top") double top, @Query("left") double left, @Query("bottom") double bottom, @Query("right") double right);
+-	
+-	@PUT ("/drivers/{id}/driver_location.json")
+-	public void updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Location coordiante, Callback<Response> cb);
+-	
+-	@PUT ("/drivers/{id}/driver_location.json")
+-	public Response updateLocation(@Header("X-AUTH-TOKEN") String token, @Path("id") int id, @Body Location coordinate);
+-	
+-	@PUT ("/drivers/{driverId}/requests/{id}.json")
+-	public void respondTo(@Header("X-AUTH-TOKEN") String token, @Path("driverId") int driverId, @Path("id") int id, @Body Map<String, Object> map, Callback<Response> cb);
+-	
+-	
+-}
+diff --git a/src/com/llc/bumpr/sdk/interfaces/RequestAPI.java b/src/com/llc/bumpr/sdk/interfaces/RequestAPI.java
+deleted file mode 100644
+index 500007d..0000000
+--- a/src/com/llc/bumpr/sdk/interfaces/RequestAPI.java
++++ /dev/null
+@@ -1,14 +0,0 @@
+-package com.llc.bumpr.sdk.interfaces;
+-
+-import retrofit.Callback;
+-import retrofit.http.GET;
+-import retrofit.http.Path;
+-
+-import com.llc.bumpr.sdk.models.Request;
+-
+-public interface RequestAPI {
+-
+-	@GET ("/requests/{id}.json")
+-	public void getRequest(@Path("id") int id, Callback<Request> cb);
+-	
+-}
+diff --git a/src/com/llc/bumpr/sdk/interfaces/SessionAPI.java b/src/com/llc/bumpr/sdk/interfaces/SessionAPI.java
+deleted file mode 100644
+index f505cb0..0000000
+--- a/src/com/llc/bumpr/sdk/interfaces/SessionAPI.java
++++ /dev/null
+@@ -1,34 +0,0 @@
+-package com.llc.bumpr.sdk.interfaces;
+-
+-import java.util.HashMap;
+-
+-import retrofit.Callback;
+-import retrofit.client.Response;
+-import retrofit.http.Body;
+-import retrofit.http.DELETE;
+-import retrofit.http.Header;
+-import retrofit.http.POST;
+-
+-import com.llc.bumpr.sdk.models.Login;
+-import com.llc.bumpr.sdk.models.LoginResponse;
+-
+-public interface SessionAPI {
+-	
+-	@POST ("/sessions.json")
+-	public LoginResponse login(@Body Login login);
+-	
+-	@POST ("/sessions.json")
+-	public void login(@Body HashMap<String, Object> login, Callback<LoginResponse> cb);
+-	
+-	@POST ("/facebook_login.json")
+-	public void login(@Header("OmniAuth") String header, @Body HashMap<String, Object> login, Callback<LoginResponse> cb);
+-	
+-	@POST ("/sessions.json")
+-	public LoginResponse login(@Body HashMap<String, Object> login);
+-	
+-	@DELETE ("/sessions.json")
+-	public void logout(@Header("X-AUTH-TOKEN") String token, Callback<Response> cb);
+-	
+-	@DELETE ("/sessions.json")
+-	public Response logout(@Header("X-AUTH-TOKEN") String token);
+-}
+diff --git a/src/com/llc/bumpr/sdk/interfaces/UserAPI.java b/src/com/llc/bumpr/sdk/interfaces/UserAPI.java
+deleted file mode 100644
+index 79abaca..0000000
+--- a/src/com/llc/bumpr/sdk/interfaces/UserAPI.java
++++ /dev/null
+@@ -1,38 +0,0 @@
+-package com.llc.bumpr.sdk.interfaces;
+-
+-import java.util.HashMap;
+-
+-import org.json.JSONObject;
+-
+-import retrofit.Callback;
+-import retrofit.http.Body;
+-import retrofit.http.GET;
+-import retrofit.http.Header;
+-import retrofit.http.POST;
+-import retrofit.http.PUT;
+-import retrofit.http.Path;
+-
+-import com.llc.bumpr.sdk.models.LoginResponse;
+-import com.llc.bumpr.sdk.models.Registration;
+-import com.llc.bumpr.sdk.models.User;
+-
+-public interface UserAPI {
+-	
+-	@GET("/users/{id}.json")
+-	public void getUser(@Path("id") int user_id, Callback<User> cb);
+-	
+-	@GET("/users/{id}.json")
+-	public User getUser(@Path("id") int user_id);
+-
+-	@POST ("/users.json")
+-	public void register(@Body Registration user, Callback<LoginResponse> cb);
+-	
+-	@POST ("/users.json")
+-	public LoginResponse register(@Body Registration user);
+-	
+-	@PUT ("/users/{id}.json")
+-	public void updateUser(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user, Callback<User> cb);
+-	
+-	@PUT ("/users/{id}.json")
+-	public User updateUser(@Header("X-AUTH-TOKEN") String token, @Path("id") int userId, @Body HashMap<String, Object> user);
+-}
+diff --git a/src/com/llc/bumpr/sdk/lib/ApiRequest.java b/src/com/llc/bumpr/sdk/lib/ApiRequest.java
+index 5f6c9e4..309c9b0 100644
+--- a/src/com/llc/bumpr/sdk/lib/ApiRequest.java
++++ b/src/com/llc/bumpr/sdk/lib/ApiRequest.java
+@@ -2,7 +2,7 @@ package com.llc.bumpr.sdk.lib;
+ 
+ public interface ApiRequest {
+ 	
+-	public void execute(String baseURL, String authToken);
++	public void execute(String authToken);
+ 	
+ 	public boolean needsAuth();
+ }
+diff --git a/src/com/llc/bumpr/sdk/lib/BumprClient.java b/src/com/llc/bumpr/sdk/lib/BumprClient.java
+index c2ea641..a21287b 100644
+--- a/src/com/llc/bumpr/sdk/lib/BumprClient.java
++++ b/src/com/llc/bumpr/sdk/lib/BumprClient.java
+@@ -1,44 +1,23 @@
+ package com.llc.bumpr.sdk.lib;
+ 
+ import retrofit.RestAdapter;
+-import retrofit.converter.GsonConverter;
+ 
+-import com.google.gson.Gson;
+ import com.llc.bumpr.sdk.interfaces.BumprAPI;
+-import com.llc.bumpr.sdk.interfaces.DriverAPI;
+-import com.llc.bumpr.sdk.interfaces.RequestAPI;
+-import com.llc.bumpr.sdk.interfaces.SessionAPI;
+-import com.llc.bumpr.sdk.interfaces.UserAPI;
+-import com.llc.bumpr.sdk.models.Registration;
+-import com.llc.bumpr.sdk.serializers.RegistrationSerializer;
+ import com.llc.restrofit.Restrofit;
+ 
+ public class BumprClient {
+ 	
+-	private static String baseURL = "http://192.168.1.200:3000/api/v1"; //"http://bumpr.herokuapp.com/api/v1";
++	private static String baseURL = "http://192.168.1.200:3000/api/v1";//"http://bumpr.herokuapp.com/api/v1";
++	private static Restrofit rest; 
+ 	
+ 	private static RestAdapter sharedAdapter() {
+-		
+-		RestAdapter adapter = Restrofit.sharedAdapter();
+-		
+-		if (adapter == null) {
+-			Gson gson = Restrofit.defaultGsonBuilder()
+-							.registerTypeAdapter(Registration.class, new RegistrationSerializer())
+-							.create();
+-			adapter = Restrofit.defaultBuilder(baseURL)
+-						.setConverter(new GsonConverter(gson))
+-						.build();
+-			Restrofit.setSharedAdapter(adapter);
+-		}
+-			
+-		return adapter;
++		return (Restrofit.sharedAdapter() != null) ? 
++			Restrofit.sharedAdapter() : Restrofit.defaultAdapter(baseURL);
+ 	}
+ 	
+ 	public static RestAdapter setBaseURL(String baseURL) {
+ 		BumprClient.baseURL = baseURL;
+-		Restrofit.setSharedAdapter(null);
+-		
+-		return sharedAdapter();
++		return Restrofit.defaultAdapter(baseURL);
+ 	}
+ 	
+ 	public static BumprAPI api() {
+@@ -46,24 +25,4 @@ public class BumprClient {
+ 		return rest.create(BumprAPI.class);
+ 	}
+ 	
+-	public static UserAPI userAPI() {
+-		RestAdapter rest = sharedAdapter();
+-		return rest.create(UserAPI.class);
+-	}
+-	
+-	public static DriverAPI driverAPI() {
+-		RestAdapter rest = sharedAdapter();
+-		return rest.create(DriverAPI.class);
+-	}
+-	
+-	public static RequestAPI requestAPI() {
+-		RestAdapter rest = sharedAdapter();
+-		return rest.create(RequestAPI.class);
+-	}
+-	
+-	public static SessionAPI sessionAPI() {
+-		RestAdapter rest = sharedAdapter();
+-		return rest.create(SessionAPI.class);
+-	}
+-	
+ }
+diff --git a/src/com/llc/bumpr/sdk/lib/BumprError.java b/src/com/llc/bumpr/sdk/lib/BumprError.java
+index 9fa9308..f4a137b 100644
+--- a/src/com/llc/bumpr/sdk/lib/BumprError.java
++++ b/src/com/llc/bumpr/sdk/lib/BumprError.java
+@@ -4,7 +4,6 @@ import java.io.InputStream;
+ import java.util.Scanner;
+ 
+ import retrofit.RetrofitError;
+-import retrofit.client.Response;
+ 
+ import com.google.gson.Gson;
+ import com.llc.restrofit.Restrofit;
+@@ -17,7 +16,7 @@ public class BumprError {
+ 	
+ 	public static BumprError errorToBumprError(RetrofitError e) throws Exception {
+ 		String json = BumprError.errorToString(e);
+-        Gson gson = Restrofit.defaultGsonBuilder().create();
++        Gson gson = Restrofit.defaultGson();
+         return gson.fromJson(json, BumprError.class); 
+ 	}
+ 	
+@@ -26,11 +25,6 @@ public class BumprError {
+         return new Scanner(in,"UTF-8").useDelimiter("\\A").next();
+ 	}
+ 	
+-	public static String responseToString(Response e) throws Exception {
+-		InputStream in = e.getBody().in();
+-		return new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+-	}
+-	
+ 	/**
+ 	 * Returns the error code of the the error. This correlates directly to the error listings
+ 	 * on the Bumpr API.
+diff --git a/src/com/llc/bumpr/sdk/lib/Coordinate.java b/src/com/llc/bumpr/sdk/lib/Coordinate.java
+new file mode 100644
+index 0000000..b68b991
+--- /dev/null
++++ b/src/com/llc/bumpr/sdk/lib/Coordinate.java
+@@ -0,0 +1,66 @@
++package com.llc.bumpr.sdk.lib;
++
++import android.os.Parcel;
++import android.os.Parcelable;
++
++/**
++ * A class to store coordinates on a map
++ * @author KhangSiLe
++ *
++ */
++public class Coordinate implements Parcelable {
++	/** latitude **/
++	public double lat;
++	/** longitude **/
++	public double lon;
++	
++	/** 
++	 * Basic constructor
++	 * @param latitude the latitude of the coordinate
++	 * @param longitude the longitude of the coordinate
++	 */
++	public Coordinate(double latitude, double longitude) {
++		this.lon = longitude;
++		this.lat = latitude;
++	}
++	
++	/**
++	 * Constructor to implement Parcelable
++	 * @param source the Parcel source 
++	 */
++	public Coordinate(Parcel source) {
++		lon = source.readDouble();
++		lat = source.readDouble();
++	}
++	
++	/************************* PARCELABLE ********************/
++	
++	@Override
++	public int describeContents() {
++		// TODO Auto-generated method stub
++		return 0;
++	}
++	
++	@Override
++	public void writeToParcel(Parcel dest, int flags) {
++		// TODO Auto-generated method stub
++		dest.writeDouble(lon);
++		dest.writeDouble(lat);
++	}
++	
++	public static final Parcelable.Creator<Coordinate> CREATOR = new Parcelable.Creator<Coordinate>() {
++
++		@Override
++		public Coordinate createFromParcel(Parcel source) {
++			// TODO Auto-generated method stub
++			return new Coordinate(source);
++		}
++
++		@Override
++		public Coordinate[] newArray(int size) {
++			// TODO Auto-generated method stub
++			return new Coordinate[size];
++		}
++		
++	};
++}
+diff --git a/src/com/llc/bumpr/sdk/lib/Location.java b/src/com/llc/bumpr/sdk/lib/Location.java
+deleted file mode 100644
+index 7e2fd48..0000000
+--- a/src/com/llc/bumpr/sdk/lib/Location.java
++++ /dev/null
+@@ -1,109 +0,0 @@
+-package com.llc.bumpr.sdk.lib;
+-
+-import android.os.Parcel;
+-import android.os.Parcelable;
+-
+-import com.google.gson.annotations.Expose;
+-import com.google.gson.annotations.SerializedName;
+-
+-/**
+- * A class to store coordinates on a map
+- * @author KhangSiLe
+- *
+- */
+-public class Location implements Parcelable {
+-	
+-	/** latitude **/
+-	@Expose
+-	@SerializedName("latitude")
+-	public double lat;
+-	
+-	/** longitude **/
+-	@Expose
+-	@SerializedName("longitude")
+-	public double lon;
+-	
+-	/** title of location **/
+-	@Expose
+-	public String title = null;
+-	
+-	public Location() {}
+-	
+-	/** 
+-	 * Basic constructor
+-	 * @param latitude the latitude of the coordinate
+-	 * @param longitude the longitude of the coordinate
+-	 */
+-	public Location(double latitude, double longitude) {
+-		this.lon = longitude;
+-		this.lat = latitude;
+-	}
+-	
+-	/**
+-	 * Set the latitude
+-	 * @param latitude the latitude of the coordinate
+-	 * @return the object being modified
+-	 */
+-	public Location setLatitude(double latitude) {
+-		this.lat = latitude;
+-		return this;
+-	}
+-	
+-	/**
+-	 * Set the longitude
+-	 * @param longitude the longitude of the coordinate
+-	 * @return the object being modified
+-	 */
+-	public Location setLongitude(double longitude) {
+-		this.lon = longitude;
+-		return this;
+-	}
+-	
+-	/**
+-	 * Set the title
+-	 * @param title the title of the coordinate
+-	 * @return the object you are modifying
+-	 */
+-	public Location setTitle(String title) {
+-		this.title = title;
+-		return this;
+-	}
+-	
+-	/**
+-	 * Constructor to implement Parcelable
+-	 * @param source the Parcel source 
+-	 */
+-	public Location(Parcel source) {
+-		lon = source.readDouble();
+-		lat = source.readDouble();
+-		title = source.readString();
+-	}
+-	
+-	/************************* PARCELABLE ********************/
+-	
+-	@Override
+-	public int describeContents() {
+-		return 0;
+-	}
+-	
+-	@Override
+-	public void writeToParcel(Parcel dest, int flags) {
+-		dest.writeDouble(lon);
+-		dest.writeDouble(lat);
+-		dest.writeString(title);
+-	}
+-	
+-	public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
+-
+-		@Override
+-		public Location createFromParcel(Parcel source) {
+-			return new Location(source);
+-		}
+-
+-		@Override
+-		public Location[] newArray(int size) {
+-			return new Location[size];
+-		}
+-		
+-	};
+-}
+diff --git a/src/com/llc/bumpr/sdk/models/Driver.java b/src/com/llc/bumpr/sdk/models/Driver.java
+index d0fa5c4..cfd119a 100644
+--- a/src/com/llc/bumpr/sdk/models/Driver.java
++++ b/src/com/llc/bumpr/sdk/models/Driver.java
+@@ -17,7 +17,7 @@ import android.util.Log;
+ import com.llc.bumpr.sdk.interfaces.BumprAPI;
+ import com.llc.bumpr.sdk.lib.ApiRequest;
+ import com.llc.bumpr.sdk.lib.BumprClient;
+-import com.llc.bumpr.sdk.lib.Location;
++import com.llc.bumpr.sdk.lib.Coordinate;
+ 
+ /**
+  * A Driver class that represents the driver's profile.
+@@ -25,11 +25,10 @@ import com.llc.bumpr.sdk.lib.Location;
+  * @version 0.1
+  */
+ public class Driver implements Parcelable {
+-
+-	/** The driver id (linked to the driver table) */
+-	private int id;
+ 	/** The driver's balance (money) */
+ 	private double balance;
++	/** The driver id (linked to the driver table) */
++	private int id;
+ 	/** The driver license number */
+ 	private String licenseId;
+ 	/** The driver insurance number */
+@@ -47,7 +46,7 @@ public class Driver implements Parcelable {
+ 	/** A boolean if the driver is currently available to drive. */
+ 	private boolean active;
+ 	/** A coordinate that represents the position of the driver */
+-	private Location position;
++	private Coordinate position;
+ 	/** A List of Request objects that represents the requests to the driver */
+ 	private List<Request> requests = new ArrayList<Request>();
+ 	
+@@ -88,7 +87,7 @@ public class Driver implements Parcelable {
+ 		if (sRating.equals("null")) rating = 0;
+ 		else rating = Double.parseDouble(sRating);
+ 		try {
+-			position = new Location(json.getDouble("lat"), json.getDouble("lon"));
++			position = new Coordinate(json.getDouble("lat"), json.getDouble("lon"));
+ 		}catch(JSONException e){
+ 			Log.i("com.llc.bumpr.sdk", "Lat/Long not passed to driver");
+ 		}
+@@ -101,11 +100,11 @@ public class Driver implements Parcelable {
+ 	 * @param coordinate A Coordinate object 
+ 	 * @return an ApiRequest object which can be sent to the session object to be executed
+ 	 */
+-	public ApiRequest updateLocation(final Location coordinate, final Callback<Response> cb) {
++	public ApiRequest updateLocation(final Coordinate coordinate, final Callback<Response> cb) {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 				api.updateLocation(authToken, id, coordinate, cb);
+ 			}
+@@ -127,7 +126,7 @@ public class Driver implements Parcelable {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 				HashMap<String, Object> map = new HashMap<String, Object>();
+ 				map.put("accepted", new Boolean(request.getAccepted()));
+@@ -148,7 +147,7 @@ public class Driver implements Parcelable {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 				api.updateDriver(authToken,id, driver, new Callback<Driver>() {
+ 
+@@ -252,7 +251,7 @@ public class Driver implements Parcelable {
+ 	/**
+ 	 * @return the Coordinate location of the driver
+ 	 */
+-	public Location getPosition() {
++	public Coordinate getPosition() {
+ 		return position;
+ 	}
+ 	
+diff --git a/src/com/llc/bumpr/sdk/models/Login.java b/src/com/llc/bumpr/sdk/models/Login.java
+index b65ea92..c4bb637 100644
+--- a/src/com/llc/bumpr/sdk/models/Login.java
++++ b/src/com/llc/bumpr/sdk/models/Login.java
+@@ -1,50 +1,11 @@
+ package com.llc.bumpr.sdk.models;
+ 
+-import com.google.gson.Gson;
+-import com.google.gson.JsonElement;
+-import com.google.gson.JsonObject;
+-import com.google.gson.annotations.SerializedName;
+-
+ public class Login {
+-	public String email;
+-	public String password;
+-	public String platform;
+-	
+-	@SerializedName("registration_id")
+-	public String registrationId;
+-	
+-	@SerializedName("access_token")
+-	public String accessToken;
+-	
+-	private Login(Builder builder) {
+-		this.email = builder.email;
+-		this.password = builder.password;
+-		this.registrationId = builder.registrationId;
+-		this.platform = builder.platform;
+-		this.accessToken = builder.accessToken;
+-	}
+-	
+-	public JsonObject toJson() {
+-		Gson gson = new Gson();
+-		JsonElement jsonElement = gson.toJsonTree(this);
+-		
+-		return jsonElement.getAsJsonObject();
+-	}
++	private String email;
++	private String password;
+ 	
+-	public static class Builder {
+-		private String email = null;
+-		private String password = null;
+-		private String registrationId = null;
+-		private String platform = null;
+-		private String accessToken = null;
+-		
+-		public Builder() {}
+-		public Builder setEmail(String email) { this.email = email; return this; }
+-		public Builder setPassword(String password) { this.password = password; return this; }
+-		public Builder setRegistrationId(String registrationId) { this.registrationId = registrationId; return this; }
+-		public Builder setPlatform(String platform) { this.platform = platform; return this; }
+-		public Builder setAccessToken(String accessToken) { this.accessToken = accessToken; return this; }
+-		
+-		public Login build() { return new Login(this); }
++	public Login(String email, String password) {
++		this.email = email;
++		this.password = password;
+ 	}
+ }
+diff --git a/src/com/llc/bumpr/sdk/models/LoginResponse.java b/src/com/llc/bumpr/sdk/models/LoginResponse.java
+index f26bffc..6c51716 100644
+--- a/src/com/llc/bumpr/sdk/models/LoginResponse.java
++++ b/src/com/llc/bumpr/sdk/models/LoginResponse.java
+@@ -1,25 +1,7 @@
+ package com.llc.bumpr.sdk.models;
+ 
+-import com.google.gson.annotations.SerializedName;
+-
+-/**
+- * Class that receives the Json response from the server during login or
+- * registration. This class is solely used for the automatic mapping of the 
+- * user and authentication token from the Json.
+- * @author KhangSiLe
+- *
+- */
+ public class LoginResponse {
+-	
+-	/**
+-	 * The authentication token of the session
+-	 */
+-	@SerializedName("auth_token")
+ 	private String authToken;
+-	
+-	/**
+-	 * The User object of the user who logged in
+-	 */
+ 	private User user;
+ 	
+ 	public String getAuthToken() {
+diff --git a/src/com/llc/bumpr/sdk/models/Registration.java b/src/com/llc/bumpr/sdk/models/Registration.java
+index e1c588e..1eb015c 100644
+--- a/src/com/llc/bumpr/sdk/models/Registration.java
++++ b/src/com/llc/bumpr/sdk/models/Registration.java
+@@ -3,97 +3,28 @@ package com.llc.bumpr.sdk.models;
+ import android.os.Parcel;
+ import android.os.Parcelable;
+ 
+-import com.google.gson.JsonObject;
+-
+-public class Registration implements Parcelable {
++public class Registration extends User {
+ 	
+-	private String firstName;
+-	private String lastName;
+-	private String email;
+ 	private String password;
+ 	private String passwordConfirmation;
+-	private String platform = "android";
+-	private String registrationId;
+ 	
+ 	public Registration() {
++		super();
+ 	}
+ 	
+ 	public Registration(Parcel source) {
+-		firstName = source.readString();
+-		lastName = source.readString();
+-		email = source.readString();
+-		password = source.readString();
+-		passwordConfirmation = source.readString();
+-		registrationId = source.readString();
+-	}
+-	
+-	public JsonObject toJson() {
+-		JsonObject json = new JsonObject();
+-		
+-		json.addProperty("first_name", firstName);
+-		json.addProperty("last_name", lastName);
+-		json.addProperty("password", password);
+-		json.addProperty("password_confirmation", passwordConfirmation);
+-		json.addProperty("email", email);
+-		json.addProperty("registration_id", registrationId);
+-		json.addProperty("platform", platform);
+-		
+-		return json;
+-	}
+-	
+-	/***************************** GETTERS ****************************/
+-	
+-	public String getFirstName() {
+-		return firstName;
+-	}
+-	
+-	public String getLastName() {
+-		return lastName;
+-	}
+-	
+-	public String getEmail() {
+-		return email;
+-	}
+-	
+-	public String getPassword() {
+-		return password;
++		super(source);
+ 	}
+-	
+-	public String getPasswordConfirmation() {
+-		return passwordConfirmation;
+-	}
+-	
+-	public String getRegistrationId() {
+-		return registrationId;
+-	}
+-	
+-	public String getPlatform() {
+-		return platform;
+-	}
+-	
+-	/*********************** BUILDER **********************************/
+ 
+-	public static final class Builder {
++	public static final class Builder extends User.Builder<Registration> {
+ 	
+-		private String firstName;
+-		private String lastName;
+-		private String email;
+ 		private String password;
+ 		private String passwordConfirmation;
+-		private String registrationId;
+-		private Registration item;
+ 	
+-		public Builder(Registration r) { this.item = r; } 
+-		public Builder setFirstName(String firstName) { item.firstName = firstName; return this; }
+-		public Builder setLastName(String lastName) { item.lastName = lastName; return this; }
+-		public Builder setEmail(String email) { item.email = email; return this; }
+-		public Builder setPassword(String password) { item.password = password; return this; }
+-		public Builder setPasswordConfirmation(String passwordConfirmation) { item.passwordConfirmation = passwordConfirmation; return this; }
+-		public Builder setRegistrationId(String registrationId) { item.registrationId = registrationId; return this; }
++		public Builder() { super(new Registration()); } 
++		public Builder setPassword(String password) { build().password = password; return this; }
++		public Builder setPasswordConfirmation(String passwordConfirmation) { build().passwordConfirmation = passwordConfirmation; return this; }
+ 		
+-		public Registration build() {
+-			return item;
+-		}
+ 	}
+ 	
+ /*********************************** PARCELABLE *************************/
+@@ -107,12 +38,9 @@ public class Registration implements Parcelable {
+ 	@Override
+ 	public void writeToParcel(Parcel dest, int flags) {
+ 		// TODO Auto-generated method stub
+-		dest.writeString(firstName);
+-		dest.writeString(lastName);
+-		dest.writeString(email);
++		super.writeToParcel(dest, flags);
+ 		dest.writeString(password);
+ 		dest.writeString(passwordConfirmation);
+-		dest.writeString(registrationId);
+ 	}
+ 	
+ 	public static final Parcelable.Creator<Registration> CREATOR = new Parcelable.Creator<Registration>() {
+diff --git a/src/com/llc/bumpr/sdk/models/Request.java b/src/com/llc/bumpr/sdk/models/Request.java
+index 312ec97..762886a 100644
+--- a/src/com/llc/bumpr/sdk/models/Request.java
++++ b/src/com/llc/bumpr/sdk/models/Request.java
+@@ -68,7 +68,7 @@ public class Request implements Parcelable {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 				HashMap<String, Object> map = new HashMap<String, Object>();
+ 				map.put("start", trip.getStart());
+@@ -90,7 +90,7 @@ public class Request implements Parcelable {
+ 	public ApiRequest respondTo(final boolean accept, final Callback<Response> cb) {
+ 		return new ApiRequest() {
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 				HashMap<String, Object> map = new HashMap<String, Object>();
+ 				map.put("accepted", accept);
+@@ -115,7 +115,7 @@ public class Request implements Parcelable {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 			}
+ 
+diff --git a/src/com/llc/bumpr/sdk/models/Review.java b/src/com/llc/bumpr/sdk/models/Review.java
+index 8974032..b0146d5 100644
+--- a/src/com/llc/bumpr/sdk/models/Review.java
++++ b/src/com/llc/bumpr/sdk/models/Review.java
+@@ -5,22 +5,14 @@ import java.util.HashMap;
+ import retrofit.Callback;
+ import retrofit.client.Response;
+ 
+-import com.google.gson.annotations.SerializedName;
+ import com.llc.bumpr.sdk.interfaces.BumprAPI;
+ import com.llc.bumpr.sdk.lib.ApiRequest;
+ import com.llc.bumpr.sdk.lib.BumprClient;
+ 
+ public class Review {
+-	
+-	@SerializedName("user_id")
+ 	private int userId;
+-	
+-	@SerializedName("driver_id")
+ 	private int driverId;
+-	
+-	@SerializedName("request_id")
+ 	private int requestId;
+-	
+ 	private int rating;
+ 	private String content;
+ 	
+@@ -39,7 +31,7 @@ public class Review {
+ 		final Review review = this;
+ 		return new ApiRequest() {
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 				HashMap<String, Object> map = new HashMap<String, Object>();
+ 				map.put("request_id", requestId);
+diff --git a/src/com/llc/bumpr/sdk/models/SearchQuery.java b/src/com/llc/bumpr/sdk/models/SearchQuery.java
+index 0ba7b8c..7d37914 100644
+--- a/src/com/llc/bumpr/sdk/models/SearchQuery.java
++++ b/src/com/llc/bumpr/sdk/models/SearchQuery.java
+@@ -1,6 +1,6 @@
+ package com.llc.bumpr.sdk.models;
+ 
+-import com.llc.bumpr.sdk.lib.Location;
++import com.llc.bumpr.sdk.lib.Coordinate;
+ 
+ public class SearchQuery {
+ 	
+@@ -11,12 +11,12 @@ public class SearchQuery {
+ 	private double minFee;
+ 	private int minSeats;
+ 	
+-	public Location getTopRight() {
+-		return new Location(top, right);
++	public Coordinate getTopRight() {
++		return new Coordinate(top, right);
+ 	}
+ 	
+-	public Location getBottomLeft() {
+-		return new Location(bottom, left);
++	public Coordinate getBottomLeft() {
++		return new Coordinate(bottom, left);
+ 	}
+ 	
+ 	public double getMinFee() {
+diff --git a/src/com/llc/bumpr/sdk/models/SearchRequest.java b/src/com/llc/bumpr/sdk/models/SearchRequest.java
+deleted file mode 100644
+index c601194..0000000
+--- a/src/com/llc/bumpr/sdk/models/SearchRequest.java
++++ /dev/null
+@@ -1,120 +0,0 @@
+-package com.llc.bumpr.sdk.models;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-
+-import android.content.Context;
+-
+-import com.google.gson.Gson;
+-import com.google.gson.GsonBuilder;
+-import com.google.gson.JsonElement;
+-import com.google.gson.annotations.Expose;
+-import com.google.gson.annotations.SerializedName;
+-import com.google.gson.reflect.TypeToken;
+-import com.koushikdutta.async.future.FutureCallback;
+-import com.koushikdutta.ion.Ion;
+-import com.llc.bumpr.sdk.lib.ApiRequest;
+-import com.llc.bumpr.sdk.lib.Location;
+-
+-/**
+- * Model that represents a search request for a trip
+- * Use this model to build your search requests, and pass it to the
+- * session sendRequest method to send it.
+- * @author KhangSiLe
+- *
+- */
+-public class SearchRequest implements ApiRequest {
+-	
+-	private Context context;
+-	private FutureCallback<String> cb;
+-	
+-	@Expose()
+-	@SerializedName("start_location")
+-	private Location startLocation = null;
+-	
+-	@Expose()
+-	@SerializedName("end_location")
+-	private Location endLocation = null;
+-	
+-	@Expose()
+-	@SerializedName("tag_list")
+-	private ArrayList<String> tags;
+-	
+-	@Expose()
+-	@SerializedName("max_cost")
+-	private double maxCost = 100000;
+-	
+-	@Expose()
+-	@SerializedName("min_seats")
+-	private int minSeats = 1;
+-	
+-	/**
+-	 * Standard constructor
+-	 */
+-	public SearchRequest() {
+-	}
+-	
+-	public SearchRequest setContext(Context context) {
+-		this.context = context;
+-		return this;
+-	}
+-	
+-	public SearchRequest setCallback(FutureCallback<String> cb) {
+-		this.cb = cb;
+-		return this;
+-	}
+-	
+-	public SearchRequest setStart(Location start) {
+-		this.startLocation = start;
+-		return this;
+-	}
+-	
+-	public SearchRequest setEnd(Location end) {
+-		this.endLocation = end;
+-		return this;
+-	}
+-	
+-	public SearchRequest setTags(ArrayList<String> tags) {
+-		this.tags = tags;
+-		return this;
+-	}
+-	
+-	public SearchRequest setMaxCost(double maxCost) {
+-		this.maxCost = maxCost;
+-		return this;
+-	}
+-	
+-	public SearchRequest setMinSeats(int minSeats) {
+-		this.minSeats = minSeats;
+-		return this;
+-	}
+-	
+-	public Location getStart() {
+-		return startLocation;
+-	}
+-	
+-	public Location getEnd() {
+-		return endLocation;
+-	}
+-	
+-	@Override
+-	public void execute(String baseURL, String authToken) {
+-		
+-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+-					.create();
+-		JsonElement json = gson.toJsonTree(this);
+-		
+-		Ion.with(context).load("POST", baseURL + "/search")
+-		.setTimeout(5000)
+-		.setJsonObjectBody(json)
+-		.asString()
+-		//.as(new TypeToken<List<Trip>>() {})
+-		.setCallback(cb);
+-	}
+-
+-	@Override
+-	public boolean needsAuth() {
+-		return false;
+-	}
+-	
+-}
+diff --git a/src/com/llc/bumpr/sdk/models/Session.java b/src/com/llc/bumpr/sdk/models/Session.java
+index 8e539ce..c65855f 100644
+--- a/src/com/llc/bumpr/sdk/models/Session.java
++++ b/src/com/llc/bumpr/sdk/models/Session.java
+@@ -1,18 +1,18 @@
+ package com.llc.bumpr.sdk.models;
+ 
+-import android.content.Context;
+-import android.util.Log;
++import java.util.HashMap;
+ 
+-import com.google.gson.reflect.TypeToken;
+-import com.koushikdutta.async.future.FutureCallback;
+-import com.koushikdutta.async.http.AsyncHttpPost;
+-import com.koushikdutta.ion.Ion;
++import retrofit.Callback;
++import retrofit.RetrofitError;
++import retrofit.client.Response;
++
++import com.llc.bumpr.sdk.interfaces.BumprAPI;
+ import com.llc.bumpr.sdk.lib.ApiRequest;
++import com.llc.bumpr.sdk.lib.BumprClient;
+ 
+ public class Session {
+ 	
+ 	private String authToken;
+-	public static String baseURL = "http://192.168.1.200:3000/api/v1";
+ 	
+ 	private static Session activeSession = new Session();
+ 	
+@@ -47,22 +47,19 @@ public class Session {
+ 	public boolean sendRequest(ApiRequest request) {
+ 		if (request.needsAuth()) {
+ 			if (authToken != null && !authToken.trim().equals(""))
+-				request.execute(baseURL, authToken);
++				request.execute(authToken);
+ 			else 
+ 				return false;
+ 		} else {
+-			request.execute(baseURL, "");
++			request.execute("");
+ 		}
+ 		
+ 		return true;
+ 	}
+ 	
+-	public void logout(Context context, final FutureCallback<String> cb) {
+-		Ion.with(context).load("DELETE", baseURL + "/sessions.json")
+-			.addHeader("X-AUTH-TOKEN", authToken)
+-			.setHeader("Content-Length", "0")
+-			.asString()
+-			.setCallback(cb);
++	public void logout(final Callback<Response> cb) {
++		BumprAPI api = BumprClient.api();
++		api.logout(authToken, cb);
+ 	}
+ 	
+ 	/**
+@@ -75,44 +72,88 @@ public class Session {
+ 	 * @param passwordConfirmation The password confirmation of the user (This must match with password)
+ 	 * @return A new Session once a successful registration has been returned from the server
+ 	 */
+-	public void register(Context context, Registration registration, final FutureCallback<User> cb) {	
+-		Log.i("Registration",registration.toJson().toString());
+-		
+-		
+-		Ion.with(context).load("POST", baseURL + "/users.json")
+-			.setJsonObjectBody(registration.toJson())
+-			//.setStringBody(registration.toJson().toString())
+-			.as(new TypeToken<LoginResponse>(){})
+-			.setCallback(getLoginCallback(cb));
++	public void register(Registration registration, final Callback<User> cb) {
++		BumprAPI api = BumprClient.api();
++		api.register(registration, new Callback<LoginResponse>() {
++
++			@Override
++			public void failure(RetrofitError arg0) {
++				// TODO Auto-generated method stub
++				cb.failure(arg0);
++			}
++
++			@Override
++			public void success(LoginResponse login, Response response) {
++				// TODO Auto-generated method stub
++				User.setActiveUser(login.getUser());
++				authToken = login.getAuthToken();
++				cb.success(login.getUser(), response);
++			}
++			
++		});
+ 	}
+ 	
+ 	/**
+ 	 * method which logs a User in to the Bumpr network
+ 	 * @param email the email of the user
+ 	 * @param password the password of the user
+-	 * @param gcmRegistrationId the GCM Registration Id for the phone
+ 	 * @param cb a callback method for implementation of failure and success. Note this callback returns 
+ 	 * the ActiveSession in the event that the login is successful. 
+ 	 */
+-	public void login(Context context, Login login, final FutureCallback<User> cb) {
+-		Ion.with(context).load("POST", baseURL + "/sessions.json")
+-			/*.setBodyParameter("email", login.email)
+-			.setBodyParameter("password", login.password)
+-			.setBodyParameter("registration_id", login.registrationId)
+-			.setBodyParameter("platform", login.platform)*/
+-			.setJsonObjectBody(login)
+-			.as(new TypeToken<LoginResponse>() {})
+-			.setCallback(getLoginCallback(cb));
++	public void login(String email, String password, final Callback<User> cb) {
++		BumprAPI api = BumprClient.api();
++		api.login(new Login(email, password), new Callback<LoginResponse>() {
++
++			@Override
++			public void failure(RetrofitError arg0) {
++				// TODO Auto-generated method stub
++				cb.failure(arg0);
++			}
++
++			@Override
++			public void success(LoginResponse login, Response response) {
++				// TODO Auto-generated method stub
++				User.setActiveUser(login.getUser());
++				authToken = login.getAuthToken();
++				cb.success(login.getUser(), response);
++			}
++			
++		});
+ 	}
+ 	
+-	public void loginWithFacebook(Context context, Login login, final FutureCallback<User> cb) {
+-		Log.i("method", AsyncHttpPost.METHOD);
+-		Ion.with(context).load("POST", baseURL + "/facebook_login.json")
+-			.addHeader("OAUTH", login.accessToken)
+-			.setBodyParameter("platform", login.platform)
+-			.setBodyParameter("registration_id", login.registrationId)
+-			.as(new TypeToken<LoginResponse>() {})
+-			.setCallback(getLoginCallback(cb));
++	/**
++	 * method which logs a User in to the Bumpr network
++	 * @param email the email of the user
++	 * @param password the password of the user
++	 * @param gcmRegistrationId the GCM Registration Id for the phone
++	 * @param cb a callback method for implementation of failure and success. Note this callback returns 
++	 * the ActiveSession in the event that the login is successful. 
++	 */
++	public void login(String email, String password, String gcmRegistrationId, final Callback<User> cb) {
++		BumprAPI api = BumprClient.api();
++		
++		HashMap<String, Object> login = new HashMap<String, Object>();
++		login.put("email", email);
++		login.put("password", password);
++		login.put("registration_id", gcmRegistrationId);
++		login.put("platform", "android");
++		
++		api.login(login, new Callback<LoginResponse>() {
++
++			@Override
++			public void failure(RetrofitError arg0) {
++				// TODO Auto-generated method stub
++				cb.failure(arg0);
++			}
++
++			@Override
++			public void success(LoginResponse login, Response response) {
++				// TODO Auto-generated method stub
++				User.setActiveUser(login.getUser());
++				authToken = login.getAuthToken();
++				cb.success(login.getUser(), response);
++			}
++		});		
+ 	}
+ 	
+ 	/*********************** GETTERS *****************************/
+@@ -125,29 +166,4 @@ public class Session {
+ 		return authToken;
+ 	}
+ 	
+-	/************************ HELPER *******************************/
+-	
+-	private FutureCallback<LoginResponse> getLoginCallback(final FutureCallback<User> cb) {
+-		return new FutureCallback<LoginResponse>() {
+-			
+-			@Override
+-			public void onCompleted(Exception arg0, LoginResponse login) {
+-				User user = null;
+-				if (arg0 == null) {
+-					user = login.getUser();
+-					User.setActiveUser(user);
+-					authToken = login.getAuthToken();
+-				} else {
+-					arg0.printStackTrace();
+-				}
+-				
+-				if (user == null) {
+-					arg0 = new Exception("User cannot be null");
+-				}
+-				
+-				cb.onCompleted(arg0, user);
+-			}
+-		};
+-	}
+-	
+ }
+diff --git a/src/com/llc/bumpr/sdk/models/Trip.java b/src/com/llc/bumpr/sdk/models/Trip.java
+index f7fcd5b..f5d08de 100644
+--- a/src/com/llc/bumpr/sdk/models/Trip.java
++++ b/src/com/llc/bumpr/sdk/models/Trip.java
+@@ -1,96 +1,34 @@
+ package com.llc.bumpr.sdk.models;
+ 
+-import java.util.ArrayList;
+-import java.util.Date;
+-
+ import org.json.JSONException;
+ import org.json.JSONObject;
+ 
+-import android.content.Context;
+ import android.os.Parcel;
+ import android.os.Parcelable;
+-import android.text.format.DateFormat;
+-import android.util.Log;
+ 
+-import com.google.gson.Gson;
+-import com.google.gson.JsonObject;
+-import com.google.gson.JsonPrimitive;
+-import com.google.gson.annotations.Expose;
+-import com.google.gson.annotations.SerializedName;
+-import com.koushikdutta.async.future.FutureCallback;
+-import com.koushikdutta.ion.Ion;
+-import com.llc.bumpr.sdk.lib.ApiRequest;
+-import com.llc.bumpr.sdk.lib.Location;
++import com.llc.bumpr.sdk.lib.Coordinate;
+ 
+-/**
+- * Model that represents a trip
+- * @author KhangSiLe
+- *
+- */
+ public class Trip implements Parcelable {
+ 
+ 	/** The id of the trip */
+-	@Expose(serialize=false)
+ 	private int id;
+-	
+-	/** The userId that created the trip */
+-	@Expose(serialize=false)
+-	@SerializedName("user_id")
+-	private int userId;
+-	
+ 	/** The driverId that the trip belongs to */
+-	@SerializedName("driver_id")
+ 	private int driverId;
+-	
+ 	/** The start of the trip */
+-	@Expose()
+-	private Location start;
+-	
++	private Coordinate start;
+ 	/** The end of the trip */
+-	@Expose()
+-	private Location end;
+-	
++	private Coordinate end;
+ 	/** The trip's fee */
+-	@Expose()
+-	private double cost;
+-	
+-	/** The start date of the trip **/
+-	@Expose()
+-	@SerializedName("start_time")
+-	private Date startTime;
+-	
+-	/** The min seats for the driver */
+-	@Expose()
+-	@SerializedName("min_seats")
+-	private int minSeats;
+-	
+-	/** The number of seats for the driver */
+-	@Expose(serialize=false)
+-	@SerializedName("num_seats")
+-	private int numSeats;
+-	
+-	/** The tags of trip */
+-	@Expose()
+-	@SerializedName("tag_list")
+-	private ArrayList<String> tags;
+-	
+-	
+-	/************************************* STATIC METHODS ****************************/
++	private double fee;
+ 	
+ 	/**
+ 	 * Private constructor for the trip
+ 	 * @param builder A builder class that builds the Trip
+ 	 */
+ 	private Trip(Builder builder) {
+-		this.userId = builder.userId;
+-		this.driverId = builder.driverId;
+-		this.cost = builder.cost;
++		this.fee = builder.fee;
+ 		this.start = builder.start;
+ 		this.end = builder.end;
+-		this.minSeats = builder.minSeats;
+-		this.numSeats = builder.numSeats;
+-		this.startTime = builder.startTime;
+-		this.tags = builder.tags;
+ 	}
+ 	
+ 	/**
+@@ -102,8 +40,8 @@ public class Trip implements Parcelable {
+ 		JSONObject start = json.getJSONObject("start");
+ 		JSONObject end = json.getJSONObject("end");
+ 		
+-		this.start = new Location(start.getDouble("lat"), start.getDouble("lon"));
+-		this.end = new Location(end.getDouble("lat"), end.getDouble("lon"));
++		this.start = new Coordinate(start.getDouble("lat"), start.getDouble("lon"));
++		this.end = new Coordinate(end.getDouble("lat"), end.getDouble("lon"));
+ 		
+ 		try {
+ 			driverId = json.getInt("driver_id");
+@@ -118,52 +56,18 @@ public class Trip implements Parcelable {
+ 	public Trip(Parcel source) {
+ 		this.id = source.readInt();
+ 		this.driverId = source.readInt();
+-		this.start = (Location) source.readParcelable(Location.class.getClassLoader());
+-		this.end = (Location) source.readParcelable(Location.class.getClassLoader());
+-		this.cost = source.readDouble();
+-		source.readList(tags, String.class.getClassLoader());
+-	}
+-	
+-	public ApiRequest post(final Context context, final FutureCallback<String> cb) {
+-		return new ApiRequest() {
+-
+-			@Override
+-			public void execute(String baseURL, String authToken) {			
+-				Gson gson = new Gson();
+-				JsonObject json = new JsonObject(); //gson.toJsonTree(this);
+-				
+-				json.add("end_location", gson.toJsonTree(end));
+-				json.add("start_location", gson.toJsonTree(start));
+-				json.add("cost", new JsonPrimitive(cost));
+-				json.add("min_seats", new JsonPrimitive(minSeats));					
+-				CharSequence date = DateFormat.format("yyyy-MM-dd'T'hh:mm:ss.sss'Z'", startTime);
+-				Log.i("trip", date.toString());
+-				json.add("start_time", new JsonPrimitive(date.toString()));
+-					
+-				if (driverId > 0) json.add("driver_id", new JsonPrimitive(driverId));
+-				
+-				Ion.with(context).load("POST", baseURL + "/trips")
+-					.addHeader("X-AUTH-TOKEN", authToken)
+-					.setJsonObjectBody(json)
+-					.asString()
+-					.setCallback(cb);
+-			}
+-
+-			@Override
+-			public boolean needsAuth() {
+-				return true;
+-			}
+-			
+-		};
++		this.start = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
++		this.end = (Coordinate) source.readParcelable(Coordinate.class.getClassLoader());
++		this.fee = source.readDouble();
+ 	}
+ 	
+ 	/******************************** GETTERS **************************/
+ 	
+-	public Location getStart() {
++	public Coordinate getStart() {
+ 		return start;
+ 	}
+ 	
+-	public Location getEnd() {
++	public Coordinate getEnd() {
+ 		return end;
+ 	}
+ 	
+@@ -171,25 +75,13 @@ public class Trip implements Parcelable {
+ 	
+ 	public static class Builder {
+ 		
+-		private double cost;
+-		private int userId;
+-		private int driverId;
+-		private Location start;
+-		private Location end;
+-		private int minSeats;
+-		private int numSeats;
+-		private Date startTime;
+-		private ArrayList<String> tags;
++		private double fee;
++		private Coordinate start;
++		private Coordinate end;
+ 		
+-		public Builder setUserId(int userId) { this.userId = userId; return this; }
+-		public Builder setDriverId(int driverId) { this.driverId = driverId; return this; }
+-		public Builder setFee(double cost) { this.cost = cost; return this; }
+-		public Builder setStart(Location start) { this.start = start; return this; }
+-		public Builder setEnd(Location end) { this.end = end; return this; }
+-		public Builder setMinSeats(int minSeats) { this.minSeats = minSeats; return this; }
+-		public Builder setNumSeats(int numSeats) { this.numSeats = numSeats; return this; }
+-		public Builder setTags(ArrayList<String> tags) { this.tags = tags; return this; }
+-		public Builder setStartTime(Date startTime) { this.startTime = startTime; return this; }
++		public Builder setFee(double fee) { this.fee = fee; return this; }
++		public Builder setStart(Coordinate start) { this.start = start; return this; }
++		public Builder setEnd(Coordinate end) { this.end = end; return this; }
+ 		
+ 		public Trip build() {
+ 			if (start == null || end == null) {
+@@ -199,7 +91,7 @@ public class Trip implements Parcelable {
+ 			return new Trip(this);
+ 		}
+ 	}
+-	
++
+ 	/******************************* Parcelable ******************************/
+ 	
+ 	@Override
+@@ -215,8 +107,7 @@ public class Trip implements Parcelable {
+ 		dest.writeInt(driverId);
+ 		dest.writeParcelable(start, 0);
+ 		dest.writeParcelable(end, 0);
+-		dest.writeDouble(cost);
+-		dest.writeList(tags);
++		dest.writeDouble(fee);
+ 	}
+ 	
+ 	public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {
+diff --git a/src/com/llc/bumpr/sdk/models/User.java b/src/com/llc/bumpr/sdk/models/User.java
+index 7083aa8..57d7c05 100644
+--- a/src/com/llc/bumpr/sdk/models/User.java
++++ b/src/com/llc/bumpr/sdk/models/User.java
+@@ -11,15 +11,10 @@ import org.json.JSONObject;
+ import retrofit.Callback;
+ import retrofit.RetrofitError;
+ import retrofit.client.Response;
+-import android.content.Context;
+ import android.os.Parcel;
+ import android.os.Parcelable;
+ import android.util.Log;
+ 
+-import com.google.gson.annotations.SerializedName;
+-import com.google.gson.reflect.TypeToken;
+-import com.koushikdutta.async.future.FutureCallback;
+-import com.koushikdutta.ion.Ion;
+ import com.llc.bumpr.sdk.interfaces.BumprAPI;
+ import com.llc.bumpr.sdk.lib.ApiRequest;
+ import com.llc.bumpr.sdk.lib.BumprClient;
+@@ -31,80 +26,34 @@ import com.llc.restrofit.ResponseConverter;
+  * @version 0.1
+  */
+ public class User implements Parcelable {
+-	
+ 	/** The user's id in the database */
+ 	protected int id;
+-	
+ 	/** The user's first name */
+-	@SerializedName("first_name")
+ 	protected String firstName;
+-	
+ 	/** The user's last name */
+-	@SerializedName("last_name")
+ 	protected String lastName;
+-	
+ 	/** The user's current city (that they are living in) */
+ 	protected String city;
+-	
+ 	/** The user's current state (that they are living in) */
+ 	protected String state;
+-	
+ 	/** The user's email */
+ 	protected String email;
+-	
+ 	/** The link the the user's profile image */
+-	@SerializedName("profile_image")
+ 	protected String profileImage;
+-	
+ 	/** The description (provided by the user) of the user */
+ 	protected String description;
+-	
+ 	/** The user's phone number */
+-	@SerializedName("phone_number")
+ 	protected String phoneNumber;
+-	
++	/** The user's driver profile */
++	protected Driver driverProfile;
++	/** A List of Request objects that represent the requests that the user has sent out */
++	protected List<Request> sentRequests = new ArrayList<Request>();
+ 	/** A Singleton that represents the current user (on the device). */
+ 	private static User activeUser = null;
+ 	
+ 	/************************** STATIC ************************/
+ 	
+ 	/**
+-	 * A Static method that creates a request to get the active user information
+-	 * @param cb The callback method once the user has been created
+-	 */
+-	public static ApiRequest getMeRequest(final Context context, final FutureCallback<User> cb) {
+-		return new ApiRequest() {
+-
+-			@Override
+-			public void execute(String baseURL, String authToken) {
+-				Ion.with(context).load("GET", baseURL + "/sessions.json")
+-					.addHeader("X-AUTH-TOKEN", authToken)
+-					.as(new TypeToken<LoginResponse>() {})
+-					.setCallback(new FutureCallback<LoginResponse>() {
+-
+-						@Override
+-						public void onCompleted(Exception arg0, LoginResponse login) {
+-							User user = null;
+-							if (arg0 == null) {
+-								activeUser = login.getUser();
+-								user = activeUser;
+-							}
+-							
+-							cb.onCompleted(arg0, user);
+-						}
+-						
+-					});
+-			}
+-
+-			@Override
+-			public boolean needsAuth() {
+-				return true;
+-			}
+-			
+-		};
+-	}
+-	
+-	/**
+ 	 * A Static method that gets the active user (one who is using the device)
+ 	 * @return a User object indicating the active user
+ 	 */
+@@ -122,7 +71,8 @@ public class User implements Parcelable {
+ 	
+ 	private static User jsonToUser(JSONObject json) throws JSONException {
+ 		User user = new User(json.getJSONObject("user"));
+-		return new User.Builder<User>(user).build();
++		Driver driver = new Driver(json);
++		return new User.Builder<User>(user).setDriverProfile(driver).build();
+ 	}
+ 		
+ 	/**
+@@ -131,14 +81,13 @@ public class User implements Parcelable {
+ 	 * @param cb A Callback for on success or failure of the call
+ 	 * @return an ApiRequest object to be sent to the Session.execute
+ 	 */
+-	public static ApiRequest getUser(final Context context, final int id, final FutureCallback<User> cb) {
++	public static ApiRequest getUser(final int id, final Callback<User> cb) {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
+-				Ion.with(context).load(baseURL + "/users/" + id + ".json")
+-					.as(new TypeToken<User>() {})
+-					.setCallback(cb);
++			public void execute(String authToken) {
++				BumprAPI api = BumprClient.api();
++				api.getUser(id, cb);
+ 			}
+ 
+ 			@Override
+@@ -153,7 +102,7 @@ public class User implements Parcelable {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 				api.searchDrivers(query.getTopRight().lat, query.getBottomLeft().lon, 
+ 						query.getBottomLeft().lat, query.getTopRight().lon, query.getMinFee(), query.getMinSeats(),
+@@ -227,27 +176,25 @@ public class User implements Parcelable {
+ 	 * original user that you are attempting to update.
+ 	 * @param cb a Callback that returns the updated User object from the database.
+ 	 */
+-	public ApiRequest getUpdateRequest(final Context context, final HashMap<String, Object> user, final FutureCallback<User> cb) {
++	public ApiRequest getUpdateRequest(final HashMap<String, Object> user, final Callback<User> cb) {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {				
+-				Ion.with(context).load("PUT", baseURL + "/users/" + id + ".json")
+-					.addHeader("X-AUTH-TOKEN", authToken)
+-					.setJsonObjectBody(new JSONObject(user))
+-					.as(new TypeToken<User>() {})
+-					.setCallback(new FutureCallback<User>() {
++			public void execute(String authToken) {
++				BumprAPI api = BumprClient.api();
++				api.updateUser(authToken,id, user, new Callback<User>() {
+ 
+-						@Override
+-						public void onCompleted(Exception arg0, User arg1) {
+-							if (arg0 == null) {
+-								update(arg1);
+-								cb.onCompleted(arg0, arg1);
+-							} else {
+-								arg0.printStackTrace();
+-							}
+-						}
+-				});	
++					@Override
++					public void failure(RetrofitError arg0) {
++						cb.failure(arg0);
++					}
++
++					@Override
++					public void success(User arg0, Response arg1) {
++						update(arg0); // update the user
++						cb.success(arg0, arg1);
++					}		
++				});
+ 			}
+ 
+ 			@Override
+@@ -264,7 +211,7 @@ public class User implements Parcelable {
+ 		return new ApiRequest() {
+ 
+ 			@Override
+-			public void execute(String baseURL, String authToken) {
++			public void execute(String authToken) {
+ 				BumprAPI api = BumprClient.api();
+ 				api.registerDriver(authToken, driver, new Callback<Driver>() {
+ 
+@@ -275,13 +222,6 @@ public class User implements Parcelable {
+ 
+ 					@Override
+ 					public void success(Driver arg0, Response arg1) {
+-						try {
+-							//String json = BumprError.responseToString(arg1);
+-							String json = arg1.getBody().toString();
+-							Log.i("BUMPRAPI", json);
+-						} catch (Exception e) {
+-							e.printStackTrace();
+-						}
+ 						setDriverProfile(arg0);
+ 						cb.success(arg0, arg1);
+ 					}
+@@ -324,9 +264,22 @@ public class User implements Parcelable {
+ 	 * @param driverProfile the driver profile of the user
+ 	 */
+ 	public void setDriverProfile(Driver driverProfile) {
+-		//Do nothing
++		this.driverProfile = driverProfile;
+ 	}
+ 	
++	/**
++	 * Add a request to the user's list of sent requests
++	 * @param request The request to be added to the list
++	 */
++	public void addRequest(Request request) {
++		if (request == null) {
++			throw new IllegalArgumentException("Object (Request) is null");
++		}
++		
++		if (sentRequests == null) sentRequests = new ArrayList<Request>();
++		sentRequests.add(request);
++	}
++			
+ 	/**************************** GETTERS *************************/
+ 	
+ 	/**
+@@ -402,10 +355,18 @@ public class User implements Parcelable {
+ 	}
+ 	
+ 	/**
++	 * Return the users list of requests
++	 * @return returns a copy of the list of sent requests
++	 */
++	public List<Request> getSentRequests() {
++		return new ArrayList<Request>(sentRequests);
++	}
++	
++	/**
+ 	 * @return the user's driver profile information in the form of a driver object
+ 	 */
+ 	public Driver getDriverProfile() {
+-		return new Driver();
++		return driverProfile;
+ 	}
+ 		
+ 	/****************************** BUILDER ************************************/
+@@ -422,6 +383,7 @@ public class User implements Parcelable {
+ 		public Builder<T> setProfileImage(String profileImage) { item.profileImage = profileImage; return this; }
+ 		public Builder<T> setDescription(String description) { item.description = description; return this; }
+ 		public Builder<T> setPhoneNumber(String phoneNumber) { item.phoneNumber = phoneNumber; return this; }
++		public Builder<T> setDriverProfile(Driver driver) { item.driverProfile = driver; return this; }
+ 		public T build() { return item; }
+ 	}
+ 
+@@ -443,6 +405,8 @@ public class User implements Parcelable {
+ 		dest.writeString(profileImage);
+ 		dest.writeString(description);
+ 		dest.writeString(phoneNumber);
++		dest.writeList(sentRequests);
++		dest.writeParcelable(driverProfile, 0);
+ 	}
+ 	
+ 	public void readFromParcel(Parcel source) {
+@@ -455,6 +419,8 @@ public class User implements Parcelable {
+ 		profileImage = source.readString();
+ 		description = source.readString();
+ 		phoneNumber = source.readString();
++		source.readList(sentRequests, Request.class.getClassLoader());
++		driverProfile = (Driver) source.readParcelable(Driver.class.getClassLoader());
+ 	}
+ 	
+ 	public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+diff --git a/src/com/llc/bumpr/sdk/serializers/RegistrationSerializer.java b/src/com/llc/bumpr/sdk/serializers/RegistrationSerializer.java
+deleted file mode 100644
+index 67e3aca..0000000
+--- a/src/com/llc/bumpr/sdk/serializers/RegistrationSerializer.java
++++ /dev/null
+@@ -1,27 +0,0 @@
+-package com.llc.bumpr.sdk.serializers;
+-
+-import java.lang.reflect.Type;
+-
+-import com.google.gson.JsonElement;
+-import com.google.gson.JsonObject;
+-import com.google.gson.JsonSerializationContext;
+-import com.google.gson.JsonSerializer;
+-import com.llc.bumpr.sdk.models.Registration;
+-
+-public class RegistrationSerializer implements JsonSerializer<Registration> {
+-
+-	@Override
+-	public JsonElement serialize(Registration src, Type arg1, JsonSerializationContext context) {
+-		JsonObject json = new JsonObject();
+-		json.addProperty("first_name", src.getFirstName());
+-		json.addProperty("last_name", src.getLastName());
+-		json.addProperty("password", src.getPassword());
+-		json.addProperty("password_confirmation", src.getPasswordConfirmation());
+-		json.addProperty("email", src.getEmail());
+-		json.addProperty("registration_id", src.getRegistrationId());
+-		json.addProperty("platform", src.getPlatform());
+-		
+-		return json;
+-	}
+-
+-}

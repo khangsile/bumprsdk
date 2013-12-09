@@ -193,7 +193,6 @@ public class Driver implements Parcelable {
 		requests.add(request);
 	}
 	
-	
 	/******************************* GETTERS *******************************/
 	
 	/**
