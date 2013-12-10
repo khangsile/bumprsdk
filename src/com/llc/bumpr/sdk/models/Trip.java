@@ -30,13 +30,8 @@ import com.llc.bumpr.sdk.lib.Location;
 public class Trip implements Parcelable {
 
 	/** The id of the trip */
-	@Expose(serialize=false)
+	@Expose(serialize=false, deserialize=true)
 	private int id;
-	
-	/** The userId that created the trip */
-	@Expose(serialize=false)
-	@SerializedName("user_id")
-	private int userId;
 	
 	/** The driverId that the trip belongs to */
 	@SerializedName("driver_id")
@@ -44,10 +39,12 @@ public class Trip implements Parcelable {
 	
 	/** The start of the trip */
 	@Expose()
+	@SerializedName("start_location")
 	private Location start;
 	
 	/** The end of the trip */
 	@Expose()
+	@SerializedName("end_location")
 	private Location end;
 	
 	/** The trip's fee */
@@ -74,6 +71,11 @@ public class Trip implements Parcelable {
 	@SerializedName("tag_list")
 	private ArrayList<String> tags;
 	
+	/** The owner of the trip */
+	@Expose(serialize=false, deserialize=true)
+	@SerializedName("user")
+	private User owner;
+	
 	
 	/************************************* STATIC METHODS ****************************/
 	
@@ -82,7 +84,6 @@ public class Trip implements Parcelable {
 	 * @param builder A builder class that builds the Trip
 	 */
 	private Trip(Builder builder) {
-		this.userId = builder.userId;
 		this.driverId = builder.driverId;
 		this.cost = builder.cost;
 		this.start = builder.start;
@@ -122,6 +123,7 @@ public class Trip implements Parcelable {
 		this.end = (Location) source.readParcelable(Location.class.getClassLoader());
 		this.cost = source.readDouble();
 		source.readList(tags, String.class.getClassLoader());
+		this.owner = (User) source.readParcelable(User.class.getClassLoader());
 	}
 	
 	public ApiRequest post(final Context context, final FutureCallback<String> cb) {
@@ -159,12 +161,24 @@ public class Trip implements Parcelable {
 	
 	/******************************** GETTERS **************************/
 	
+	public Date getDate() {
+		return startTime;
+	}
+	
+	public double getCost() {
+		return cost;
+	}
+	
 	public Location getStart() {
 		return start;
 	}
 	
 	public Location getEnd() {
 		return end;
+	}
+	
+	public User getOwner() {
+		return owner;
 	}
 	
 	/******************************** BUILDER **************************/
@@ -204,32 +218,29 @@ public class Trip implements Parcelable {
 	
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
 		dest.writeInt(id);
 		dest.writeInt(driverId);
 		dest.writeParcelable(start, 0);
 		dest.writeParcelable(end, 0);
 		dest.writeDouble(cost);
 		dest.writeList(tags);
+		dest.writeParcelable(owner, 0);
 	}
 	
 	public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {
 
 		@Override
 		public Trip createFromParcel(Parcel source) {
-			// TODO Auto-generated method stub
 			return new Trip(source);
 		}
 
 		@Override
 		public Trip[] newArray(int size) {
-			// TODO Auto-generated method stub
 			return new Trip[size];
 		}
 	};

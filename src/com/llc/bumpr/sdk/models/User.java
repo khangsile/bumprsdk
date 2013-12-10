@@ -53,7 +53,7 @@ public class User implements Parcelable {
 	protected String email;
 	
 	/** The link the the user's profile image */
-	@SerializedName("profile_image")
+	@SerializedName("profile_pic")
 	protected String profileImage;
 	
 	/** The description (provided by the user) of the user */
@@ -77,8 +77,9 @@ public class User implements Parcelable {
 
 			@Override
 			public void execute(String baseURL, String authToken) {
-				Ion.with(context).load("GET", baseURL + "/sessions.json")
+				Ion.with(context).load("POST", baseURL + "/me.json")
 					.addHeader("X-AUTH-TOKEN", authToken)
+					.addHeader("Content-Length", "0")
 					.as(new TypeToken<LoginResponse>() {})
 					.setCallback(new FutureCallback<LoginResponse>() {
 
@@ -240,7 +241,7 @@ public class User implements Parcelable {
 
 						@Override
 						public void onCompleted(Exception arg0, User arg1) {
-							if (arg0 == null) {
+							if (arg0 == null && arg1 != null) {
 								update(arg1);
 								cb.onCompleted(arg0, arg1);
 							} else {

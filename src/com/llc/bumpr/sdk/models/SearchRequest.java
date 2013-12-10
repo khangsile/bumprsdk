@@ -1,5 +1,6 @@
 package com.llc.bumpr.sdk.models;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import com.llc.bumpr.sdk.lib.Location;
 public class SearchRequest implements ApiRequest {
 	
 	private Context context;
-	private FutureCallback<String> cb;
+	private FutureCallback<List<Trip>> cb;
 	
 	@Expose()
 	@SerializedName("start_location")
@@ -59,7 +60,7 @@ public class SearchRequest implements ApiRequest {
 		return this;
 	}
 	
-	public SearchRequest setCallback(FutureCallback<String> cb) {
+	public SearchRequest setCallback(FutureCallback<List<Trip>> cb) {
 		this.cb = cb;
 		return this;
 	}
@@ -109,7 +110,23 @@ public class SearchRequest implements ApiRequest {
 		.setJsonObjectBody(json)
 		.asString()
 		//.as(new TypeToken<List<Trip>>() {})
-		.setCallback(cb);
+		.setCallback(new FutureCallback<String>() {
+
+			@Override
+			public void onCompleted(Exception arg0, String arg1) {
+				List<Trip> trips = null;
+				
+				if (arg0 == null) {
+					Type type = new TypeToken<List<Trip>>(){}.getType();
+				
+					Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-DD'T'hh:mm:ss.sss'Z'").create();
+					trips = gson.fromJson(arg1, type);
+				}
+				
+				cb.onCompleted(arg0, trips);
+			}
+			
+		});
 	}
 
 	@Override
