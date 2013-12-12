@@ -80,12 +80,12 @@ public class Trip implements Parcelable {
 	
 	/************************************* STATIC METHODS ****************************/
 	
-	public static ApiRequest getTrips(final User user, final FutureCallback<List<Trip>> cb) {
+	public static ApiRequest getTrips(final Context context, final User user, final FutureCallback<List<Trip>> cb) {
 		return new ApiRequest() {
 
 			@Override
 			public void execute(String baseURL, String authToken) {
-				
+				Ion.with(context).load(baseURL + "/users/")
 			}
 
 			@Override
@@ -143,6 +143,8 @@ public class Trip implements Parcelable {
 		this.cost = source.readDouble();
 		source.readStringList(tags);
 		this.owner = (User) source.readParcelable(User.class.getClassLoader());
+		this.numSeats = source.readInt();
+		this.minSeats = source.readInt();
 	}
 	
 	public ApiRequest post(final Context context, final FutureCallback<String> cb) {
@@ -158,7 +160,6 @@ public class Trip implements Parcelable {
 				json.add("cost", new JsonPrimitive(cost));
 				json.add("min_seats", new JsonPrimitive(minSeats));					
 				CharSequence date = DateFormat.format("yyyy-MM-dd'T'hh:mm:ss.sss'Z'", startTime);
-				Log.i("trip", date.toString());
 				json.add("start_time", new JsonPrimitive(date.toString()));
 					
 				if (driverId > 0) json.add("driver_id", new JsonPrimitive(driverId));
@@ -249,6 +250,8 @@ public class Trip implements Parcelable {
 		dest.writeDouble(cost);
 		dest.writeStringList(tags);
 		dest.writeParcelable(owner, 0);
+		dest.writeInt(numSeats);
+		dest.writeInt(minSeats);
 	}
 	
 	public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {
