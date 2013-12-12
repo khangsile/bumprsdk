@@ -1,7 +1,5 @@
 package com.llc.bumpr.sdk.models;
 
-import java.util.Date;
-
 import retrofit.Callback;
 import retrofit.client.Response;
 import android.content.Context;
@@ -23,47 +21,20 @@ public class Request implements Parcelable {
 	/** The id of the request */
 	private int id;
 	
-	/** The id of the passenger */
-	private int userId;
-	
-	/** The id of the driver */
-	private int driverId;
-	
-	/** The id of the trip */
-	private int tripId;
-	
-	/** The date time that the request was sent */
-	private Date timeSent;
-	
-	/** The time the request was accepted */
-	private Date timeAccepted;
-	
 	/** A boolean denoting if the request was accepted (or not). True for yes/False for no. */
 	private boolean accepted;
-	
-	/** A boolean denoting if the correct confirmation code was delivered. */
-	private boolean confirmed;
 	
 	/** The trip of the request */
 	private Trip trip;
 	
-	public Request(Builder builder) {
-		this.id = builder.id;
-		this.userId = builder.userId;
-		this.driverId = builder.driverId;
-		this.trip = builder.trip;
-	}
-	
+	/** The user who sent the request */
+	private User user;
+		
 	public Request(Parcel source) {
 		id = source.readInt();
-		userId = source.readInt();
-		driverId = source.readInt();
-		tripId = source.readInt();
-		//timeSent = new Date(source.readLong());
-		//timeAccepted = new Date(source.readLong());
 		accepted = (source.readByte() != 0);
-		confirmed = (source.readByte() != 0);
 		trip = source.readParcelable(Trip.class.getClassLoader());
+		user = source.readParcelable(User.class.getClassLoader());
 	}
 	
 	/**
@@ -78,6 +49,7 @@ public class Request implements Parcelable {
 			public void execute(String baseURL, String authToken) {
 				Ion.with(context).load("POST", baseURL + "/trips/" + trip.getId() + "/requests.json")
 				.setHeader("X-AUTH-TOKEN", authToken)
+				.setHeader("Content-Length", "0")
 				.asString()
 				.setCallback(cb);
 			}
@@ -97,7 +69,7 @@ public class Request implements Parcelable {
 		return new ApiRequest() {
 			@Override
 			public void execute(String baseURL, String authToken) {
-				Ion.with(context).load("PUT", "/requests/" + id + ".json")
+				Ion.with(context).load("PUT", baseURL + "/requests/" + id + ".json")
 				.setHeader("X-AUTH-TOKEN", authToken)
 				.setBodyParameter("accepted", (accept) ? "true" : "false")
 				.asString()
@@ -141,8 +113,8 @@ public class Request implements Parcelable {
 		return id;
 	}
 	
-	public int getDriverId() {
-		return driverId;
+	public User getUser() {
+		return user;
 	}
 	
 	public boolean getAccepted() {
@@ -153,28 +125,6 @@ public class Request implements Parcelable {
 		return trip;
 	}
 	
-	/*************************** BUILDER ****************************/
-	
-	public static class Builder {
-		
-		private int id;
-		private int userId;
-		private int driverId;
-		private Trip trip;
-		
-		public Builder setId(int id) { this.id = id; return this; }
-		public Builder setUserId(int userId) { this.userId = userId; return this; }
-		public Builder setDriverId(int driverId) { this.driverId = driverId; return this; }
-		public Builder setTrip(Trip trip) { this.trip = trip; return this; }
-		
-		public Request build() {
-			if (userId < 1 || driverId < 1 || trip == null) {
-				throw new IllegalStateException("Invalid Request state: missing parameters");
-			}
-			
-			return new Request(this);
-		}
-	}
 	
 	/***************************** PARCELABLE ********************************/
 
@@ -186,14 +136,9 @@ public class Request implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(id);
-		dest.writeInt(userId);
-		dest.writeInt(driverId);
-		dest.writeInt(tripId);
-		//dest.writeLong(timeSent.getTime());
-		//dest.writeLong(timeAccepted.getTime());
 		dest.writeByte((byte) (accepted ? 1 : 0));		
-		dest.writeByte((byte) (confirmed ? 1 : 0));
 		dest.writeParcelable(trip, 0);
+		dest.writeParcelable(user, 0);
 	}
 	
 	public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() {
