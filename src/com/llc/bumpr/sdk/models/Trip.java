@@ -85,7 +85,7 @@ public class Trip implements Parcelable {
 
 			@Override
 			public void execute(String baseURL, String authToken) {
-				Ion.with(context).load(baseURL + "/users/")
+				Ion.with(context).load(baseURL + "/users/");
 			}
 
 			@Override
@@ -141,6 +141,7 @@ public class Trip implements Parcelable {
 		this.start = (Location) source.readParcelable(Location.class.getClassLoader());
 		this.end = (Location) source.readParcelable(Location.class.getClassLoader());
 		this.cost = source.readDouble();
+		this.tags = new ArrayList<String>();
 		source.readStringList(tags);
 		this.owner = (User) source.readParcelable(User.class.getClassLoader());
 		this.numSeats = source.readInt();
