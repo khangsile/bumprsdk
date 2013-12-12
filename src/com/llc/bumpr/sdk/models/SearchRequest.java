@@ -119,7 +119,7 @@ public class SearchRequest implements ApiRequest {
 				if (arg0 == null) {
 					Type type = new TypeToken<List<Trip>>(){}.getType();
 										
-					Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-DD hh:mm:ss 'UTC'").create();
+					Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss ").create();
 					trips = gson.fromJson(arg1, type);
 				}
 				

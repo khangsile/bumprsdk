@@ -102,7 +102,7 @@ public class Trip implements Parcelable {
 						if (arg0 == null) {
 							Type type = new TypeToken<List<Trip>>(){}.getType();
 												
-							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-DD hh:mm:ss 'UTC'").create();
+							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss 'UTC'").create();
 							trips = gson.fromJson(arg1, type);
 						}
 						cb.onCompleted(arg0, trips);
@@ -131,7 +131,7 @@ public class Trip implements Parcelable {
 					public void onCompleted(Exception arg0, String arg1) {
 						Trip trip = null;
 						if (arg0 == null) {												
-							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-DD hh:mm:ss 'UTC'").create();
+							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss 'UTC'").create();
 							trip = gson.fromJson(arg1, Trip.class);
 						}
 						cb.onCompleted(arg0, trip);

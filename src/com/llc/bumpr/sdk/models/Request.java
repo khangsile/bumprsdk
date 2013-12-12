@@ -1,11 +1,17 @@
 package com.llc.bumpr.sdk.models;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
 import retrofit.Callback;
 import retrofit.client.Response;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
@@ -35,6 +41,40 @@ public class Request implements Parcelable {
 		accepted = (source.readByte() != 0);
 		trip = source.readParcelable(Trip.class.getClassLoader());
 		user = source.readParcelable(User.class.getClassLoader());
+	}
+	
+	public static ApiRequest getRequests(final Context context, final String type, final FutureCallback<List<Request>> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String baseURL, String authToken) {
+				Ion.with(context).load("GET", baseURL + "/requests.json")
+				.addHeader("X-AUTH-TOKEN", authToken)
+				.asString()
+				.setCallback(new FutureCallback<String>() {
+
+					@Override
+					public void onCompleted(Exception arg0, String arg1) {
+						List<Request> requests = null;
+						if (arg0 == null) {
+							Type type = new TypeToken<List<Request>>(){}.getType();
+							
+							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss 'UTC'").create();
+							requests = gson.fromJson(arg1, type);
+						}
+						
+						cb.onCompleted(arg0, requests);
+					}
+					
+				});
+			}
+
+			@Override
+			public boolean needsAuth() {
+				return true;
+			}
+			
+		};
 	}
 	
 	/**
