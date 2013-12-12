@@ -190,6 +190,14 @@ public class Trip implements Parcelable {
 		return cost;
 	}
 	
+	public int getNumSeats() {
+		return numSeats;
+	}
+	
+	public int getMinSeats() {
+		return minSeats;
+	}
+	
 	public Location getStart() {
 		return start;
 	}
