@@ -20,22 +20,28 @@ import com.llc.bumpr.sdk.lib.BumprClient;
 public class Request implements Parcelable {
 	/** The id of the request */
 	private int id;
+	
 	/** The id of the passenger */
 	private int userId;
+	
 	/** The id of the driver */
 	private int driverId;
+	
 	/** The id of the trip */
 	private int tripId;
+	
 	/** The date time that the request was sent */
 	private Date timeSent;
+	
 	/** The time the request was accepted */
 	private Date timeAccepted;
-	/** The confirmation code of the request */
-	private String confirmationCode;
+	
 	/** A boolean denoting if the request was accepted (or not). True for yes/False for no. */
 	private boolean accepted;
+	
 	/** A boolean denoting if the correct confirmation code was delivered. */
 	private boolean confirmed;
+	
 	/** The trip of the request */
 	private Trip trip;
 	
@@ -53,7 +59,6 @@ public class Request implements Parcelable {
 		tripId = source.readInt();
 		//timeSent = new Date(source.readLong());
 		//timeAccepted = new Date(source.readLong());
-		confirmationCode = source.readString();
 		accepted = (source.readByte() != 0);
 		confirmed = (source.readByte() != 0);
 		trip = source.readParcelable(Trip.class.getClassLoader());
@@ -186,7 +191,6 @@ public class Request implements Parcelable {
 		dest.writeInt(tripId);
 		//dest.writeLong(timeSent.getTime());
 		//dest.writeLong(timeAccepted.getTime());
-		dest.writeString(confirmationCode);
 		dest.writeByte((byte) (accepted ? 1 : 0));		
 		dest.writeByte((byte) (confirmed ? 1 : 0));
 		dest.writeParcelable(trip, 0);
@@ -195,13 +199,11 @@ public class Request implements Parcelable {
 	public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>() {
 		@Override
 		public Request createFromParcel(Parcel source) {
-			// TODO Auto-generated method stub
 			return new Request(source);
 		}
 
 		@Override
 		public Request[] newArray(int size) {
-			// TODO Auto-generated method stub
 			return new Request[size];
 		}
 		

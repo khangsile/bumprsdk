@@ -2,6 +2,7 @@ package com.llc.bumpr.sdk.models;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,6 +80,24 @@ public class Trip implements Parcelable {
 	
 	/************************************* STATIC METHODS ****************************/
 	
+	public static ApiRequest getTrips(final User user, final FutureCallback<List<Trip>> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String baseURL, String authToken) {
+				
+			}
+
+			@Override
+			public boolean needsAuth() {
+				return true;
+			}
+			
+		};
+	}
+	
+	/************************************* INSTANCE **********************************/
+	
 	/**
 	 * Private constructor for the trip
 	 * @param builder A builder class that builds the Trip
@@ -122,7 +141,7 @@ public class Trip implements Parcelable {
 		this.start = (Location) source.readParcelable(Location.class.getClassLoader());
 		this.end = (Location) source.readParcelable(Location.class.getClassLoader());
 		this.cost = source.readDouble();
-		source.readList(tags, String.class.getClassLoader());
+		source.readStringList(tags);
 		this.owner = (User) source.readParcelable(User.class.getClassLoader());
 	}
 	
@@ -228,7 +247,7 @@ public class Trip implements Parcelable {
 		dest.writeParcelable(start, 0);
 		dest.writeParcelable(end, 0);
 		dest.writeDouble(cost);
-		dest.writeList(tags);
+		dest.writeStringList(tags);
 		dest.writeParcelable(owner, 0);
 	}
 	
