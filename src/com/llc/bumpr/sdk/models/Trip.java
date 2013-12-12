@@ -85,7 +85,7 @@ public class Trip implements Parcelable {
 
 			@Override
 			public void execute(String baseURL, String authToken) {
-				Ion.with(context).load(baseURL + "/users/")
+				Ion.with(context).load(baseURL + "/users/");
 			}
 
 			@Override
