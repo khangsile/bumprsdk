@@ -1,5 +1,6 @@
 package com.llc.bumpr.sdk.models;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,13 +12,14 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.DateFormat;
-import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.llc.bumpr.sdk.lib.ApiRequest;
@@ -77,15 +79,64 @@ public class Trip implements Parcelable {
 	@SerializedName("user")
 	private User owner;
 	
+	/** The users involved in the trip */
+	@Expose(serialize=false, deserialize=true)
+	private ArrayList<User> users;
+	
 	
 	/************************************* STATIC METHODS ****************************/
 	
-	public static ApiRequest getTrips(final Context context, final User user, final FutureCallback<List<Trip>> cb) {
+	public static ApiRequest getTrips(final Context context, final FutureCallback<List<Trip>> cb) {
 		return new ApiRequest() {
 
 			@Override
 			public void execute(String baseURL, String authToken) {
-				Ion.with(context).load(baseURL + "/users/");
+				Ion.with(context).load(baseURL + "/trips.json")
+				.setHeader("X-AUTH-TOKEN", authToken)
+				.asString()
+				.setCallback(new FutureCallback<String>() {
+
+					@Override
+					public void onCompleted(Exception arg0, String arg1) {
+						List<Trip> trips = null;
+						if (arg0 == null) {
+							Type type = new TypeToken<List<Trip>>(){}.getType();
+												
+							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-DD hh:mm:ss 'UTC'").create();
+							trips = gson.fromJson(arg1, type);
+						}
+						cb.onCompleted(arg0, trips);
+					}
+				});
+			}
+
+			@Override
+			public boolean needsAuth() {
+				return true;
+			}
+		};
+	}
+	
+	public ApiRequest getTrip(final Context context, final int id, final FutureCallback<Trip> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String baseURL, String authToken) {
+				Ion.with(context).load(baseURL + "/trips.json")
+				.setHeader("X-AUTH-TOKEN", authToken)
+				.asString()
+				.setCallback(new FutureCallback<String>() {
+
+					@Override
+					public void onCompleted(Exception arg0, String arg1) {
+						Trip trip = null;
+						if (arg0 == null) {												
+							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-DD hh:mm:ss 'UTC'").create();
+							trip = gson.fromJson(arg1, Trip.class);
+						}
+						cb.onCompleted(arg0, trip);
+					}
+				});
 			}
 
 			@Override
@@ -118,6 +169,7 @@ public class Trip implements Parcelable {
 	 * @param json The JSON representation of the trip object
 	 * @throws JSONException
 	 */
+	@Deprecated()
 	public Trip(JSONObject json) throws JSONException {
 		JSONObject start = json.getJSONObject("start");
 		JSONObject end = json.getJSONObject("end");
@@ -146,6 +198,7 @@ public class Trip implements Parcelable {
 		this.owner = (User) source.readParcelable(User.class.getClassLoader());
 		this.numSeats = source.readInt();
 		this.minSeats = source.readInt();
+		source.readList(users, User.class.getClassLoader());
 	}
 	
 	public ApiRequest post(final Context context, final FutureCallback<String> cb) {
@@ -181,6 +234,10 @@ public class Trip implements Parcelable {
 	}
 	
 	/******************************** GETTERS **************************/
+	
+	public int getId() {
+		return id;
+	}
 	
 	public Date getDate() {
 		return startTime;
@@ -261,6 +318,7 @@ public class Trip implements Parcelable {
 		dest.writeParcelable(owner, 0);
 		dest.writeInt(numSeats);
 		dest.writeInt(minSeats);
+		dest.writeList(users);
 	}
 	
 	public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {

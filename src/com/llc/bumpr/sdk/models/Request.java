@@ -1,19 +1,21 @@
 package com.llc.bumpr.sdk.models;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import retrofit.Callback;
 import retrofit.client.Response;
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.llc.bumpr.sdk.interfaces.BumprAPI;
 import com.llc.bumpr.sdk.lib.ApiRequest;
 import com.llc.bumpr.sdk.lib.BumprClient;
 
 /**
- *
+ * Represents requests
  * @author KhangSiLe
  *
  */
@@ -69,16 +71,15 @@ public class Request implements Parcelable {
 	 * @param request
 	 * @return an ApiRequest object/interface to be given to the session
 	 */
-	public ApiRequest postRequest(final Callback<Request> cb) {
+	public static ApiRequest postRequest(final Context context, final Trip trip, final FutureCallback<String> cb) {
 		return new ApiRequest() {
 
 			@Override
 			public void execute(String baseURL, String authToken) {
-				BumprAPI api = BumprClient.api();
-				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("start", trip.getStart());
-				map.put("end", trip.getEnd());
-				api.request(authToken, driverId, map, cb);
+				Ion.with(context).load("POST", baseURL + "/trips/" + trip.getId() + "/requests.json")
+				.setHeader("X-AUTH-TOKEN", authToken)
+				.asString()
+				.setCallback(cb);
 			}
 
 			@Override
@@ -92,14 +93,15 @@ public class Request implements Parcelable {
 	 * Answers the request sent to the user giving the option to accept or deny the request.
 	 * @param accept A boolean indicating whether the request was accepted or denied
 	 */
-	public ApiRequest respondTo(final boolean accept, final Callback<Response> cb) {
+	public ApiRequest respondTo(final Context context, final boolean accept, final FutureCallback<String> cb) {
 		return new ApiRequest() {
 			@Override
 			public void execute(String baseURL, String authToken) {
-				BumprAPI api = BumprClient.api();
-				HashMap<String, Object> map = new HashMap<String, Object>();
-				map.put("accepted", accept);
-				api.respondTo(authToken, driverId, id, map, cb);
+				Ion.with(context).load("PUT", "/requests/" + id + ".json")
+				.setHeader("X-AUTH-TOKEN", authToken)
+				.setBodyParameter("accepted", (accept) ? "true" : "false")
+				.asString()
+				.setCallback(cb);
 			}
 
 			@Override
@@ -178,13 +180,11 @@ public class Request implements Parcelable {
 
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
 		dest.writeInt(id);
 		dest.writeInt(userId);
 		dest.writeInt(driverId);

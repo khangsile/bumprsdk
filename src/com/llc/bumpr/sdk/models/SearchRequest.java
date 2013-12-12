@@ -110,7 +110,6 @@ public class SearchRequest implements ApiRequest {
 		.setTimeout(5000)
 		.setJsonObjectBody(json)
 		.asString()
-		//.as(new TypeToken<List<Trip>>() {})
 		.setCallback(new FutureCallback<String>() {
 
 			@Override
@@ -120,7 +119,7 @@ public class SearchRequest implements ApiRequest {
 				if (arg0 == null) {
 					Type type = new TypeToken<List<Trip>>(){}.getType();
 										
-					Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-DD'T'hh:mm:ss.sss'Z'").create();
+					Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-DD hh:mm:ss 'UTC'").create();
 					trips = gson.fromJson(arg1, type);
 				}
 				
