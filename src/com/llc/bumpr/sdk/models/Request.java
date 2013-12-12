@@ -50,6 +50,7 @@ public class Request implements Parcelable {
 			public void execute(String baseURL, String authToken) {
 				Ion.with(context).load("GET", baseURL + "/requests.json")
 				.addHeader("X-AUTH-TOKEN", authToken)
+				.addQuery("type", type)
 				.asString()
 				.setCallback(new FutureCallback<String>() {
 
