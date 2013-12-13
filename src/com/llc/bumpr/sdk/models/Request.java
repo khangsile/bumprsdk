@@ -28,7 +28,7 @@ public class Request implements Parcelable {
 	private int id;
 	
 	/** A boolean denoting if the request was accepted (or not). True for yes/False for no. */
-	private boolean accepted;
+	private Boolean accepted;
 	
 	/** The trip of the request */
 	private Trip trip;
@@ -158,7 +158,7 @@ public class Request implements Parcelable {
 		return user;
 	}
 	
-	public boolean getAccepted() {
+	public Boolean getAccepted() {
 		return accepted;
 	}
 	
