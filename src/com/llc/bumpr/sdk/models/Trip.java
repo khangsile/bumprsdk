@@ -300,6 +300,10 @@ public class Trip implements Parcelable {
 		return owner;
 	}
 	
+	public List<User> getUsers() {
+		return users;
+	}
+	
 	/******************************** BUILDER **************************/
 	
 	public static class Builder {
