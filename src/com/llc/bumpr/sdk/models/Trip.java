@@ -72,7 +72,7 @@ public class Trip implements Parcelable {
 	/** The tags of trip */
 	@Expose()
 	@SerializedName("tag_list")
-	private ArrayList<String> tags;
+	private ArrayList<String> tags = new ArrayList<String>();
 	
 	/** The owner of the trip */
 	@Expose(serialize=false, deserialize=true)
@@ -82,7 +82,7 @@ public class Trip implements Parcelable {
 	/** The users involved in the trip */
 	@Expose(serialize=false, deserialize=true)
 	@SerializedName("users")
-	private ArrayList<User> users;
+	private ArrayList<User> users = new ArrayList<User>();
 	
 	
 	/************************************* STATIC METHODS ****************************/
