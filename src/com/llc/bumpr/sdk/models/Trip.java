@@ -81,6 +81,7 @@ public class Trip implements Parcelable {
 	
 	/** The users involved in the trip */
 	@Expose(serialize=false, deserialize=true)
+	@SerializedName("users")
 	private ArrayList<User> users;
 	
 	
@@ -117,6 +118,9 @@ public class Trip implements Parcelable {
 		};
 	}
 	
+	/**
+	 * 
+	 */
 	public ApiRequest getTrip(final Context context, final int id, final FutureCallback<Trip> cb) {
 		return new ApiRequest() {
 
