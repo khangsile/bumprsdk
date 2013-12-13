@@ -12,6 +12,7 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -167,6 +168,7 @@ public class Trip implements Parcelable {
 						Trip t = null;
 						
 						if (arg0 == null) {
+							Log.i("Get Summary", arg1);
 							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss 'UTC'").create();
 							t = gson.fromJson(arg1, Trip.class);
 						}
