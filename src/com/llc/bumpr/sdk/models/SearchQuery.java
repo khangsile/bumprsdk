@@ -9,7 +9,7 @@ public class SearchQuery {
 	private double bottom;
 	private double left;
 	private double minFee;
-	private int minSeats;
+	private int minSeats = 2;
 	
 	public Location getTopRight() {
 		return new Location(top, right);

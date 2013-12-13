@@ -48,7 +48,7 @@ public class SearchRequest implements ApiRequest {
 	
 	@Expose()
 	@SerializedName("min_seats")
-	private int minSeats = 1;
+	private int minSeats = 2;
 	
 	/**
 	 * Standard constructor
