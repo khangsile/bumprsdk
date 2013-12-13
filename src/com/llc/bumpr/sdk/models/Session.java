@@ -12,7 +12,8 @@ import com.llc.bumpr.sdk.lib.ApiRequest;
 public class Session {
 	
 	private String authToken;
-	public static String baseURL = "http://192.168.1.200:3000/api/v1";
+	public static String baseURL = "http://ec2-54-196-170-148.compute-1.amazonaws.com/api/v1";
+	
 	
 	private static Session activeSession = new Session();
 	

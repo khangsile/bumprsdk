@@ -15,6 +15,7 @@ import android.text.format.DateFormat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.Expose;
@@ -70,7 +71,7 @@ public class Trip implements Parcelable {
 	private int numSeats;
 	
 	/** The tags of trip */
-	@Expose()
+	@Expose(serialize=true, deserialize=true)
 	@SerializedName("tag_list")
 	private ArrayList<String> tags = new ArrayList<String>();
 	
@@ -243,8 +244,13 @@ public class Trip implements Parcelable {
 
 			@Override
 			public void execute(String baseURL, String authToken) {			
-				Gson gson = new Gson();
 				JsonObject json = new JsonObject(); //gson.toJsonTree(this);
+				
+				Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+						.setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'")
+						.create();
+				JsonElement jsonE = gson.toJsonTree(this);
+				
 				
 				json.add("end_location", gson.toJsonTree(end));
 				json.add("start_location", gson.toJsonTree(start));
@@ -252,12 +258,15 @@ public class Trip implements Parcelable {
 				json.add("min_seats", new JsonPrimitive(minSeats));					
 				CharSequence date = DateFormat.format("yyyy-MM-dd'T'hh:mm:ss.sss'Z'", startTime);
 				json.add("start_time", new JsonPrimitive(date.toString()));
-					
+				//String tagList = gson.toJson(tags);
+				//json.add("tag_list", new JsonPrimitive(tagList));
+				
+				
 				if (driverId > 0) json.add("driver_id", new JsonPrimitive(driverId));
 				
 				Ion.with(context).load("POST", baseURL + "/trips")
 					.addHeader("X-AUTH-TOKEN", authToken)
-					.setJsonObjectBody(json)
+					.setJsonObjectBody(jsonE)
 					.asString()
 					.setCallback(cb);
 			}
