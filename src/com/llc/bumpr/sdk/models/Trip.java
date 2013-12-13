@@ -147,6 +147,39 @@ public class Trip implements Parcelable {
 		};
 	}
 	
+	public static ApiRequest getSummary(final Context context, final int id, final FutureCallback<Trip> cb) {
+		return new ApiRequest() {
+
+			@Override
+			public void execute(String baseURL, String authToken) {
+				Ion.with(context).load("GET", baseURL + "/trips/" + id + "/summary.json")
+				.addHeader("X-AUTH-TOKEN", authToken)
+				.asString()
+				.setCallback(new FutureCallback<String>() {
+
+					@Override
+					public void onCompleted(Exception arg0, String arg1) {
+						Trip t = null;
+						
+						if (arg0 == null) {
+							Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss 'UTC'").create();
+							t = gson.fromJson(arg1, Trip.class);
+						}
+						
+						cb.onCompleted(arg0, t);
+					}
+					
+				});
+			}
+
+			@Override
+			public boolean needsAuth() {
+				return true;
+			}
+			
+		};
+	}
+	
 	/************************************* INSTANCE **********************************/
 	
 	/**
