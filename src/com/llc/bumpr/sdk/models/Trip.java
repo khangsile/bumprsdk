@@ -67,7 +67,7 @@ public class Trip implements Parcelable {
 	private int minSeats = 2;
 	
 	/** The number of seats for the driver */
-	@Expose(serialize=false)
+	@Expose()
 	@SerializedName("num_seats")
 	private int numSeats;
 	
@@ -251,8 +251,7 @@ public class Trip implements Parcelable {
 				Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 						.setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'")
 						.create();
-				JsonElement jsonE = gson.toJsonTree(this);
-				
+				JsonElement jsonE = gson.toJsonTree(Trip.this);
 				
 				json.add("end_location", gson.toJsonTree(end));
 				json.add("start_location", gson.toJsonTree(start));
@@ -263,6 +262,7 @@ public class Trip implements Parcelable {
 				//String tagList = gson.toJson(tags);
 				//json.add("tag_list", new JsonPrimitive(tagList));
 				
+				Log.i("Trip Search", jsonE.toString());
 				
 				if (driverId > 0) json.add("driver_id", new JsonPrimitive(driverId));
 				
