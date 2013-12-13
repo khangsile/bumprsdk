@@ -177,7 +177,7 @@ public class Request implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(id);
-		dest.writeByte((byte) (accepted ? 1 : 0));		
+		dest.writeByte((byte) (accepted != null && accepted.booleanValue() ? 1 : 0));		
 		dest.writeParcelable(trip, 0);
 		dest.writeParcelable(user, 0);
 	}
