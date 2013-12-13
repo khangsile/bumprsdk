@@ -63,7 +63,7 @@ public class Trip implements Parcelable {
 	/** The min seats for the driver */
 	@Expose()
 	@SerializedName("min_seats")
-	private int minSeats;
+	private int minSeats = 2;
 	
 	/** The number of seats for the driver */
 	@Expose(serialize=false)
